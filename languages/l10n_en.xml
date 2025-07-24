@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<l10n>
+	<translationContributors/>
+	<texts>
+		<text name="rt_header_overview" text="Overview"/>
+		<text name="rt_header_policies" text="Policies"/>
+		<text name="rt_header_schemes" text="Schemes"/>
+		<text name="rt_header_tax" text="Tax"/>
+	</texts>
+</l10n>

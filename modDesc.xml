@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<modDesc descVersion="100">
+    <author>Ozz</author>
+    <version>1.0.0.0</version>
+    <iconFilename>icon_RedTape.dds</iconFilename>
+    <title>
+        <en>Red Tape</en>
+        <de>Papierkram</de>
+        <fr>Paperasserie</fr>
+    </title>
+    <description>
+        <en><![CDATA[Red Tape
+
+A mod that adds government schemes, grants and taxes.
+
+
+]]>
+        </en>
+        <de><![CDATA[Papierkram
+
+Ein Mod, der staatliche Programme, Zuschüsse und Steuern hinzufügt.
+
+
+]]>
+        </de>
+        <fr><![CDATA[Paperasserie
+
+Un mod qui ajoute des programmes gouvernementaux, des subventions et des taxes.
+
+]]>
+        </fr>
+    </description>
+    <extraSourceFiles>
+        <sourceFile filename="src/RedTape.lua"/>
+        <sourceFile filename="src/system/TaxSystem.lua"/>
+        <sourceFile filename="src/system/SchemeSystem.lua"/>
+        <sourceFile filename="src/system/PolicySystem.lua"/>
+        <sourceFile filename="src/instances/Scheme.lua"/>
+        <sourceFile filename="src/instances/Policy.lua"/>
+        <sourceFile filename="src/instances/TaxLineItem.lua"/>
+    </extraSourceFiles>
+    <multiplayer supported="true"/>
+    <l10n filenamePrefix="languages/l10n" />
+</modDesc>

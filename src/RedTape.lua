@@ -1,0 +1,96 @@
+RedTape = {}
+RedTape.dir = g_currentModDirectory
+
+source(RedTape.dir .. "src/gui/MenuRedTape.lua")
+
+function RedTape:loadMap()
+    self.leaseDeals = {}
+
+    -- g_gui:loadProfiles(RedTape.dir .. "src/gui/guiProfiles.xml")
+
+    local guiRedTape = MenuRedTape.new(g_i18n)
+    g_gui:loadGui(RedTape.dir .. "src/gui/MenuRedTape.xml", "menuRedTape", guiRedTape, true)
+
+    RedTape.addIngameMenuPage(guiRedTape, "menuRedTape", { 0, 0, 1024, 1024 },
+        RedTape:makeCheckEnabledPredicate(), "pageSettings")
+
+    self.TaxSystem = TaxSystem.new()
+    self.SchemeSystem = SchemeSystem.new()
+    self.PolicySystem = PolicySystem.new()
+
+    g_currentMission.RedTape = self
+end
+
+function RedTape:makeCheckEnabledPredicate()
+    return function() return true end
+end
+
+function RedTape:saveToXmlFile()
+    g_currentMission.RedTape.PolicySystem:saveToXmlFile()
+    g_currentMission.RedTape.SchemeSystem:saveToXmlFile()
+    g_currentMission.RedTape.TaxSystem:saveToXmlFile()
+end
+
+-- from Courseplay
+function RedTape.addIngameMenuPage(frame, pageName, uvs, predicateFunc, insertAfter)
+    local targetPosition = 0
+
+    -- remove all to avoid warnings
+    for k, v in pairs({ pageName }) do
+        g_inGameMenu.controlIDs[v] = nil
+    end
+
+    for i = 1, #g_inGameMenu.pagingElement.elements do
+        local child = g_inGameMenu.pagingElement.elements[i]
+        if child == g_inGameMenu[insertAfter] then
+            targetPosition = i + 1;
+            break
+        end
+    end
+
+    g_inGameMenu[pageName] = frame
+    g_inGameMenu.pagingElement:addElement(g_inGameMenu[pageName])
+
+    g_inGameMenu:exposeControlsAsFields(pageName)
+
+    for i = 1, #g_inGameMenu.pagingElement.elements do
+        local child = g_inGameMenu.pagingElement.elements[i]
+        if child == g_inGameMenu[pageName] then
+            table.remove(g_inGameMenu.pagingElement.elements, i)
+            table.insert(g_inGameMenu.pagingElement.elements, targetPosition, child)
+            break
+        end
+    end
+
+    for i = 1, #g_inGameMenu.pagingElement.pages do
+        local child = g_inGameMenu.pagingElement.pages[i]
+        if child.element == g_inGameMenu[pageName] then
+            table.remove(g_inGameMenu.pagingElement.pages, i)
+            table.insert(g_inGameMenu.pagingElement.pages, targetPosition, child)
+            break
+        end
+    end
+
+    g_inGameMenu.pagingElement:updateAbsolutePosition()
+    g_inGameMenu.pagingElement:updatePageMapping()
+
+    g_inGameMenu:registerPage(g_inGameMenu[pageName], nil, predicateFunc)
+
+    local iconFileName = Utils.getFilename('images/menuIcon.dds', RedTape.dir)
+    g_inGameMenu:addPageTab(g_inGameMenu[pageName], iconFileName, GuiUtils.getUVs(uvs))
+
+    for i = 1, #g_inGameMenu.pageFrames do
+        local child = g_inGameMenu.pageFrames[i]
+        if child == g_inGameMenu[pageName] then
+            table.remove(g_inGameMenu.pageFrames, i)
+            table.insert(g_inGameMenu.pageFrames, targetPosition, child)
+            break
+        end
+    end
+
+    g_inGameMenu:rebuildTabList()
+end
+
+FSBaseMission.saveSavegame = Utils.appendedFunction(FSBaseMission.saveSavegame, RedTape.saveToXmlFile)
+
+addModEventListener(RedTape)

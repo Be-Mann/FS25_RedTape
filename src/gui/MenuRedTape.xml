@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="utf-8" standalone="no" ?>
+<GUI name="ingameMenuGameStats">
+    <GuiElement profile="fs25_menuContainer">
+        <GuiElement profile="fs25_menuHeaderPanel">
+            <Bitmap profile="fs25_menuHeaderIconBg">
+                <Bitmap profile="fs25_menuHeaderIcon" id="categoryHeaderIcon"/>
+            </Bitmap>
+            <Text profile="fs25_menuHeaderTitle" id="categoryHeaderText"/>
+            <RoundCorner profile="fs25_shopMoneyBoxBg" id="shopMoneyBoxBg"/>
+            <BoxLayout profile="fs25_shopMoneyBox" id="shopMoneyBox">
+                <Text profile="fs25_shopBalance" text="$l10n_ui_balance:"/>
+                <Text profile="fs25_shopMoney" id="currentBalanceText"/>
+            </BoxLayout>
+        </GuiElement>
+        <BoxLayout profile="fs25_subCategorySelectorTabbedBox" id="subCategoryBox">
+            <Button profile="fs25_subCategorySelectorTabbedTab" id="subCategoryTabs[1]" text="$l10n_rt_header_overview" onClick="onClickOverview">
+                <ThreePartBitmap profile="fs25_subCategorySelectorTabbedTabBg" name="background"/>
+            </Button>
+            <Button profile="fs25_subCategorySelectorTabbedTab" id="subCategoryTabs[2]" text="$l10n_rt_header_policies" onClick="onClickPolicies">
+                <ThreePartBitmap profile="fs25_subCategorySelectorTabbedTabBg" name="background"/>
+            </Button>
+            <Button profile="fs25_subCategorySelectorTabbedTab" id="subCategoryTabs[3]" text="$l10n_rt_header_schemes" onClick="onClickSchemes">
+                <ThreePartBitmap profile="fs25_subCategorySelectorTabbedTabBg" name="background"/>
+            </Button>
+            <Button profile="fs25_subCategorySelectorTabbedTab" id="subCategoryTabs[4]" text="$l10n_rt_header_tax" onClick="onClickTax">
+                <ThreePartBitmap profile="fs25_subCategorySelectorTabbedTabBg" name="background"/>
+            </Button>
+        </BoxLayout>
+        <ThreePartBitmap profile="fs25_lineSeparatorTopHighlighted" position="0px -57px"/>
+        <MultiTextOption profile="fs25_subCategorySelectorTabbed" id="subCategoryPaging" position="0px -10px" onClick="updateSubCategoryPages"/>
+        <GuiElement profile="fs25_subCategorySelectorTabbedContainer" id="subCategoryPages[1]">
+            <GuiElement profile="fs25_statisticsHeaderBox">
+                <Text profile="fs25_statisticsHeaderText" text="$l10n_statistic_commodity"/>
+                <Text profile="fs25_statisticsHeaderText" text="$l10n_statistic_storage" position="116px 0px" textAlignment="right"/>
+                <Text profile="fs25_statisticsHeaderText" text="$l10n_ui_stations" position="456px 0px"/>
+                <Text profile="fs25_statisticsHeaderText" text="$l10n_ui_distance" position="877px 0px"/>
+                <Bitmap profile="fs25_statisticsHeaderIcon" position="1144px 0px"/>
+                <Text profile="fs25_statisticsHeaderText" text="$l10n_ui_buy" position="1134px 0px"/>
+                <Bitmap profile="fs25_statisticsHeaderIcon" position="1390px 0px" imageSliceId="gui.prices_selling"/>
+                <Text profile="fs25_statisticsHeaderText" text="$l10n_ui_sellItem" position="1376px 0px"/>
+                <ThreePartBitmap profile="fs25_lineSeparatorBottom" position="0px -2dp"/>
+            </GuiElement>
+            <SmoothList profile="fs25_pricesProductList" id="productList" listSectionHeader="section">
+                <ListItem profile="fs25_pricesProductListItem">
+                    <Bitmap profile="fs25_pricesProductListItemIcon" name="icon"/>
+                    <Text profile="fs25_pricesProductListItemName" name="title"/>
+                    <Text profile="fs25_pricesProductListItemStorage" name="storage"/>
+                </ListItem>
+                <ListItem profile="fs25_pricesProductListSection" name="section">
+                    <Text profile="fs25_pricesProductListSectionTitle" name="title"/>
+                </ListItem>
+            </SmoothList>
+            <ThreePartBitmap profile="fs25_pricesProductListSliderBox">
+                <Slider profile="fs25_listSlider" dataElementId="productList"/>
+            </ThreePartBitmap>
+            <SmoothList profile="fs25_pricesPriceList" id="priceList">
+                <ListItem profile="fs25_pricesPriceListItem">
+                    <Bitmap profile="fs25_pricesPriceListItemHotspot" name="hotspot"/>
+                    <Text profile="fs25_pricesPriceListItemName" name="title">
+                        <Bitmap profile="fs25_pricesPriceListItemIconTrain" name="iconTrain"/>
+                        <Bitmap profile="fs25_pricesPriceListItemIconPallet" name="iconPallet"/>
+                    </Text>
+                    <Bitmap profile="fs25_pricesPriceListArrow" name="priceTrend"/>
+                    <Text profile="fs25_pricesPriceListItemInfo" name="distance" position="-320px 0px"/>
+                    <Text profile="fs25_pricesPriceListItemInfo" name="buyPrice"/>
+                    <Text profile="fs25_pricesPriceListItemInfo" name="price" position="180px 0px"/>
+                </ListItem>
+            </SmoothList>
+            <ThreePartBitmap profile="fs25_pricesPriceSliderBox">
+                <Slider profile="fs25_listSlider" dataElementId="priceList"/>
+            </ThreePartBitmap>
+            <Text profile="fs25_pricesNoSellpointsText" id="noSellpointsText" text="$l10n_ui_noSellPointsForThisFillType"/>
+            <Text profile="fs25_pricesNoSellpointsText" id="noFluctuationsText" text="$l10n_ui_noFluctuationsForThisFillType" position="200px -550px"/>
+            <Bitmap profile="fs25_pricesSeparator" id="separatorTemplate"/>
+            <Text profile="fs25_pricesMonthText" id="monthTextTemplate"/>
+            <BoxLayout profile="fs25_pricesFluctuationsLayoutBg" id="fluctuationsLayoutBg"/>
+            <GuiElement profile="fs25_pricesFluctuationsContainer" id="fluctuationsContainer">
+                <Bitmap profile="fs25_pricesFluctuationsTodayBar" id="todayBar"/>
+                <Text profile="fs25_pricesFluctuationsPrice" id="fluctuationHigh" position="0px 340px">
+                    <ThreePartBitmap profile="fs25_pricesFluctuationsPriceBg"/>
+                </Text>
+                <Text profile="fs25_pricesFluctuationsPrice" id="fluctuationLow">
+                    <ThreePartBitmap profile="fs25_pricesFluctuationsPriceBg"/>
+                </Text>
+            </GuiElement>
+        </GuiElement>
+        <GuiElement profile="fs25_subCategorySelectorTabbedContainer" id="subCategoryPages[2]">
+            <GuiElement profile="fs25_statisticsHeaderBox">
+                <Button profile="fs25_vehiclesHeaderName" text="$l10n_ui_vehicle" onClick="onClickButtonSortByName" onCreate="onCreateButtonSortByName">
+                    <Bitmap profile="fs25_vehiclesHeaderIconSortAscending" position="10.5px 0px" name="iconAscending"/>
+                    <Bitmap profile="fs25_vehiclesHeaderIconSortDescending" position="10.5px 0px" name="iconDescending"/>
+                </Button>
+                <GuiElement profile="fs25_vehiclesHeaderTextContainer" position="440px 0px">
+                    <Button profile="fs25_vehiclesHeaderText" text="$l10n_ui_licensePlate" handleFocus="false"/>
+                </GuiElement>
+                <GuiElement profile="fs25_vehiclesHeaderTextContainer" position="620px 0px">
+                    <Button profile="fs25_vehiclesHeaderText" text="$l10n_ui_age" onClick="onClickButtonSortByAge" onCreate="onCreateButtonSortByAge">
+                        <Bitmap profile="fs25_vehiclesHeaderIconSortAscending" name="iconAscending"/>
+                        <Bitmap profile="fs25_vehiclesHeaderIconSortDescending" name="iconDescending"/>
+                    </Button>
+                </GuiElement>
+                <GuiElement profile="fs25_vehiclesHeaderTextContainer" position="800px 0px">
+                    <Button profile="fs25_vehiclesHeaderText" text="$l10n_ui_workingHours" onClick="onClickButtonSortByHours" onCreate="onCreateButtonSortByHours">
+                        <Bitmap profile="fs25_vehiclesHeaderIconSortAscending" name="iconAscending"/>
+                        <Bitmap profile="fs25_vehiclesHeaderIconSortDescending" name="iconDescending"/>
+                    </Button>
+                </GuiElement>
+                <GuiElement profile="fs25_vehiclesHeaderTextContainer" position="980px 0px">
+                    <Button profile="fs25_vehiclesHeaderText" text="$l10n_ui_condition" onClick="onClickButtonSortByDamage" onCreate="onCreateButtonSortByDamage">
+                        <Bitmap profile="fs25_vehiclesHeaderIconSortAscending" name="iconAscending"/>
+                        <Bitmap profile="fs25_vehiclesHeaderIconSortDescending" name="iconDescending"/>
+                    </Button>
+                </GuiElement>
+                <GuiElement profile="fs25_vehiclesHeaderTextContainer" position="1160px 0px">
+                    <Button profile="fs25_vehiclesHeaderText" text="$l10n_ui_leasingCost" onClick="onClickButtonSortByLeasing" onCreate="onCreateButtonSortByLeasing">
+                        <Bitmap profile="fs25_vehiclesHeaderIconSortAscending" name="iconAscending"/>
+                        <Bitmap profile="fs25_vehiclesHeaderIconSortDescending" name="iconDescending"/>
+                    </Button>
+                </GuiElement>
+                <GuiElement profile="fs25_vehiclesHeaderTextContainer" position="1340px 0px">
+                    <Button profile="fs25_vehiclesHeaderText" text="$l10n_ui_sellValue" onClick="onClickButtonSortByValue" onCreate="onCreateButtonSortByValue">
+                        <Bitmap profile="fs25_vehiclesHeaderIconSortAscending" name="iconAscending"/>
+                        <Bitmap profile="fs25_vehiclesHeaderIconSortDescending" name="iconDescending"/>
+                    </Button>
+                </GuiElement>
+                <ThreePartBitmap profile="fs25_lineSeparatorBottom" position="0px -2dp"/>
+            </GuiElement>
+            <SmoothList profile="fs25_vehiclesList" id="vehiclesList">
+                <ListItem profile="fs25_vehiclesListItem" name="rowTemplate">
+                    <ThreePartBitmap profile="fs25_vehiclesListItemBg" name="alternating"/>
+                    <Text profile="fs25_vehiclesListItemName" name="name"/>
+                    <Text profile="fs25_vehiclesListItemInfo" position="440px 0px" name="licensePlate"/>
+                    <Text profile="fs25_vehiclesListItemInfo" position="620px 0px" name="age"/>
+                    <Text profile="fs25_vehiclesListItemInfo" position="800px 0px" name="operatingHours"/>
+                    <Text profile="fs25_vehiclesListItemInfo" position="980px 0px" name="damage"/>
+                    <Text profile="fs25_vehiclesListItemInfo" position="1160px 0px" name="leasing"/>
+                    <Text profile="fs25_vehiclesListItemInfo" position="1340px 0px" name="value"/>
+                </ListItem>
+            </SmoothList>
+            <GuiElement profile="fs25_shopItemsDetailsContainer" id="detailBox">
+                <Bitmap profile="fs25_stopClipper" name="startClipper" position="-2px 215px"/>
+                <Bitmap profile="fs25_vehiclesDetailsImageBg">
+                    <Bitmap profile="fs25_vehiclesDetailsImage" id="itemDetailsImage"/>
+                </Bitmap>                
+                <Text profile="fs25_vehiclesDetailsName" id="itemDetailsName"/>
+                <Bitmap profile="fs25_itemDetailsFruitIcon" id="fruitIconTemplate" visible="false"/>
+                <BoxLayout profile="fs25_vehiclesDetailsInfoBox" id="attributesLayout">
+                    <GuiElement profile="fs25_itemDetailsTemplateBox" name="detailTemplate">
+                        <Bitmap profile="fs25_itemDetailsIcon" name="icon"/>
+                        <Text profile="fs25_itemDetailsText" text="Default" name="text"/>
+                    </GuiElement>
+                    <GuiElement profile="fs25_itemDetailsTemplateBox" name="valueTemplate">
+                        <Bitmap profile="shopListAttributeIconPrice" name="icon"/>
+                        <Text profile="fs25_itemDetailsText" text="Dummy" name="text"/>
+                    </GuiElement>
+                    <GuiElement profile="fs25_itemDetailsFillTypeTemplateBox" name="fillTypesTemplate">
+                        <Bitmap profile="fs25_itemDetailsFillTypeSeparator"/>
+                        <Bitmap profile="fs25_itemDetailsIcon" name="icon"/>
+                        <GuiElement profile="fs25_itemDetailsIconsLayoutBox">
+                            <BoxLayout profile="fs25_itemDetailsIconsLayout" name="iconsLayout"/>
+                        </GuiElement>
+                    </GuiElement>
+                </BoxLayout>
+            </GuiElement>
+        </GuiElement>
+        <GuiElement profile="fs25_subCategorySelectorTabbedContainer" id="subCategoryPages[3]">
+            <BoxLayout profile="fs25_statisticsHeaderBox" numFlows="2">
+                <Button profile="fs25_vehiclesHeaderName" text="$l10n_ui_handTool" onClick="onClickButtonSortByNameHandTools" onCreate="onCreateButtonSortByNameHandTools">
+                    <Bitmap profile="fs25_vehiclesHeaderIconSortAscending" position="10.5px 0px" name="iconAscending"/>
+                    <Bitmap profile="fs25_vehiclesHeaderIconSortDescending" position="10.5px 0px" name="iconDescending"/>
+                </Button>
+                <GuiElement profile="fs25_vehiclesHeaderTextContainer" position="450px 0px">
+                    <Button profile="fs25_vehiclesHeaderText" text="$l10n_ui_age" onClick="onClickButtonSortByAgeHandTools" onCreate="onCreateButtonSortByAgeHandTools">
+                        <Bitmap profile="fs25_vehiclesHeaderIconSortAscending" name="iconAscending"/>
+                        <Bitmap profile="fs25_vehiclesHeaderIconSortDescending" name="iconDescending"/>
+                    </Button>
+                </GuiElement>
+                <GuiElement profile="fs25_vehiclesHeaderTextContainer" position="670px 0px">
+                    <Button profile="fs25_vehiclesHeaderText" textAlignment="left" text="$l10n_ui_holder" onClick="onClickButtonSortByHolder" onCreate="onCreateButtonSortByHolder">
+                        <Bitmap profile="fs25_vehiclesHeaderIconSortAscending" position="-15px 0px" name="iconAscending"/>
+                        <Bitmap profile="fs25_vehiclesHeaderIconSortDescending" position="-15px 0px" name="iconDescending"/>
+                    </Button>
+                </GuiElement>
+                <ThreePartBitmap profile="fs25_lineSeparatorBottom" position="0px -2dp"/>
+            </BoxLayout>
+            <SmoothList profile="fs25_vehiclesList" id="handToolsList" endClipperElementName="bottomClipper" absoluteSizeOffset="0px 34px">
+                <ListItem profile="fs25_vehiclesListItem" name="rowTemplate">
+                    <ThreePartBitmap profile="fs25_vehiclesListItemBg" name="alternating"/>
+                    <Text profile="fs25_vehiclesListItemName" name="name"/>
+                    <Text profile="fs25_vehiclesListItemInfo" position="450px 0px" name="age"/>
+                    <Text profile="fs25_vehiclesListItemInfoLarge" position="675px 0px" name="holder"/>
+                </ListItem>
+            </SmoothList>
+            <ThreePartBitmap profile="fs25_lineSeparatorBottom" name="bottomClipper" position="0px -2dp"/>
+        </GuiElement>
+        <GuiElement profile="fs25_subCategorySelectorTabbedContainer" id="subCategoryPages[4]">
+            <GuiElement profile="fs25_statisticsHeaderBox">
+                <Text profile="fs25_statisticsHeaderName" text="$l10n_ui_incomeExpenditure"/>
+                <Text profile="fs25_financesHeaderTodayMinusFour" id="pastDayHeader[4]"/>
+                <Text profile="fs25_financesHeaderTodayMinusThree" id="pastDayHeader[3]"/>
+                <Text profile="fs25_financesHeaderTodayMinusTwo" id="pastDayHeader[2]"/>
+                <Text profile="fs25_financesHeaderTodayMinusOne" id="pastDayHeader[1]"/>
+                <Text profile="fs25_financesHeaderToday" id="pastDayHeader[0]" text="$l10n_ui_today"/>
+                <ThreePartBitmap profile="fs25_lineSeparatorBottom" position="0px -2dp"/>
+            </GuiElement>
+            <SmoothList profile="fs25_financesList" id="financesList">
+                <ListItem profile="fs25_financesListItem">
+                    <ThreePartBitmap profile="fs25_financesListItemBg" name="alternating"/>
+                    <Text profile="fs25_financesListItemName" name="name"/>
+                    <Text profile="fs25_financesListItemToday" name="todayMinusFour" position="-860px 0px"/>
+                    <Text profile="fs25_financesListItemToday" name="todayMinusThree" position="-670px 0px"/>
+                    <Text profile="fs25_financesListItemToday" name="todayMinusTwo" position="-480px 0px"/>
+                    <Text profile="fs25_financesListItemToday" name="todayMinusOne" position="-290px 0px"/>
+                    <Text profile="fs25_financesListItemToday" name="today"/>
+                </ListItem>
+            </SmoothList>
+            <GuiElement profile="fs25_financesFooterBox">
+                <ThreePartBitmap profile="fs25_lineSeparatorTop"/>
+                <GuiElement profile="fs25_financesTotalContainer">
+                    <Text profile="fs25_financesTotalName" text="$l10n_ui_total"/>
+                    <Text profile="fs25_financesListItemToday" id="totalText[5]" textBold="true" position="-860px 0px"/>
+                    <Text profile="fs25_financesListItemToday" id="totalText[4]" textBold="true" position="-670px 0px"/>
+                    <Text profile="fs25_financesListItemToday" id="totalText[3]" textBold="true" position="-480px 0px"/>
+                    <Text profile="fs25_financesListItemToday" id="totalText[2]" textBold="true" position="-290px 0px"/>
+                    <Text profile="fs25_financesListItemToday" id="totalText[1]" textBold="true"/>
+                </GuiElement>
+                <GuiElement profile="fs25_financesBalanceContainer">
+                    <ThreePartBitmap profile="fs25_lineSeparatorTopSoft"/>
+                    <Text profile="fs25_financesTotalName" text="$l10n_ui_balance"/>
+                    <Text profile="fs25_financesListItemToday" id="balanceText" textBold="true"/>
+                </GuiElement>
+                <GuiElement profile="fs25_financesLoanContainer">
+                    <ThreePartBitmap profile="fs25_lineSeparatorTopSoft"/>
+                    <Text profile="fs25_financesTotalName" text="$l10n_ui_loan"/>
+                    <Text profile="fs25_financesListItemToday" id="loanText" textBold="true"/>
+                </GuiElement>
+            </GuiElement>
+        </GuiElement>
+    </GuiElement>
+    <!-- <ThreePartBitmap profile="fs25_sliderDockedBg" id="statisticsSliderBox">
+        <ThreePartBitmap profile="fs25_sliderDockedBox">
+            <Slider profile="fs25_sliderDocked" id="statisticsSlider" dataElementId="financesList"/>
+        </ThreePartBitmap>
+    </ThreePartBitmap> -->
+</GUI>
