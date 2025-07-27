@@ -1,8 +1,10 @@
 InfoGatherer = {}
 InfoGatherer_mt = Class(InfoGatherer)
 
+InfoGatherer.RETENTION_YEARS = 5
+
 INFO_KEYS = {
-    FIELDS = "field",
+    FARMLANDS = "farmlands",
 }
 
 function InfoGatherer.new()
@@ -28,26 +30,54 @@ end
 function InfoGatherer:gatherData(data)
     print("Gathering data for policies...")
     self:getFarmlands(data)
+
+
+    self:removeOldData(data)
+    DebugUtil.printTableRecursively(data)
     return data
+end
+
+function InfoGatherer:removeOldData(data)
+    local currentYear = g_currentMission.environment.currentYear
+
+    for _, value in pairs(INFO_KEYS) do
+        for year, _ in pairs(data[value]) do
+            if year < currentYear - InfoGatherer.RETENTION_YEARS then
+                data[value][year] = nil
+            end
+        end
+    end
 end
 
 function InfoGatherer:getFarmlands(data)
     print("Gathering farmlands data...")
     local currentPeriod = g_currentMission.environment.currentPeriod
-    data[INFO_KEYS.FIELDS][currentPeriod] = {}
+    local currentYear = g_currentMission.environment.currentYear
+
+    if data[INFO_KEYS.FARMLANDS][currentYear] == nil then
+        data[INFO_KEYS.FARMLANDS][currentYear] = {}
+    end
+
+    if data[INFO_KEYS.FARMLANDS][currentYear][currentPeriod] == nil then
+        data[INFO_KEYS.FARMLANDS][currentYear][currentPeriod] = {}
+    end
+
     for _, farmland in pairs(g_farmlandManager.farmlands) do
         if farmland.showOnFarmlandsScreen and farmland.field ~= nil then
+            if data[INFO_KEYS.FARMLANDS][currentYear][currentPeriod][farmland.id] == nil then
+                data[INFO_KEYS.FARMLANDS][currentYear][currentPeriod][farmland.id] = {}
+            end
+
+            local farmlandData = data[INFO_KEYS.FARMLANDS][currentYear][currentPeriod][farmland.id]
+
             local field = farmland.field
             local x, z = field:getCenterOfFieldWorldPosition()
             local fruitTypeIndexPos, growthState = FSDensityMapUtil.getFruitTypeIndexAtWorldPos(x, z)
-            local fruit = g_fruitTypeManager:getFruitTypeByIndex(fruitTypeIndexPos)
-            local fruitName = fruit.fillType.title
-            data[INFO_KEYS.FIELDS][currentPeriod] = {
-                fruit = fruitName,
-            }
+            local currentFruit = g_fruitTypeManager:getFruitTypeByIndex(fruitTypeIndexPos)
+            farmlandData.fruit = currentFruit.fillType.title
+            farmlandData.areaHa = field:getAreaHa()
         end
     end
 
-    -- Simulate gathering farmlands data
     return data
 end

@@ -21,10 +21,12 @@ function Policy.new()
 end
 
 function Policy:saveToXmlFile(xmlFile, key)
+    -- TODO save commons here, then use the policy info to save specific data
     -- setXMLString(xmlFile, key .. "#id", self.id)
 end
 
 function Policy:loadFromXMLFile(xmlFile, key)
+    -- TODO load commons here, then use the policy info to load specific data
     -- self.id = getXMLString(xmlFile, key .. "#id")
 end
 
@@ -38,6 +40,8 @@ function Policy:activate()
     policyInfo.activate(policyInfo, self)
 
     print("Policy activated: " .. policyInfo.name)
+
+    -- TODO sent an event here rather than an ingame notification
     g_currentMission:addIngameNotification(FSBaseMission.INGAME_NOTIFICATION_CRITICAL,
         string.format(g_i18n:getText("rt_notify_active_policy"), policyInfo.name))
 end
@@ -55,9 +59,9 @@ function Policy:evaluate()
     end
 
     self.evaluationCount = self.evaluationCount + 1
-    local complete = self.evaluationCount >= policyInfo.maxEvaluationCount
+    self.complete = self.evaluationCount >= policyInfo.maxEvaluationCount
 
-    if not complete then
+    if not self.complete then
         self.nextEvaluationPeriod = currentPeriod + policyInfo.evaluationInterval
     end
 end
