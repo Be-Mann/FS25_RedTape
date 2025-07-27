@@ -63,3 +63,10 @@ function SchemeSystem:saveToXmlFile()
     saveXMLFile(xmlFile);
     delete(xmlFile);
 end
+
+function SchemeSystem:hourChanged()
+end
+
+function SchemeSystem:periodChanged()
+    local schemeSystem = g_currentMission.RedTape.SchemeSystem
+end

@@ -17,12 +17,30 @@ function RedTape:loadMap()
     self.TaxSystem = TaxSystem.new()
     self.SchemeSystem = SchemeSystem.new()
     self.PolicySystem = PolicySystem.new()
+    self.InfoGatherer = InfoGatherer.new()
+    self.data = self.InfoGatherer:initData()
+
+    g_messageCenter:subscribe(MessageType.HOUR_CHANGED, RedTape.hourChanged)
+    g_messageCenter:subscribe(MessageType.PERIOD_CHANGED, RedTape.periodChanged)
 
     g_currentMission.RedTape = self
 end
 
 function RedTape:makeCheckEnabledPredicate()
     return function() return true end
+end
+
+function RedTape:hourChanged()
+    if (not g_currentMission:getIsServer()) then return end
+end
+
+function RedTape:periodChanged()
+    if (not g_currentMission:getIsServer()) then return end
+    local rt = g_currentMission.RedTape
+    rt.InfoGatherer:gatherData(rt.data)
+    rt.PolicySystem:periodChanged()
+    rt.SchemeSystem:periodChanged()
+    rt.TaxSystem:periodChanged()
 end
 
 function RedTape:saveToXmlFile()

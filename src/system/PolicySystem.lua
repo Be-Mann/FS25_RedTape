@@ -13,12 +13,8 @@ function PolicySystem.new()
     local self = {}
     setmetatable(self, PolicySystem_mt)
     self.policies = {}
-    self.points = 0
+    self.points = {}
     self.facts = {}
-    self.infoGatherer = InfoGatherer.new()
-
-    g_messageCenter:subscribe(MessageType.HOUR_CHANGED, PolicySystem.hourChanged)
-    g_messageCenter:subscribe(MessageType.PERIOD_CHANGED, PolicySystem.periodChanged)
 
     self:loadFromXMLFile()
     return self
@@ -78,31 +74,45 @@ function PolicySystem:saveToXmlFile()
 end
 
 function PolicySystem:hourChanged()
-    local self = g_currentMission.RedTape.PolicySystem
-    -- self:gatherFacts()
+    -- local self = g_currentMission.RedTape.PolicySystem
 end
 
 function PolicySystem:periodChanged()
     local policySystem = g_currentMission.RedTape.PolicySystem
-    policySystem.infoGatherer:gatherData(policySystem.info)
 
-    if #policySystem.policies < PolicySystem.DESIRED_POLICY_COUNT then
+    policySystem:generatePolicies()
+
+    local complete = {}
+    for _, policy in ipairs(policySystem.policies) do
+        policy:evaluate()
+        if policy.complete then table.insert(complete, policy) end
+    end
+
+    for i, p in pairs(complete) do
+        local points = p:complete()
+        if points ~= 0 then policySystem:applyPoints(p, points) end
+        policySystem:removePolicy(p)
+        print("Removed policy at index: " .. i)
+    end
+end
+
+function PolicySystem:generatePolicies()
+    if #self.policies < PolicySystem.DESIRED_POLICY_COUNT then
         print("Generating new policies...")
         -- generate new policies if needed
-        for i = #policySystem.policies + 1, PolicySystem.DESIRED_POLICY_COUNT do
+        for i = #self.policies + 1, PolicySystem.DESIRED_POLICY_COUNT do
             print("Creating policy " .. i)
             local policy = Policy.new()
-            policy.policyIndex = policySystem:getNextPolicyIndex()
+            policy.policyIndex = self:getNextPolicyIndex()
             if policy.policyIndex == nil then
                 print("No more policies available, stopping generation.")
                 break
+            else
+                print("Assigned policy index: " .. policy.policyIndex)
             end
-            table.insert(policySystem.policies, policy)
+            policy:activate()
+            table.insert(self.policies, policy)
         end
-    end
-
-    for key, policy in pairs(policySystem.policies) do
-        policy:evaluate()
     end
 end
 
@@ -138,7 +148,7 @@ function PolicySystem:getNextPolicyIndex()
     if totalProbability == 0 then
         return nil -- No available policies to choose from
     end
-  
+
     -- Choose a random policy based on their probabilities
     local randomValue = math.random() * totalProbability
     local cumulativeProbability = 0
@@ -154,12 +164,12 @@ function PolicySystem:getNextPolicyIndex()
     return nil
 end
 
-function PolicySystem:applyPoints(policy, points)
-    if points > 0 then
-        self.points = self.points + points
-    else
-        self.points = math.max(0, self.points + points)
+function PolicySystem:applyPoints(policy, points, farmId)
+    if self.points[farmId] == nil then
+        self.points[farmId] = 0
     end
+
+    self.points[farmId] = math.max(0, self.points[farmId] + points)
 
     -- g_messageCenter:publish(MessageType.POLICY_POINTS_CHANGED, self.points)
 end

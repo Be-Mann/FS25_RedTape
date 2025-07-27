@@ -8,8 +8,6 @@ function TaxSystem.new()
     setmetatable(self, TaxSystem_mt)
     self.lineItems = {}
 
-    g_messageCenter:subscribe(MessageType.PERIOD_CHANGED, TaxSystem.periodChanged)
-
     self:loadFromXMLFile()
     return self
 end
@@ -67,7 +65,10 @@ function TaxSystem:saveToXmlFile()
     delete(xmlFile);
 end
 
-function TaxSystem.periodChanged()
+function TaxSystem:hourChanged()
+end
+
+function TaxSystem:periodChanged()
     local taxSystem = g_currentMission.RedTape.TaxSystem
     local period = g_currentMission.environment.currentPeriod
     if period == TaxSystem.TAX_PERIOD then
