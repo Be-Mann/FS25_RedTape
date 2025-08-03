@@ -18,12 +18,14 @@ function InfoGatherer.new()
 end
 
 function InfoGatherer:runConstantChecks()
-    print("Running constant checks...")
+    -- print("Running constant checks...")
     self:checkSprayers()
 end
 
 function InfoGatherer:checkSprayers()
     local checkFillTypes = { FillType.FERTILIZER }
+    local checkRadius = 10
+
     for uniqueId, sprayer in pairs(self.turnedOnSprayers) do
         local sprayType = sprayer:getActiveSprayType()
         if sprayType == nil then
@@ -34,16 +36,61 @@ function InfoGatherer:checkSprayers()
         local fillType = sprayer:getFillUnitFillType(fillUnitIndex)
 
         if not RedTape:tableHasValue(checkFillTypes, fillType) then
+            print("Ignoring sprayer fill type " .. fillType)
             continue
         end
 
-        local workingWidth = sprayer:getWorkAreaWidth(sprayer.spec_sprayer.usageScale.workingWidth)
+        local usageScale = sprayer.spec_sprayer.usageScale
+        local workingWidth
+        if usageScale.workAreaIndex == nil then
+            workingWidth = usageScale.workingWidth
+        else
+            workingWidth = self:getWorkAreaWidth(usageScale.workAreaIndex)
+        end
 
-        print(workingWidth)
-        print(fillType)
-
-        -- sprayType.usageScale.workingWidth
+        self:checkWaterByRaycast(sprayer, workingWidth + checkRadius)
     end
+end
+
+function InfoGatherer:checkWaterByRaycast(sprayer, length)
+    local raycastResult = {
+        raycastCallback = function(self, hitObjectId, x, y, z, distance, nx, ny, nz, subShapeIndex, shapeId, isLast)
+            local mask = getCollisionFilterGroup(hitObjectId)
+            if mask == CollisionFlag.WATER then
+                self.foundWater = true
+            end
+        end
+    }
+
+    local x, y, z = localToWorld(sprayer.rootNode, 0, sprayer.size.height + 1, 0)
+    local dx, dy, dz = localDirectionToWorld(sprayer.rootNode, 0, -0.5, -1)
+
+    drawDebugArrow(x, y, z, dx * length, dy * length, dz * length, 0.3, 0.3, 0.3, 0.8, 0, 0, true)
+    raycastClosest(x, y, z, dx, dy, dz, length, "raycastCallback", raycastResult,
+        CollisionFlag.WATER + CollisionFlag.TERRAIN)
+
+    if raycastResult.foundWater then
+        print("Water found for sprayer " .. sprayer:getName())
+    else
+        print("No water found for sprayer " .. sprayer:getName())
+    end
+end
+
+-- function InfoGatherer:checkWaterOverlap(sprayer, workingWidth)
+--     local sizeX, sizeY, sizeZ = workingWidth / 2, 10, workingWidth / 2
+--     local x, y, z = localToWorld(sprayer.rootNode, 0, sprayer.size.height * 0.5, 0)
+--     local rx, ry, rz = getWorldRotation(sprayer.rootNode)
+--     local dx, dy, dz = localDirectionToWorld(sprayer.rootNode, 0, 0, 0)
+--     local hitCount = overlapBox(x + dx, y + dy, z + dz, rx, ry, rz, sizeX, sizeY, sizeZ, "onWaterRaycastCallback",
+--         self, CollisionFlag.WATER, true, true, true, true)
+
+--     DebugUtil.drawOverlapBox(x + dx, y + dy, z + dz, rx, ry, rz, sizeX, sizeY, sizeZ)
+--     print(hitCount)
+-- end
+
+function InfoGatherer:onWaterRaycastCallback(hitObjectId, x, y, z, distance)
+    print("water hit")
+    return false
 end
 
 function InfoGatherer:initData()
