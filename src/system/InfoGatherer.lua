@@ -5,6 +5,7 @@ InfoGatherer.RETENTION_YEARS = 5
 
 INFO_KEYS = {
     FARMLANDS = "farmlands",
+    FARMS = "farms",
 }
 
 function InfoGatherer.new()
@@ -53,6 +54,10 @@ function InfoGatherer:checkSprayers()
 
         if raycastHit or overlapHit then
             print("Water found for sprayer " .. sprayer:getName())
+            local farmId = 1
+            local farmData = self:getFarmData(farmId)
+            farmData.pendingSprayViolations = farmData.pendingSprayViolations + 1
+            farmData.sprayViolationsInCurrentPolicyWindow = farmData.sprayViolationsInCurrentPolicyWindow + 1
         else
             print("No water found for sprayer " .. sprayer:getName())
         end
@@ -76,19 +81,11 @@ function InfoGatherer:checkWaterByRaycast(sprayer, workingWidth)
         end
     }
 
-
     local rayStartX, rayStartY, rayStartZ = localToWorld(sprayer.rootNode, 0, 4.25, -(sprayer.size.length * 0.5))
-    local allXangles = { -2, -1, -0.5, 0, 0.5, 1, 2 }
-    local innerXangles = { -1, -0.5, 0, 0.5, 1 }
+    local xAngles = { -2, -1.5, -1, -0.5, 0, 0.5, 1, 1.5, 2 }
+    local yAngles = { -0.3, -0.4, -0.5, -0.6, -0.7, -0.8, -0.9, -1 }
 
-    local yToXAngles = {
-        [-0.3] = innerXangles,
-        [-0.5] = allXangles,
-        [-0.6] = allXangles,
-        [-0.8] = allXangles,
-    }
-
-    for yAngle, xAngles in pairs(yToXAngles) do
+    for _, yAngle in ipairs(yAngles) do
         for _, xAngle in ipairs(xAngles) do
             local dx, dy, dz = localDirectionToWorld(sprayer.rootNode, xAngle, yAngle, -1)
             drawDebugArrow(rayStartX, rayStartY, rayStartZ, dx * length, dy * length, dz * length, 0.3, 0.3, 0.3, 0.8, 0,
@@ -162,6 +159,28 @@ function InfoGatherer:initData()
     return data
 end
 
+function InfoGatherer:getFarmlandData(farmlandId)
+    if self.data[INFO_KEYS.FARMLANDS][farmlandId] == nil then
+        self.data[INFO_KEYS.FARMLANDS][farmlandId] = {
+            fallowMonths = 0,
+            mostRecentFruit = nil,
+            previousFruit = nil,
+            areaHa = 0
+        }
+    end
+    return self.data[INFO_KEYS.FARMLANDS][farmlandId]
+end
+
+function InfoGatherer:getFarmData(farmId)
+    if self.data[INFO_KEYS.FARMS][farmId] == nil then
+        self.data[INFO_KEYS.FARMS][farmId] = {
+            sprayViolations = 0,
+            sprayViolationsInCurrentPolicyWindow = 0,
+        }
+    end
+    return self.data[INFO_KEYS.FARMS][farmId]
+end
+
 function InfoGatherer:getPreviousPeriod()
     local previousPeriod = g_currentMission.environment.currentPeriod - 1
     if previousPeriod < 1 then return 12 end
@@ -207,12 +226,7 @@ function InfoGatherer:getFarmlands()
     print("Gathering farmlands data...")
     for _, farmland in pairs(g_farmlandManager.farmlands) do
         if farmland.showOnFarmlandsScreen and farmland.field ~= nil then
-            if self.data[INFO_KEYS.FARMLANDS][farmland.id] == nil then
-                self.data[INFO_KEYS.FARMLANDS][farmland.id] = { fallowMonths = 0 }
-            end
-
-            local farmlandData = self.data[INFO_KEYS.FARMLANDS][farmland.id]
-
+            local farmlandData = self:getFarmlandData(farmland.id)
             local field = farmland.field
             local x, z = field:getCenterOfFieldWorldPosition()
             local fruitTypeIndexPos, growthState = FSDensityMapUtil.getFruitTypeIndexAtWorldPos(x, z)
@@ -237,5 +251,5 @@ function InfoGatherer:getFarmlands()
         end
     end
 
-    return data
+    return self.data
 end

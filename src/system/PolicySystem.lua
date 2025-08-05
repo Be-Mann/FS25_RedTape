@@ -80,8 +80,6 @@ end
 function PolicySystem:periodChanged()
     local policySystem = g_currentMission.RedTape.PolicySystem
 
-    policySystem:generatePolicies()
-
     local complete = {}
     for _, policy in ipairs(policySystem.policies) do
         policy:evaluate()
@@ -94,6 +92,8 @@ function PolicySystem:periodChanged()
         policySystem:removePolicy(p)
         print("Removed policy at index: " .. i)
     end
+
+    policySystem:generatePolicies()
 end
 
 function PolicySystem:generatePolicies()

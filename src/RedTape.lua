@@ -5,7 +5,7 @@ source(RedTape.dir .. "src/gui/MenuRedTape.lua")
 
 function RedTape:loadMap()
     self.leaseDeals = {}
-    self.updateIntervalMs = 1000
+    self.updateIntervalMs = 2000
 	self.updateTime = 5000
 
     -- g_gui:loadProfiles(RedTape.dir .. "src/gui/guiProfiles.xml")

@@ -45,7 +45,10 @@ function Policy:activate()
         if policyInfo.evaluationInterval == 12 then self.skipNextEvaluation = true end
     end
 
-    policyInfo.activate(policyInfo, self)
+    for _, farm in pairs(g_farmManager.farmIdToFarm) do
+        policyInfo.activate(policyInfo, self, farm.farmId)
+    end
+
 
     print("Policy activated: " .. policyInfo.name)
 
@@ -68,7 +71,7 @@ function Policy:evaluate()
         return 0, false
     end
 
-    for farmId, farm in pairs(g_farmManager.farmIdToFarm) do
+    for _, farm in pairs(g_farmManager.farmIdToFarm) do
         local points = policyInfo.evaluate(policyInfo, self, farm.farmId)
         if points ~= 0 then self.policySystem:applyPoints(self, points, farm.farmId) end
     end
@@ -86,5 +89,10 @@ end
 
 function Policy:complete()
     local policyInfo = Policies[self.policyIndex]
-    return policyInfo.complete(policyInfo, self)
+
+    for _, farm in pairs(g_farmManager.farmIdToFarm) do
+        local points = policyInfo.activate(policyInfo, self, farm.farmId)
+        if points ~= 0 then self.policySystem:applyPoints(self, points, farm.farmId) end
+    end
+    -- return policyInfo.complete(policyInfo, self)
 end
