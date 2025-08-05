@@ -12,6 +12,7 @@ function InfoGatherer.new()
     setmetatable(self, InfoGatherer_mt)
 
     self.data = self:initData()
+    self.knownCreeks = {}
     self.turnedOnSprayers = {}
 
     return self
@@ -60,20 +61,23 @@ end
 
 function InfoGatherer:checkWaterByRaycast(sprayer, workingWidth)
     local length = 40
+    local distanceAllowance = (workingWidth * 0.5) + 10
+    local distanceCheckX, _, distanceCheckZ = localToWorld(sprayer.rootNode, 0, sprayer.size.height * 0.5,
+        -sprayer.size.length)
     local raycastResult = {
         raycastCallback = function(self, hitObjectId, x, y, z, distance, nx, ny, nz, subShapeIndex, shapeId, isLast)
             local mask = getCollisionFilterGroup(hitObjectId)
             if mask == CollisionFlag.WATER then
-                self.foundWater = true
-            elseif mask == CollisionFlag.STATIC_OBJECT then
-                print("Static object hit: ")
+                local actualDistance = MathUtil.vector2Length(distanceCheckX - x, distanceCheckZ - z)
+                if actualDistance < distanceAllowance then
+                    self.foundWater = true
+                end
             end
         end
     }
 
-    local x, y, z = localToWorld(sprayer.rootNode, 0, 4.25, -(sprayer.size.length * 0.5))
 
-    -- TODO vary angles based on workingWidth
+    local rayStartX, rayStartY, rayStartZ = localToWorld(sprayer.rootNode, 0, 4.25, -(sprayer.size.length * 0.5))
     local allXangles = { -2, -1, -0.5, 0, 0.5, 1, 2 }
     local innerXangles = { -1, -0.5, 0, 0.5, 1 }
 
@@ -87,8 +91,9 @@ function InfoGatherer:checkWaterByRaycast(sprayer, workingWidth)
     for yAngle, xAngles in pairs(yToXAngles) do
         for _, xAngle in ipairs(xAngles) do
             local dx, dy, dz = localDirectionToWorld(sprayer.rootNode, xAngle, yAngle, -1)
-            drawDebugArrow(x, y, z, dx * length, dy * length, dz * length, 0.3, 0.3, 0.3, 0.8, 0, 0, true)
-            raycastClosest(x, y, z, dx, dy, dz, length, "raycastCallback", raycastResult,
+            drawDebugArrow(rayStartX, rayStartY, rayStartZ, dx * length, dy * length, dz * length, 0.3, 0.3, 0.3, 0.8, 0,
+                0, true)
+            raycastClosest(rayStartX, rayStartY, rayStartZ, dx, dy, dz, length, "raycastCallback", raycastResult,
                 CollisionFlag.WATER + CollisionFlag.TERRAIN)
         end
     end
@@ -101,15 +106,25 @@ end
 
 function InfoGatherer:checkCreekByOverlap(sprayer, workingWidth)
     local widthExcess = 3
+    local ig = self
     local overlapResult = {
         overlapCallback = function(self, hitObjectId, x, y, z, distance)
+            local originalHitObjectId = hitObjectId
             if not entityExists(hitObjectId) then
+                ig.knownCreeks[originalHitObjectId] = nil
+                return
+            end
+
+            if ig.knownCreeks[originalHitObjectId] ~= nil then
+                print("Detected known creek " .. originalHitObjectId)
+                self.foundWater = true
                 return
             end
 
             local name = getName(hitObjectId)
             if string.find(name, "creek") then
                 self.foundWater = true
+                self.knownCreeks[originalHitObjectId] = true
             end
 
             local maxTraverse = 3
@@ -118,6 +133,7 @@ function InfoGatherer:checkCreekByOverlap(sprayer, workingWidth)
                 name = getName(hitObjectId)
                 if string.find(name, "creek") then
                     self.foundWater = true
+                    ig.knownCreeks[originalHitObjectId] = true
                 end
             end
         end
