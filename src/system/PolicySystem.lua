@@ -29,8 +29,8 @@ function PolicySystem:loadFromXMLFile()
     savegameFolderPath = savegameFolderPath .. "/"
     local key = "PolicySystem"
 
-    if fileExists(savegameFolderPath .. "PolicySystem.xml") then
-        local xmlFile = loadXMLFile(key, savegameFolderPath .. "PolicySystem.xml");
+    if fileExists(savegameFolderPath .. "RedTape.xml") then
+        local xmlFile = loadXMLFile(key, savegameFolderPath .. "RedTape.xml");
 
         local i = 0
         while true do
@@ -59,7 +59,7 @@ function PolicySystem:saveToXmlFile()
     end
 
     local key = "PolicySystem";
-    local xmlFile = createXMLFile(key, savegameFolderPath .. "PolicySystem.xml", key);
+    local xmlFile = createXMLFile(key, savegameFolderPath .. "RedTape.xml", key);
 
     local i = 0
     for _, group in pairs(self.policies) do
@@ -164,7 +164,7 @@ end
 -- Called from PolicyActivatedEvent, runs on client
 function PolicySystem:registerActivatedPolicy(policy)
     table.insert(self.policies, policy)
-    g_currentMission.RedTape.EventLog:addEvent(policy.farmId, Event.EVENT_TYPE.POLICY_ACTIVATED,
+    g_currentMission.RedTape.EventLog:addEvent(policy.farmId, EventLogItem.EVENT_TYPE.POLICY_ACTIVATED,
         string.format(g_i18n:getText("rt_notify_active_policy"), policy:getName()))
 end
 
@@ -175,7 +175,7 @@ function PolicySystem:applyPoints(farmId, points, reason)
     end
 
     self.points[farmId] = math.max(0, self.points[farmId] + points)
-    g_currentMission.RedTape.EventLog:addEvent(farmId, Event.EVENT_TYPE.POLICY_POINTS, reason)
+    g_currentMission.RedTape.EventLog:addEvent(farmId, EventLogItem.EVENT_TYPE.POLICY_POINTS, reason)
 end
 
 function PolicySystem:removePolicy(policy)

@@ -21,8 +21,8 @@ function SchemeSystem:loadFromXMLFile()
     savegameFolderPath = savegameFolderPath .. "/"
     local key = "SchemeSystem"
 
-    if fileExists(savegameFolderPath .. "SchemeSystem.xml") then
-        local xmlFile = loadXMLFile(key, savegameFolderPath .. "SchemeSystem.xml");
+    if fileExists(savegameFolderPath .. "RedTape.xml") then
+        local xmlFile = loadXMLFile(key, savegameFolderPath .. "RedTape.xml");
 
         local i = 0
         while true do
@@ -51,7 +51,7 @@ function SchemeSystem:saveToXmlFile()
     end
 
     local key = "SchemeSystem";
-    local xmlFile = createXMLFile(key, savegameFolderPath .. "SchemeSystem.xml", key);
+    local xmlFile = createXMLFile(key, savegameFolderPath .. "RedTape.xml", key);
 
     local i = 0
     for _, scheme in pairs(self.schemes) do

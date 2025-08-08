@@ -35,7 +35,7 @@ Un mod qui ajoute des programmes gouvernementaux, des subventions et des taxes.
         <sourceFile filename="src/events/PolicyActivatedEvent.lua"/>
         <sourceFile filename="src/events/PolicyPointsEvent.lua"/>
         <sourceFile filename="src/extensions/SprayerExtension.lua"/>
-        <sourceFile filename="src/instances/Event.lua"/>
+        <sourceFile filename="src/instances/EventLogItem.lua"/>
         <sourceFile filename="src/instances/Policy.lua"/>
         <sourceFile filename="src/instances/Scheme.lua"/>
         <sourceFile filename="src/instances/TaxLineItem.lua"/>

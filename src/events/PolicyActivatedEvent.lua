@@ -3,6 +3,12 @@ local PolicyActivatedEvent_mt = Class(PolicyActivatedEvent, Event)
 
 InitEventClass(PolicyActivatedEvent, "PolicyActivatedEvent")
 
+function PolicyActivatedEvent.emptyNew()
+    local self = Event.new(PolicyActivatedEvent_mt)
+
+    return self
+end
+
 function PolicyActivatedEvent.new(policy)
     local self = PolicyActivatedEvent.emptyNew()
     self.policy = policy

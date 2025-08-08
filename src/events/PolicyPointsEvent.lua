@@ -3,6 +3,12 @@ local PolicyPointsEvent_mt = Class(PolicyPointsEvent, Event)
 
 InitEventClass(PolicyPointsEvent, "PolicyPointsEvent")
 
+function PolicyPointsEvent.emptyNew()
+    local self = Event.new(PolicyPointsEvent_mt)
+
+    return self
+end
+
 function PolicyPointsEvent.new(farmId, pointChange, reason)
     local self = PolicyPointsEvent.emptyNew()
     self.farmId = farmId

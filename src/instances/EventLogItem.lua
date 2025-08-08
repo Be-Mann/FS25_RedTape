@@ -1,30 +1,30 @@
-Event = {}
-Event_mt = Class(Event)
+EventLogItem = {}
+EventLogItem_mt = Class(EventLogItem)
 
-Event.EVENT_TYPE = {
+EventLogItem.EVENT_TYPE = {
     NONE = 1,
     POLICY_POINTS = 2,
     POLICY_ACTIVATED = 3,
 }
 
-function Event.new()
+function EventLogItem.new()
     local self = {}
-    setmetatable(self, Event_mt)
+    setmetatable(self, EventLogItem_mt)
 
     self.farmId = nil
-    self.eventType = Event.EVENT_TYPE.NONE
+    self.eventType = EventLogItem.EVENT_TYPE.NONE
     self.detail = ""
 
     return self
 end
 
-function Event:saveToXmlFile(xmlFile, key)
+function EventLogItem:saveToXmlFile(xmlFile, key)
     setXMLInt(xmlFile, key .. "#farmId", self.farmId)
     setXMLInt(xmlFile, key .. "#eventType", self.eventType)
     setXMLString(xmlFile, key .. "#detail", self.detail)
 end
 
-function Event:loadFromXMLFile(xmlFile, key)
+function EventLogItem:loadFromXMLFile(xmlFile, key)
     self.farmId = getXMLInt(xmlFile, key .. "#farmId")
     self.eventType = getXMLInt(xmlFile, key .. "#eventType")
     self.detail = getXMLString(xmlFile, key .. "#detail")
