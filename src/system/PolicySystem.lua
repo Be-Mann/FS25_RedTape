@@ -14,7 +14,6 @@ function PolicySystem.new()
     setmetatable(self, PolicySystem_mt)
     self.policies = {}
     self.points = {}
-    self.facts = {}
 
     self:loadFromXMLFile()
     return self
@@ -42,7 +41,7 @@ function PolicySystem:loadFromXMLFile()
 
             local policy = Policy.new()
             policy:loadFromXMLFile(xmlFile, policyKey)
-            table.insert(self.policies, policy)
+            g_client:getServerConnection():sendEvent(PolicyActivatedEvent.new(policy))
             i = i + 1
         end
 
@@ -83,14 +82,12 @@ function PolicySystem:periodChanged()
     local complete = {}
     for _, policy in ipairs(policySystem.policies) do
         policy:evaluate()
-        if policy.complete then table.insert(complete, policy) end
+        if policy.isComplete then table.insert(complete, policy) end
     end
 
     for i, p in pairs(complete) do
-        local points = p:complete()
-        if points ~= 0 then policySystem:applyPoints(p, points) end
+        p:complete()
         policySystem:removePolicy(p)
-        print("Removed policy at index: " .. i)
     end
 
     policySystem:generatePolicies()
@@ -111,7 +108,7 @@ function PolicySystem:generatePolicies()
                 print("Assigned policy index: " .. policy.policyIndex)
             end
             policy:activate()
-            table.insert(self.policies, policy)
+            g_client:getServerConnection():sendEvent(PolicyActivatedEvent.new(policy))
         end
     end
 end
@@ -164,19 +161,27 @@ function PolicySystem:getNextPolicyIndex()
     return nil
 end
 
-function PolicySystem:applyPoints(policy, points, farmId)
+-- Called from PolicyActivatedEvent, runs on client
+function PolicySystem:registerActivatedPolicy(policy)
+    table.insert(self.policies, policy)
+    g_currentMission.RedTape.EventLog:addEvent(policy.farmId, Event.EVENT_TYPE.POLICY_ACTIVATED,
+        string.format(g_i18n:getText("rt_notify_active_policy"), policy:getName()))
+end
+
+-- Called from PolicyPointsEvent, runs on client
+function PolicySystem:applyPoints(farmId, points, reason)
     if self.points[farmId] == nil then
         self.points[farmId] = 0
     end
 
     self.points[farmId] = math.max(0, self.points[farmId] + points)
-
-    -- g_messageCenter:publish(MessageType.POLICY_POINTS_CHANGED, self.points)
+    g_currentMission.RedTape.EventLog:addEvent(farmId, Event.EVENT_TYPE.POLICY_POINTS, reason)
 end
 
 function PolicySystem:removePolicy(policy)
     for i, p in ipairs(self.policies) do
         if p == policy then
+            print("Removing policy: " .. p.policyIndex)
             table.remove(self.policies, i)
             break
         end
