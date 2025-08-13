@@ -31,10 +31,11 @@ Un mod qui ajoute des programmes gouvernementaux, des subventions et des taxes.
         </fr>
     </description>
     <extraSourceFiles>
-        <sourceFile filename="src/RedTape.lua"/>
         <sourceFile filename="src/events/PolicyActivatedEvent.lua"/>
+        <sourceFile filename="src/events/PolicyCompletedEvent.lua"/>
         <sourceFile filename="src/events/PolicyPointsEvent.lua"/>
         <sourceFile filename="src/extensions/SprayerExtension.lua"/>
+        <sourceFile filename="src/gui/tableRenderers/EventLogRenderer.lua"/>
         <sourceFile filename="src/instances/EventLogItem.lua"/>
         <sourceFile filename="src/instances/Policy.lua"/>
         <sourceFile filename="src/instances/Scheme.lua"/>
@@ -45,6 +46,7 @@ Un mod qui ajoute des programmes gouvernementaux, des subventions et des taxes.
         <sourceFile filename="src/system/PolicySystem.lua"/>
         <sourceFile filename="src/system/SchemeSystem.lua"/>
         <sourceFile filename="src/system/TaxSystem.lua"/>
+        <sourceFile filename="src/RedTape.lua"/>
     </extraSourceFiles>
     <multiplayer supported="true"/>
     <l10n filenamePrefix="languages/l10n" />

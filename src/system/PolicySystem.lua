@@ -87,7 +87,7 @@ function PolicySystem:periodChanged()
 
     for i, p in pairs(complete) do
         p:complete()
-        policySystem:removePolicy(p)
+        g_client:getServerConnection():sendEvent(PolicyCompletedEvent.new(p.policyIndex))
     end
 
     policySystem:generatePolicies()
@@ -165,7 +165,7 @@ end
 function PolicySystem:registerActivatedPolicy(policy)
     table.insert(self.policies, policy)
     g_currentMission.RedTape.EventLog:addEvent(policy.farmId, EventLogItem.EVENT_TYPE.POLICY_ACTIVATED,
-        string.format(g_i18n:getText("rt_notify_active_policy"), policy:getName()))
+        string.format(g_i18n:getText("rt_notify_active_policy"), policy:getName()), true)
 end
 
 -- Called from PolicyPointsEvent, runs on client
@@ -175,17 +175,26 @@ function PolicySystem:applyPoints(farmId, points, reason)
     end
 
     self.points[farmId] = math.max(0, self.points[farmId] + points)
-    g_currentMission.RedTape.EventLog:addEvent(farmId, EventLogItem.EVENT_TYPE.POLICY_POINTS, reason)
+    g_currentMission.RedTape.EventLog:addEvent(farmId, EventLogItem.EVENT_TYPE.POLICY_POINTS, reason, false)
 end
 
-function PolicySystem:removePolicy(policy)
+-- Called from PolicyCompletedEvent, runs on client
+function PolicySystem:removePolicy(policyIndex)
+    local removed = nil
     for i, p in ipairs(self.policies) do
-        if p == policy then
-            print("Removing policy: " .. p.policyIndex)
+        if p.policyIndex == policyIndex then
+            removed = p:getName()
+            print("Removing policy: " .. removed)
             table.remove(self.policies, i)
             break
         end
     end
 
-    -- g_messageCenter:publish(MessageType.POLICY_REMOVED, policy)
+    if removed == nil then
+        print("Policy with index " .. policyIndex .. " not found while attempting to remove.")
+        return
+    end
+
+    g_currentMission.RedTape.EventLog:addEvent(nil, EventLogItem.EVENT_TYPE.POLICY_COMPLETED,
+        string.format(g_i18n:getText("rt_notify_completed_policy"), removed), true)
 end

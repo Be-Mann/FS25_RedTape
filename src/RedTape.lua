@@ -5,10 +5,12 @@ source(RedTape.dir .. "src/gui/MenuRedTape.lua")
 
 function RedTape:loadMap()
     self.leaseDeals = {}
-    self.updateIntervalMs = 2000
-	self.updateTime = 5000
+    self.updateIntervalMs = 2000      -- interval for constant checks
+    self.updateTime = 5000            -- initial interval post load
+    self.sprayAreaCheckInterval = 500 -- interval for spray area checks
+    self.sprayCheckTime = 0           -- initial time for spray area checks
 
-    -- g_gui:loadProfiles(RedTape.dir .. "src/gui/guiProfiles.xml")
+    g_gui:loadProfiles(RedTape.dir .. "src/gui/guiProfiles.xml")
 
     local guiRedTape = MenuRedTape.new(g_i18n)
     g_gui:loadGui(RedTape.dir .. "src/gui/MenuRedTape.xml", "menuRedTape", guiRedTape, true)
@@ -31,11 +33,11 @@ end
 
 function RedTape:update(dt)
     if self.updateTime > 0 then
-		self.updateTime = self.updateTime - dt
-	else
-		self.InfoGatherer:runConstantChecks()
+        self.updateTime = self.updateTime - dt
+    else
+        self.InfoGatherer:runConstantChecks()
         self.updateTime = self.updateIntervalMs
-	end
+    end
 end
 
 function RedTape:makeCheckEnabledPredicate()
@@ -47,8 +49,10 @@ function RedTape:hourChanged()
 end
 
 function RedTape:periodChanged()
-    if (not g_currentMission:getIsServer()) then return end
     local rt = g_currentMission.RedTape
+    rt.EventLog:pruneOld()
+
+    if (not g_currentMission:getIsServer()) then return end
     rt.InfoGatherer:gatherData()
     rt.PolicySystem:periodChanged()
     rt.SchemeSystem:periodChanged()
@@ -129,6 +133,35 @@ function RedTape.periodToMonth(period)
     end
     return period
 end
+
+function RedTape.monthToString(month)
+    if month == 1 then
+        return g_i18n:getText("ui_month1")
+    elseif month == 2 then
+        return g_i18n:getText("ui_month2")
+    elseif month == 3 then
+        return g_i18n:getText("ui_month3")
+    elseif month == 4 then
+        return g_i18n:getText("ui_month4")
+    elseif month == 5 then
+        return g_i18n:getText("ui_month5")
+    elseif month == 6 then
+        return g_i18n:getText("ui_month6")
+    elseif month == 7 then
+        return g_i18n:getText("ui_month7")
+    elseif month == 8 then
+        return g_i18n:getText("ui_month8")
+    elseif month == 9 then
+        return g_i18n:getText("ui_month9")
+    elseif month == 10 then
+        return g_i18n:getText("ui_month10")
+    elseif month == 11 then
+        return g_i18n:getText("ui_month11")
+    elseif month == 12 then
+        return g_i18n:getText("ui_month12")
+    end
+end
+
 
 function RedTape:tableHasValue(tab, val)
     for _, value in ipairs(tab) do

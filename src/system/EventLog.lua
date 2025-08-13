@@ -11,12 +11,49 @@ function EventLog.new()
     return self
 end
 
-function EventLog:addEvent(farmId, eventType, detail)
-    local event = Event.new()
+function EventLog:addEvent(farmId, eventType, detail, sendNotification)
+    local event = EventLogItem.new()
+    local rt = g_currentMission.RedTape
+
     event.farmId = farmId
     event.eventType = eventType
     event.detail = detail
+    event.month = rt.periodToMonth(g_currentMission.environment.currentPeriod)
+    event.year = g_currentMission.environment.currentYear
     table.insert(self.events, event)
+
+    if sendNotification then
+        g_currentMission:addIngameNotification(FSBaseMission.INGAME_NOTIFICATION_CRITICAL, detail)
+    end
+end
+
+function EventLog:pruneOld()
+    local newEvents = {}
+    local rt = g_currentMission.RedTape
+    local currentMonth = rt.periodToMonth(g_currentMission.environment.currentPeriod)
+    local currentYear = g_currentMission.environment.currentYear
+
+    for _, event in pairs(self.events) do
+        local eventAge = (currentYear - event.year) * 12 + (currentMonth - event.month)
+        if eventAge < 12 then
+            table.insert(newEvents, event)
+        end
+    end
+
+    self.events = newEvents
+end
+
+function EventLog:getEventsForCurrentFarm()
+    local farmId = g_currentMission:getFarmId()
+    local farmEvents = {}
+
+    for _, event in pairs(self.events) do
+        if event.farmId == nil or event.farmId == farmId then
+            table.insert(farmEvents, event)
+        end
+    end
+
+    return farmEvents
 end
 
 function EventLog:loadFromXMLFile()

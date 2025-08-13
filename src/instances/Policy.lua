@@ -91,10 +91,6 @@ function Policy:activate()
 
 
     print("Policy activated: " .. policyInfo.name)
-
-    -- TODO sent an event here rather than an ingame notification
-    g_currentMission:addIngameNotification(FSBaseMission.INGAME_NOTIFICATION_CRITICAL,
-        string.format(g_i18n:getText("rt_notify_active_policy"), policyInfo.name))
 end
 
 function Policy:evaluate()

@@ -97,10 +97,12 @@ Policies = {
             if pendingSprayViolations > forgiveness then
                 print("Farm " .. farmId .. ": Spray violations detected: " .. pendingSprayViolations)
                 local reward = policyInfo.periodicPenalty * pendingSprayViolations
+                farmData.sprayViolationsInCurrentPolicyWindow = farmData.sprayViolationsInCurrentPolicyWindow +
+                pendingSprayViolations
                 farmData.pendingSprayViolations = 0
                 return reward
             else
-                print("Farm " .. farmId .. ": No spray violations.")
+                print("Farm " .. farmId .. ": No spray violations. Violations ignored: " .. farmData.pendingSprayViolations)
                 farmData.pendingSprayViolations = 0
                 return policyInfo.periodicReward
             end
@@ -109,11 +111,11 @@ Policies = {
             print("Spray Violation policy completed.")
             local ig = g_currentMission.RedTape.InfoGatherer
             local farmData = ig:getFarmData(farmId)
-            local sprayViolations = farmData.sprayViolations or 0
-            local reward = math.max(policyInfo.completeReward - (sprayViolations * math.abs(policyInfo.periodicPenalty)),
-            0)
+            local sprayViolationsInCurrentPolicyWindow = farmData.sprayViolationsInCurrentPolicyWindow or 0
+            local reward = math.max(
+                policyInfo.completeReward - (sprayViolationsInCurrentPolicyWindow * math.abs(policyInfo.periodicPenalty)),
+                0)
             farmData.sprayViolationsInCurrentPolicyWindow = 0
-            farmData.sprayViolations = 0
             return reward
         end,
     },

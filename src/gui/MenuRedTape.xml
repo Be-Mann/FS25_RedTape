@@ -25,6 +25,9 @@
             <Button profile="fs25_subCategorySelectorTabbedTab" id="subCategoryTabs[4]" text="$l10n_rt_header_tax" onClick="onClickTax">
                 <ThreePartBitmap profile="fs25_subCategorySelectorTabbedTabBg" name="background"/>
             </Button>
+            <Button profile="fs25_subCategorySelectorTabbedTab" id="subCategoryTabs[5]" text="$l10n_rt_header_eventlog" onClick="onClickEventLog">
+                <ThreePartBitmap profile="fs25_subCategorySelectorTabbedTabBg" name="background"/>
+            </Button>
         </BoxLayout>
         <ThreePartBitmap profile="fs25_lineSeparatorTopHighlighted" position="0px -57px"/>
         <MultiTextOption profile="fs25_subCategorySelectorTabbed" id="subCategoryPaging" position="0px -10px" onClick="updateSubCategoryPages"/>
@@ -141,7 +144,7 @@
                 <Bitmap profile="fs25_stopClipper" name="startClipper" position="-2px 215px"/>
                 <Bitmap profile="fs25_vehiclesDetailsImageBg">
                     <Bitmap profile="fs25_vehiclesDetailsImage" id="itemDetailsImage"/>
-                </Bitmap>                
+                </Bitmap>
                 <Text profile="fs25_vehiclesDetailsName" id="itemDetailsName"/>
                 <Bitmap profile="fs25_itemDetailsFruitIcon" id="fruitIconTemplate" visible="false"/>
                 <BoxLayout profile="fs25_vehiclesDetailsInfoBox" id="attributesLayout">
@@ -234,6 +237,31 @@
                     <Text profile="fs25_financesTotalName" text="$l10n_ui_loan"/>
                     <Text profile="fs25_financesListItemToday" id="loanText" textBold="true"/>
                 </GuiElement>
+            </GuiElement>
+        </GuiElement>
+        <GuiElement profile="fs25_subCategorySelectorTabbedContainer" id="subCategoryPages[5]">
+            <GuiElement id="farmEventsContainer">
+                <GuiElement profile="fs25_statisticsHeaderBox">
+                    <Button profile="rtTableHeader" position="60px -60px" text="$l10n_rt_tableheader_timestamp" handleFocus="false" />
+                    <Button profile="rtTableHeader" position="240px -60px" text="$l10n_rt_tableheader_eventtype" handleFocus="false" />
+                    <Button profile="rtTableHeader" position="490px -60px" text="$l10n_rt_tableheader_detail" handleFocus="false" />
+                </GuiElement>
+
+                <SmoothList id="farmEventsTable" profile="rt_table" position="40px -95px" size="1480px 290px">
+                    <ListItem profile="rtTableListItem">
+                        <Text profile="rtListRowCellLeft" position="20px 0px" size="180px 32px" name="timestamp"/>
+                        <Text profile="rtListRowCellLeft" position="200px 0px" size="250px 32px" name="eventType"/>
+                        <Text profile="rtListRowCellLeft" position="450px 0px" size="600px 32px" name="detail"/>
+                    </ListItem>
+                </SmoothList>
+
+                <ThreePartBitmap profile="rt_slider_box" position="0px -90px" size="6px 290px">
+                    <Slider profile="fs25_listSlider" dataElementId="farmEventsTable" />
+                </ThreePartBitmap>
+            </GuiElement>
+
+            <GuiElement id="noFarmEventsContainer">
+                <Text profile="rt_no_events" text="$l10n_ui_noShopItems" position="0px -60px" width="350px" />
             </GuiElement>
         </GuiElement>
     </GuiElement>

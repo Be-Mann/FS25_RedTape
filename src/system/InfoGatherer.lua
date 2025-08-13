@@ -15,6 +15,7 @@ function InfoGatherer.new()
     self.data = self:initData()
     self.knownCreeks = {}
     self.turnedOnSprayers = {}
+    self.sprayCoords = {}
 
     return self
 end
@@ -22,6 +23,10 @@ end
 function InfoGatherer:runConstantChecks()
     -- print("Running constant checks...")
     self:checkSprayers()
+end
+
+function InfoGatherer:storeSprayAreaCoords(uniqueId, coords)
+    self.sprayCoords[uniqueId] = coords
 end
 
 function InfoGatherer:checkSprayers()
@@ -64,17 +69,32 @@ function InfoGatherer:checkSprayers()
     end
 end
 
+function InfoGatherer:sprayerDistanceCheck(coords, hitX, hitZ)
+    if coords == nil then return false end
+
+    local distanceAllowance = 14
+    for _, coord in ipairs(coords) do
+        local actualDistance = MathUtil.vector2Length(coord.x - hitX, coord.z - hitZ)
+        if actualDistance < distanceAllowance then
+            return true
+        end
+    end
+    return false
+end
+
 function InfoGatherer:checkWaterByRaycast(sprayer, workingWidth)
     local length = 40
-    local distanceAllowance = (workingWidth * 0.5) + 10
-    local distanceCheckX, _, distanceCheckZ = localToWorld(sprayer.rootNode, 0, sprayer.size.height * 0.5,
-        -sprayer.size.length)
+    local coords = self.sprayCoords[sprayer.uniqueId]
+    if coords == nil then return false end
+    local ig = self
+    -- local distanceAllowance = (workingWidth * 0.5) + 10
+    -- local distanceCheckX, _, distanceCheckZ = localToWorld(sprayer.rootNode, 0, sprayer.size.height * 0.5,
+    --     -sprayer.size.length)
     local raycastResult = {
         raycastCallback = function(self, hitObjectId, x, y, z, distance, nx, ny, nz, subShapeIndex, shapeId, isLast)
             local mask = getCollisionFilterGroup(hitObjectId)
             if mask == CollisionFlag.WATER then
-                local actualDistance = MathUtil.vector2Length(distanceCheckX - x, distanceCheckZ - z)
-                if actualDistance < distanceAllowance then
+                if ig:sprayerDistanceCheck(coords, x, z) then
                     self.foundWater = true
                 end
             end
@@ -104,6 +124,7 @@ end
 function InfoGatherer:checkCreekByOverlap(sprayer, workingWidth)
     local widthExcess = 3
     local ig = self
+    local coords = self.sprayCoords[sprayer.uniqueId]
     local overlapResult = {
         overlapCallback = function(self, hitObjectId, x, y, z, distance)
             local originalHitObjectId = hitObjectId
@@ -112,25 +133,36 @@ function InfoGatherer:checkCreekByOverlap(sprayer, workingWidth)
                 return
             end
 
+            local isCreek = false
+
             if ig.knownCreeks[originalHitObjectId] ~= nil then
                 print("Detected known creek " .. originalHitObjectId)
-                self.foundWater = true
-                return
+                isCreek = true
             end
 
-            local name = getName(hitObjectId)
-            if string.find(name, "creek") then
-                self.foundWater = true
-                self.knownCreeks[originalHitObjectId] = true
-            end
-
-            local maxTraverse = 3
-            for i = 1, maxTraverse, 1 do
-                hitObjectId = getParent(hitObjectId)
-                name = getName(hitObjectId)
+            if not isCreek then
+                local name = getName(hitObjectId)
                 if string.find(name, "creek") then
+                    isCreek = true
+                    self.knownCreeks[originalHitObjectId] = true
+                end
+            end
+
+            if not isCreek then
+                local maxTraverse = 3
+                for i = 1, maxTraverse, 1 do
+                    hitObjectId = getParent(hitObjectId)
+                    local name = getName(hitObjectId)
+                    if string.find(name, "creek") then
+                        isCreek = true
+                        ig.knownCreeks[originalHitObjectId] = true
+                    end
+                end
+            end
+
+            if isCreek then
+                if ig:sprayerDistanceCheck(coords, x, z) then
                     self.foundWater = true
-                    ig.knownCreeks[originalHitObjectId] = true
                 end
             end
         end
@@ -174,7 +206,7 @@ end
 function InfoGatherer:getFarmData(farmId)
     if self.data[INFO_KEYS.FARMS][farmId] == nil then
         self.data[INFO_KEYS.FARMS][farmId] = {
-            sprayViolations = 0,
+            pendingSprayViolations = 0,
             sprayViolationsInCurrentPolicyWindow = 0,
         }
     end
