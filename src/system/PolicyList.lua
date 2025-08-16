@@ -1,9 +1,13 @@
 PolicyIds = {
     CROP_ROTATION = 1,
     SPRAY_VIOLATION = 2,
+    EMPTY_STRAW = 3,
+    FULL_SLURRY = 4,
+    EMPTY_FOOD = 5
 }
 
 Policies = {
+
     [PolicyIds.CROP_ROTATION] = {
         id = PolicyIds.CROP_ROTATION,
         name = "rt_policy_croprotation",
@@ -73,14 +77,15 @@ Policies = {
             return policyInfo.completeReward
         end,
     },
+
     [PolicyIds.SPRAY_VIOLATION] = {
         id = PolicyIds.SPRAY_VIOLATION,
         name = "rt_policy_sprayviolation",
         description = "rt_policy_description_sprayviolation",
         probability = 0.5,
-        periodicReward = 0,
-        penaltyPerSprayViolation = 10,
-        deductionPerViolationOnComplete = 1,
+        periodicReward = 5,
+        periodicPenaltyPerViolation = 10,
+        deductionPerViolationOnComplete = 5,
         maxCompleteReward = 500,
         evaluationInterval = 1,
         maxEvaluationCount = 12,
@@ -89,7 +94,7 @@ Policies = {
             local gatherer = ig.gatherers[INFO_KEYS.FARMS]
             local farmData = gatherer:getFarmData(farmId)
             farmData.pendingSprayViolations = 0
-            farmData.sprayViolationsInCurrentPolicyWindow = 0
+            farmData.totalSprayViolations = 0
         end,
         evaluate = function(policyInfo, policy, farmId)
             local ig = g_currentMission.RedTape.InfoGatherer
@@ -100,14 +105,13 @@ Policies = {
 
             if pendingSprayViolations > forgiveness then
                 print("Farm " .. farmId .. ": Spray violations detected: " .. pendingSprayViolations)
-                local pointsLost = policyInfo.penaltyPerSprayViolation * pendingSprayViolations
-                farmData.sprayViolationsInCurrentPolicyWindow = farmData.sprayViolationsInCurrentPolicyWindow +
-                    pendingSprayViolations
+                local pointsLost = policyInfo.periodicPenaltyPerViolation * pendingSprayViolations
+                farmData.totalSprayViolations = farmData.totalSprayViolations + pendingSprayViolations
                 farmData.pendingSprayViolations = 0
                 return -pointsLost
             else
                 print("Farm " ..
-                farmId .. ": No spray violations. Violations ignored: " .. farmData.pendingSprayViolations)
+                    farmId .. ": No spray violations. Violations ignored: " .. farmData.pendingSprayViolations)
                 farmData.pendingSprayViolations = 0
                 return policyInfo.periodicReward
             end
@@ -116,12 +120,156 @@ Policies = {
             print("Spray Violation policy completed.")
             local ig = g_currentMission.RedTape.InfoGatherer
             local farmData = ig:getFarmData(farmId)
-            local sprayViolationsInCurrentPolicyWindow = farmData.sprayViolationsInCurrentPolicyWindow or 0
+            local totalSprayViolations = farmData.totalSprayViolations or 0
             local reward = math.max(
-            policyInfo.maxCompleteReward -
-                (sprayViolationsInCurrentPolicyWindow * math.abs(policyInfo.deductionPerViolationOnComplete)),
+                policyInfo.maxCompleteReward -
+                (totalSprayViolations * math.abs(policyInfo.deductionPerViolationOnComplete)),
                 0)
-            farmData.sprayViolationsInCurrentPolicyWindow = 0
+            farmData.totalSprayViolations = 0
+            return reward
+        end,
+    },
+
+    [PolicyIds.EMPTY_STRAW] = {
+        id = PolicyIds.EMPTY_STRAW,
+        name = "rt_policy_empty_straw",
+        description = "rt_policy_description_empty_straw",
+        probability = 0.6,
+        periodicReward = 5,
+        periodicPenaltyPerViolation = -10,
+        deductionPerViolationOnComplete = 5,
+        maxCompleteReward = 500,
+        evaluationInterval = 1,
+        maxEvaluationCount = 12,
+        activate = function(policyInfo, policy, farmId)
+            local ig = g_currentMission.RedTape.InfoGatherer
+            local gatherer = ig.gatherers[INFO_KEYS.FARMS]
+            local farmData = gatherer:getFarmData(farmId)
+            farmData.pendingEmptyStrawCount = 0
+            farmData.totalEmptyStrawCount = 0
+        end,
+        evaluate = function(policyInfo, policy, farmId)
+            local ig = g_currentMission.RedTape.InfoGatherer
+            local gatherer = ig.gatherers[INFO_KEYS.FARMS]
+            local farmData = gatherer:getFarmData(farmId)
+            local pendingEmptyStrawCount = farmData.pendingEmptyStrawCount or 0
+            local reward = 0
+            if pendingEmptyStrawCount > 0 then
+                reward = -(policyInfo.periodicPenaltyPerViolation * pendingEmptyStrawCount)
+                farmData.totalEmptyStrawCount = farmData.totalEmptyStrawCount + pendingEmptyStrawCount
+            else
+                reward = policyInfo.periodicReward
+            end
+            farmData.pendingEmptyStrawCount = 0
+            return reward
+        end,
+        complete = function(policyInfo, policy, farmId)
+            print("Empty Straw policy completed.")
+            local ig = g_currentMission.RedTape.InfoGatherer
+            local gatherer = ig.gatherers[INFO_KEYS.FARMS]
+            local farmData = gatherer:getFarmData(farmId)
+            local totalEmptyStrawCount = farmData.totalEmptyStrawCount or 0
+            local reward = math.max(
+                policyInfo.maxCompleteReward -
+                (totalEmptyStrawCount * math.abs(policyInfo.deductionPerViolationOnComplete)),
+                0)
+            farmData.totalEmptyStrawCount = 0
+            return reward
+        end,
+    },
+
+    [PolicyIds.FULL_SLURRY] = {
+        id = PolicyIds.FULL_SLURRY,
+        name = "rt_policy_full_slurry",
+        description = "rt_policy_description_full_slurry",
+        probability = 0.5,
+        periodicReward = 5,
+        periodicPenaltyPerViolation = -10,
+        deductionPerViolationOnComplete = 5,
+        maxCompleteReward = 500,
+        evaluationInterval = 1,
+        maxEvaluationCount = 12,
+        activate = function(policyInfo, policy, farmId)
+            local ig = g_currentMission.RedTape.InfoGatherer
+            local gatherer = ig.gatherers[INFO_KEYS.FARMS]
+            local farmData = gatherer:getFarmData(farmId)
+            farmData.pendingFullSlurryCount = 0
+            farmData.totalFullSlurryCount = 0
+        end,
+        evaluate = function(policyInfo, policy, farmId)
+            local ig = g_currentMission.RedTape.InfoGatherer
+            local gatherer = ig.gatherers[INFO_KEYS.FARMS]
+            local farmData = gatherer:getFarmData(farmId)
+            local pendingFullSlurryCount = farmData.pendingFullSlurryCount or 0
+            local reward = 0
+            if pendingFullSlurryCount > 0 then
+                reward = -(policyInfo.periodicPenaltyPerViolation * pendingFullSlurryCount)
+                farmData.totalFullSlurryCount = farmData.totalFullSlurryCount + pendingFullSlurryCount
+            else
+                reward = policyInfo.periodicReward
+            end
+            farmData.pendingFullSlurryCount = 0
+            return reward
+        end,
+        complete = function(policyInfo, policy, farmId)
+            print("Full Slurry policy completed.")
+            local ig = g_currentMission.RedTape.InfoGatherer
+            local gatherer = ig.gatherers[INFO_KEYS.FARMS]
+            local farmData = gatherer:getFarmData(farmId)
+            local totalFullSlurryCount = farmData.totalFullSlurryCount or 0
+            local reward = math.max(
+                policyInfo.maxCompleteReward -
+                (totalFullSlurryCount * math.abs(policyInfo.deductionPerViolationOnComplete)),
+                0)
+            farmData.totalFullSlurryCount = 0
+            return reward
+        end,
+    },
+
+    [PolicyIds.EMPTY_FOOD] = {
+        id = PolicyIds.EMPTY_FOOD,
+        name = "rt_policy_empty_food",
+        description = "rt_policy_description_empty_food",
+        probability = 0.7,
+        periodicReward = 5,
+        periodicPenaltyPerViolation = -10,
+        deductionPerViolationOnComplete = 5,
+        maxCompleteReward = 500,
+        evaluationInterval = 1,
+        maxEvaluationCount = 12,
+        activate = function(policyInfo, policy, farmId)
+            local ig = g_currentMission.RedTape.InfoGatherer
+            local gatherer = ig.gatherers[INFO_KEYS.FARMS]
+            local farmData = gatherer:getFarmData(farmId)
+            farmData.pendingEmptyFoodCount = 0
+            farmData.totalEmptyFoodCount = 0
+        end,
+        evaluate = function(policyInfo, policy, farmId)
+            local ig = g_currentMission.RedTape.InfoGatherer
+            local gatherer = ig.gatherers[INFO_KEYS.FARMS]
+            local farmData = gatherer:getFarmData(farmId)
+            local pendingEmptyFoodCount = farmData.pendingEmptyFoodCount or 0
+            local reward = 0
+            if pendingEmptyFoodCount > 0 then
+                reward = -(policyInfo.periodicPenaltyPerViolation * pendingEmptyFoodCount)
+                farmData.totalEmptyFoodCount = farmData.totalEmptyFoodCount + pendingEmptyFoodCount
+            else
+                reward = policyInfo.periodicReward
+            end
+            farmData.pendingEmptyFoodCount = 0
+            return reward
+        end,
+        complete = function(policyInfo, policy, farmId)
+            print("Empty Food policy completed.")
+            local ig = g_currentMission.RedTape.InfoGatherer
+            local gatherer = ig.gatherers[INFO_KEYS.FARMS]
+            local farmData = gatherer:getFarmData(farmId)
+            local totalEmptyFoodCount = farmData.totalEmptyFoodCount or 0
+            local reward = math.max(
+                policyInfo.maxCompleteReward -
+                (totalEmptyFoodCount * math.abs(policyInfo.deductionPerViolationOnComplete)),
+                0)
+            farmData.totalEmptyFoodCount = 0
             return reward
         end,
     },

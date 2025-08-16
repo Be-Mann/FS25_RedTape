@@ -43,7 +43,6 @@ end
 
 function Policy:saveToXmlFile(xmlFile, key)
     -- TODO save commons here, then use the policy info to save specific data
-    -- setXMLString(xmlFile, key .. "#id", self.id)
     setXMLInt(xmlFile, key .. "#policyIndex", self.policyIndex)
     setXMLInt(xmlFile, key .. "#nextEvaluationPeriod", self.nextEvaluationPeriod)
     setXMLInt(xmlFile, key .. "#nextEvaluationYear", self.nextEvaluationYear)
@@ -54,7 +53,6 @@ end
 
 function Policy:loadFromXMLFile(xmlFile, key)
     -- TODO load commons here, then use the policy info to load specific data
-    -- self.id = getXMLString(xmlFile, key .. "#id")
     self.policyIndex = getXMLInt(xmlFile, key .. "#policyIndex")
     self.nextEvaluationPeriod = getXMLInt(xmlFile, key .. "#nextEvaluationPeriod")
     self.nextEvaluationYear = getXMLInt(xmlFile, key .. "#nextEvaluationYear")
@@ -98,7 +96,6 @@ function Policy:activate()
     for _, farm in pairs(g_farmManager.farmIdToFarm) do
         policyInfo.activate(policyInfo, self, farm.farmId)
     end
-
 
     print("Policy activated: " .. policyInfo.name)
 end

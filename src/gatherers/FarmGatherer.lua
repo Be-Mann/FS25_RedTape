@@ -15,14 +15,39 @@ function FarmGatherer.new()
 end
 
 function FarmGatherer:gather()
+    local husbandryData = self:getHusbandryStats()
 
+    for husbandry, stats in pairs(husbandryData) do
+        local farmId = husbandry:getOwnerFarmId()
+        local farmData = self:getFarmData(farmId)
+
+        if stats.slurry and stats.slurry == stats.slurryCapacity then
+            farmData.pendingFullSlurryCount = farmData.pendingFullSlurryCount + 1
+        end
+
+        if stats.numAnimals and stats.numAnimals > 0 then
+            if stats.straw and stats.straw == 0 then
+                farmData.pendingEmptyStrawCount = farmData.pendingEmptyStrawCount + 1
+            end
+
+            if stats.totalFood and stats.totalFood == 0 then
+                farmData.pendingEmptyFoodCount = farmData.pendingEmptyFoodCount + 1
+            end
+        end
+    end
 end
 
 function FarmGatherer:getFarmData(farmId)
     if self.data[farmId] == nil then
         self.data[farmId] = {
             pendingSprayViolations = 0,
-            sprayViolationsInCurrentPolicyWindow = 0,
+            totalSprayViolations = 0,
+            pendingEmptyStrawCount = 0,
+            totalEmptyStrawCount = 0,
+            pendingFullSlurryCount = 0,
+            totalFullSlurryCount = 0,
+            pendingEmptyFoodCount = 0,
+            totalEmptyFoodCount = 0
         }
     end
     return self.data[farmId]
@@ -34,7 +59,11 @@ function FarmGatherer:saveToXmlFile(xmlFile, key)
         local farmKey = string.format("%s.farms.farm(%d)", key, i)
         setXMLInt(xmlFile, farmKey .. "#id", farmId)
         setXMLInt(xmlFile, farmKey .. "#pendingSprayViolations", farmData.pendingSprayViolations)
-        setXMLInt(xmlFile, farmKey .. "#sprayViolationsInCurrentPolicyWindow", farmData.sprayViolationsInCurrentPolicyWindow)
+        setXMLInt(xmlFile, farmKey .. "#totalSprayViolations",
+            farmData.totalSprayViolations)
+        setXMLInt(xmlFile, farmKey .. "#pendingEmptyStrawCount", farmData.pendingEmptyStrawCount)
+        setXMLInt(xmlFile, farmKey .. "#pendingFullSlurryCount", farmData.pendingFullSlurryCount)
+        setXMLInt(xmlFile, farmKey .. "#pendingEmptyFoodCount", farmData.pendingEmptyFoodCount)
         i = i + 1
     end
 end
@@ -50,7 +79,10 @@ function FarmGatherer:loadFromXMLFile(xmlFile, key)
         local farmId = getXMLInt(xmlFile, farmKey .. "#id")
         self.data[farmId] = {
             pendingSprayViolations = getXMLInt(xmlFile, farmKey .. "#pendingSprayViolations"),
-            sprayViolationsInCurrentPolicyWindow = getXMLInt(xmlFile, farmKey .. "#sprayViolationsInCurrentPolicyWindow"),
+            totalSprayViolations = getXMLInt(xmlFile, farmKey .. "#totalSprayViolations"),
+            pendingEmptyStrawCount = getXMLInt(xmlFile, farmKey .. "#pendingEmptyStrawCount"),
+            pendingFullSlurryCount = getXMLInt(xmlFile, farmKey .. "#pendingFullSlurryCount"),
+            pendingEmptyFoodCount = getXMLInt(xmlFile, farmKey .. "#pendingEmptyFoodCount"),
         }
         i = i + 1
     end
@@ -208,4 +240,57 @@ function FarmGatherer:checkCreekByOverlap(sprayer, workingWidth)
         return true
     end
     return false
+end
+
+function FarmGatherer:getHusbandryStats()
+    local results = {}
+    local husbandries = g_currentMission.husbandrySystem.placeables
+    for _, husbandry in pairs(husbandries) do
+        if husbandry.isDeleted or husbandry.isDeleting then
+            continue
+        end
+        local stats = {}
+
+        local foodSpec = husbandry.spec_husbandryFood
+        local animalType = foodSpec.animalTypeIndex
+
+        local totalFood = 0
+        local food = g_currentMission.animalFoodSystem:getAnimalFood(animalType)
+        for _, foodGroup in pairs(food.groups) do
+            local foodInfo = {
+                title = foodGroup.title,
+                amount = 0,
+                key = self:getHusbandryFoodKey(foodGroup)
+            }
+            for _, fillLevel in pairs(foodGroup.fillTypes) do
+                foodInfo.amount = foodInfo.amount + foodSpec.fillLevels[fillLevel]
+            end
+            totalFood = totalFood + foodInfo.amount
+        end
+        stats.totalFood = totalFood
+
+        local conditionInfos = husbandry:getConditionInfos()
+        for i, conditionInfo in pairs(conditionInfos) do
+            if i == 1 then
+                continue
+            end
+            local conditionFillType = self.fillTypeCache[conditionInfo.title]
+            if conditionFillType == FillType.STRAW then
+                stats.straw = conditionInfo.value
+            elseif conditionFillType == FillType.SLURRY then
+                stats.slurry = conditionInfo.value
+                stats.slurryCapacity = husbandry:getHusbandryCapacity(conditionFillType)
+            end
+        end
+
+        local numAnimals = 0
+        local clusters = husbandry:getClusters()
+        for _, cluster in pairs(clusters) do
+            numAnimals = numAnimals + cluster:getNumAnimals()
+        end
+        stats.numAnimals = numAnimals
+
+        results[husbandry] = stats
+    end
+    return results
 end
