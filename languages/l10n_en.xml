@@ -22,19 +22,19 @@
 		<text name="rt_tableheader_detail" text="Detail"/>
 		<text name="rt_tableheader_name" text="Name"/>
 		<text name="rt_tableheader_description" text="Description"/>
-		<text name="rt_tableheader_next" text="Next"/>
+		<text name="rt_tableheader_next" text="Next Check"/>
 
 		<text name="rt_notify_active_policy" text="A new policy has been activated: %s"/>
 		
 		<text name="rt_policy_croprotation" text="Crop rotation"/>
 		<text name="rt_policy_sprayviolation" text="Avoid spraying near water"/>
-		<text name="rt_policy_emptyfood" text="Animal food levels"/>
+		<text name="rt_policy_empty_food" text="Animal food levels"/>
 		<text name="rt_policy_empty_straw" text="Animal straw levels"/>
 		<text name="rt_policy_full_slurry" text="Keep slurry tanks not full."/>
 
 		<text name="rt_policy_description_croprotation" text="Mandates crop rotation"/>
 		<text name="rt_policy_description_sprayviolation" text="Penalizes farms for spraying near water"/>
-		<text name="rt_policy_description_emptyfood" text="Requires food to be present in animal pens."/>
+		<text name="rt_policy_description_empty_food" text="Requires food to be present in animal pens."/>
 		<text name="rt_policy_description_empty_straw" text="Requires straw to be present in animal pens."/>
 		<text name="rt_policy_description_full_slurry" text="Requires slurry tanks not to be full."/>
 

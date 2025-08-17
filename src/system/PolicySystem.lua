@@ -7,7 +7,7 @@ PolicySystem.COMPLIANCE_LEVEL = {
     B = 3,
     A = 4
 }
-PolicySystem.DESIRED_POLICY_COUNT = 4
+PolicySystem.DESIRED_POLICY_COUNT = 10
 
 function PolicySystem.new()
     local self = {}

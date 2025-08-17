@@ -95,14 +95,14 @@
                     <GuiElement profile="fs25_statisticsHeaderBox">
                         <Button profile="rtTableHeader" position="40px -20px" text="$l10n_rt_tableheader_name" handleFocus="false" />
                         <Button profile="rtTableHeader" position="250px -20px" text="$l10n_rt_tableheader_description" handleFocus="false" />
-                        <Button profile="rtTableHeader" position="550px -20px" text="$l10n_rt_tableheader_next" handleFocus="false" />
+                        <Button profile="rtTableHeader" position="570px -20px" text="$l10n_rt_tableheader_next" handleFocus="false" />
                     </GuiElement>
 
                     <SmoothList id="activePoliciesTable" profile="rt_table" position="20px -50px" size="1480px 290px">
                         <ListItem profile="rtTableListItem">
                             <Text profile="rtListRowCellLeft" position="20px 0px" size="210px 32px" name="name"/>
-                            <Text profile="rtListRowCellLeft" position="230px 0px" size="300px 32px" name="description"/>
-                            <Text profile="rtListRowCellLeft" position="530px 0px" size="150px 32px" name="next"/>
+                            <Text profile="rtListRowCellLeft" position="230px 0px" size="320px 32px" name="description"/>
+                            <Text profile="rtListRowCellLeft" position="550px 0px" size="150px 32px" name="next"/>
                         </ListItem>
                     </SmoothList>
 

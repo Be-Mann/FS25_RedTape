@@ -83,9 +83,14 @@ function InfoGatherer:runConstantChecks()
     self.gatherers[INFO_KEYS.FARMS]:checkSprayers()
 end
 
-function InfoGatherer:gatherData()
-    print("Gathering data for policies...")
+function InfoGatherer:hourChanged()
     for _, gatherer in pairs(self.gatherers) do
-        gatherer:gather()
+        gatherer:hourChanged()
+    end
+end
+
+function InfoGatherer:periodChanged()
+    for _, gatherer in pairs(self.gatherers) do
+        gatherer:periodChanged()
     end
 end

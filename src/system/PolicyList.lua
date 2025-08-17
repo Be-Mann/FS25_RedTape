@@ -3,7 +3,9 @@ PolicyIds = {
     SPRAY_VIOLATION = 2,
     EMPTY_STRAW = 3,
     FULL_SLURRY = 4,
-    EMPTY_FOOD = 5
+    EMPTY_FOOD = 5,
+    ANIMAL_SPACE = 6,
+    ANIMAL_PRODUCTIVITY = 7
 }
 
 Policies = {

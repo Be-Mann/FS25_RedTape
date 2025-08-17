@@ -11,6 +11,7 @@ function RedTape:loadMap()
     self.updateTime = 5000            -- initial interval post load
     self.sprayAreaCheckInterval = 500 -- interval for spray area checks
     self.sprayCheckTime = 0           -- initial time for spray area checks
+    self.fillTypeCache = nil
 
     g_gui:loadProfiles(RedTape.dir .. "src/gui/guiProfiles.xml")
 
@@ -48,6 +49,9 @@ end
 
 function RedTape:hourChanged()
     if (not g_currentMission:getIsServer()) then return end
+    local rt = g_currentMission.RedTape
+
+    rt.InfoGatherer:hourChanged()
 end
 
 function RedTape:periodChanged()
@@ -55,10 +59,24 @@ function RedTape:periodChanged()
     rt.EventLog:pruneOld()
 
     if (not g_currentMission:getIsServer()) then return end
-    rt.InfoGatherer:gatherData()
+    rt.InfoGatherer:periodChanged()
     rt.PolicySystem:periodChanged()
     rt.SchemeSystem:periodChanged()
     rt.TaxSystem:periodChanged()
+end
+
+function RedTape:populateFillTypeCache()
+    self.fillTypeCache = {}
+    for k, v in pairs(g_fillTypeManager.indexToTitle) do
+        self.fillTypeCache[v] = k
+    end
+end
+
+function RedTape:getFillTypeCache()
+    if self.fillTypeCache == nil then
+        self:populateFillTypeCache()
+    end
+    return self.fillTypeCache
 end
 
 function RedTape:saveToXmlFile()

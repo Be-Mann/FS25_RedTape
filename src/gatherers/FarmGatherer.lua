@@ -14,7 +14,7 @@ function FarmGatherer.new()
     return self
 end
 
-function FarmGatherer:gather()
+function FarmGatherer:hourChanged()
     local husbandryData = self:getHusbandryStats()
 
     for husbandry, stats in pairs(husbandryData) do
@@ -33,8 +33,22 @@ function FarmGatherer:gather()
             if stats.totalFood and stats.totalFood == 0 then
                 farmData.pendingEmptyFoodCount = farmData.pendingEmptyFoodCount + 1
             end
+
+            if stats.productivity and stats.productivity < 70 then
+                farmData.pendingLowProductivityHusbandry = farmData.pendingLowProductivityHusbandry + 1
+            end
+
+            local desiredSpacePerAnimal = self:getDesirableSpace(stats.animalType)
+            local actualSpacePerAnimal = stats.navigableArea / stats.numAnimals
+
+            if actualSpacePerAnimal < desiredSpacePerAnimal then
+                farmData.pendingAnimalSpaceViolations = farmData.pendingAnimalSpaceViolations + 1
+            end
         end
     end
+end
+
+function FarmGatherer:periodChanged()
 end
 
 function FarmGatherer:getFarmData(farmId)
@@ -47,7 +61,11 @@ function FarmGatherer:getFarmData(farmId)
             pendingFullSlurryCount = 0,
             totalFullSlurryCount = 0,
             pendingEmptyFoodCount = 0,
-            totalEmptyFoodCount = 0
+            totalEmptyFoodCount = 0,
+            pendingLowProductivityHusbandry = 0,
+            totalLowProductivityHusbandry = 0,
+            pendingAnimalSpaceViolations = 0,
+            totalAnimalSpaceViolations = 0
         }
     end
     return self.data[farmId]
@@ -64,6 +82,10 @@ function FarmGatherer:saveToXmlFile(xmlFile, key)
         setXMLInt(xmlFile, farmKey .. "#pendingEmptyStrawCount", farmData.pendingEmptyStrawCount)
         setXMLInt(xmlFile, farmKey .. "#pendingFullSlurryCount", farmData.pendingFullSlurryCount)
         setXMLInt(xmlFile, farmKey .. "#pendingEmptyFoodCount", farmData.pendingEmptyFoodCount)
+        setXMLInt(xmlFile, farmKey .. "#pendingLowProductivityHusbandry", farmData.pendingLowProductivityHusbandry)
+        setXMLInt(xmlFile, farmKey .. "#totalLowProductivityHusbandry", farmData.totalLowProductivityHusbandry)
+        setXMLInt(xmlFile, farmKey .. "#pendingAnimalSpaceViolations", farmData.pendingAnimalSpaceViolations)
+        setXMLInt(xmlFile, farmKey .. "#totalAnimalSpaceViolations", farmData.totalAnimalSpaceViolations)
         i = i + 1
     end
 end
@@ -83,6 +105,10 @@ function FarmGatherer:loadFromXMLFile(xmlFile, key)
             pendingEmptyStrawCount = getXMLInt(xmlFile, farmKey .. "#pendingEmptyStrawCount"),
             pendingFullSlurryCount = getXMLInt(xmlFile, farmKey .. "#pendingFullSlurryCount"),
             pendingEmptyFoodCount = getXMLInt(xmlFile, farmKey .. "#pendingEmptyFoodCount"),
+            pendingLowProductivityHusbandry = getXMLInt(xmlFile, farmKey .. "#pendingLowProductivityHusbandry"),
+            totalLowProductivityHusbandry = getXMLInt(xmlFile, farmKey .. "#totalLowProductivityHusbandry"),
+            pendingAnimalSpaceViolations = getXMLInt(xmlFile, farmKey .. "#pendingAnimalSpaceViolations"),
+            totalAnimalSpaceViolations = getXMLInt(xmlFile, farmKey .. "#totalAnimalSpaceViolations")
         }
         i = i + 1
     end
@@ -243,6 +269,9 @@ function FarmGatherer:checkCreekByOverlap(sprayer, workingWidth)
 end
 
 function FarmGatherer:getHusbandryStats()
+    local rt = g_currentMission.RedTape
+    local fillTypeCache = rt:getFillTypeCache()
+
     local results = {}
     local husbandries = g_currentMission.husbandrySystem.placeables
     for _, husbandry in pairs(husbandries) do
@@ -252,29 +281,34 @@ function FarmGatherer:getHusbandryStats()
         local stats = {}
 
         local foodSpec = husbandry.spec_husbandryFood
+        local meadowSpec = husbandry.spec_husbandryMeadow
+        local animalSpec = husbandry.spec_husbandryAnimals
         local animalType = foodSpec.animalTypeIndex
-
         local totalFood = 0
+
+        stats.navigableArea = getNavMeshSurfaceArea(animalSpec.navigationMesh)
+        stats.animalType = animalType
+
+        if meadowSpec ~= nil then
+            totalFood = meadowSpec.info.value
+        end
+
         local food = g_currentMission.animalFoodSystem:getAnimalFood(animalType)
         for _, foodGroup in pairs(food.groups) do
-            local foodInfo = {
-                title = foodGroup.title,
-                amount = 0,
-                key = self:getHusbandryFoodKey(foodGroup)
-            }
-            for _, fillLevel in pairs(foodGroup.fillTypes) do
-                foodInfo.amount = foodInfo.amount + foodSpec.fillLevels[fillLevel]
+            local groupTotal = 0
+            for _, fillType in pairs(foodGroup.fillTypes) do
+                groupTotal = groupTotal + foodSpec.fillLevels[fillType]
             end
-            totalFood = totalFood + foodInfo.amount
+            totalFood = totalFood + groupTotal
         end
         stats.totalFood = totalFood
 
         local conditionInfos = husbandry:getConditionInfos()
         for i, conditionInfo in pairs(conditionInfos) do
             if i == 1 then
-                continue
+                stats.productivity = conditionInfo.value
             end
-            local conditionFillType = self.fillTypeCache[conditionInfo.title]
+            local conditionFillType = fillTypeCache[conditionInfo.title]
             if conditionFillType == FillType.STRAW then
                 stats.straw = conditionInfo.value
             elseif conditionFillType == FillType.SLURRY then
@@ -293,4 +327,18 @@ function FarmGatherer:getHusbandryStats()
         results[husbandry] = stats
     end
     return results
+end
+
+function FarmGatherer:getDesirableSpace(animalType)
+    if animalType == AnimalType.CHICKEN then
+        return 1
+    elseif animalType == AnimalType.COW then
+        return 10
+    elseif animalType == AnimalType.HORSE then
+        return 15
+    elseif animalType == AnimalType.PIG then
+        return 5
+    elseif animalType == AnimalType.SHEEP then
+        return 7
+    end
 end

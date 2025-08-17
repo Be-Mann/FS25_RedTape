@@ -10,7 +10,10 @@ function FarmlandGatherer.new()
     return self
 end
 
-function FarmlandGatherer:gather()
+function FarmlandGatherer:hourChanged()
+end
+
+function FarmlandGatherer:periodChanged()
     print("Gathering farmlands data...")
     for _, farmland in pairs(g_farmlandManager.farmlands) do
         if farmland.showOnFarmlandsScreen and farmland.field ~= nil then
