@@ -56,17 +56,11 @@ function FarmGatherer:getFarmData(farmId)
     if self.data[farmId] == nil then
         self.data[farmId] = {
             pendingSprayViolations = 0,
-            totalSprayViolations = 0,
             pendingEmptyStrawCount = 0,
-            totalEmptyStrawCount = 0,
             pendingFullSlurryCount = 0,
-            totalFullSlurryCount = 0,
             pendingEmptyFoodCount = 0,
-            totalEmptyFoodCount = 0,
             pendingLowProductivityHusbandry = 0,
-            totalLowProductivityHusbandry = 0,
             pendingAnimalSpaceViolations = 0,
-            totalAnimalSpaceViolations = 0,
             currentManureLevel = 0,
             rollingAverageManureLevel = 0,
             pendingManureSpread = 0
@@ -81,15 +75,14 @@ function FarmGatherer:saveToXmlFile(xmlFile, key)
         local farmKey = string.format("%s.farms.farm(%d)", key, i)
         setXMLInt(xmlFile, farmKey .. "#id", farmId)
         setXMLInt(xmlFile, farmKey .. "#pendingSprayViolations", farmData.pendingSprayViolations)
-        setXMLInt(xmlFile, farmKey .. "#totalSprayViolations",
-            farmData.totalSprayViolations)
         setXMLInt(xmlFile, farmKey .. "#pendingEmptyStrawCount", farmData.pendingEmptyStrawCount)
         setXMLInt(xmlFile, farmKey .. "#pendingFullSlurryCount", farmData.pendingFullSlurryCount)
         setXMLInt(xmlFile, farmKey .. "#pendingEmptyFoodCount", farmData.pendingEmptyFoodCount)
         setXMLInt(xmlFile, farmKey .. "#pendingLowProductivityHusbandry", farmData.pendingLowProductivityHusbandry)
-        setXMLInt(xmlFile, farmKey .. "#totalLowProductivityHusbandry", farmData.totalLowProductivityHusbandry)
         setXMLInt(xmlFile, farmKey .. "#pendingAnimalSpaceViolations", farmData.pendingAnimalSpaceViolations)
-        setXMLInt(xmlFile, farmKey .. "#totalAnimalSpaceViolations", farmData.totalAnimalSpaceViolations)
+        setXMLInt(xmlFile, farmKey .. "#currentManureLevel", farmData.currentManureLevel)
+        setXMLInt(xmlFile, farmKey .. "#rollingAverageManureLevel", farmData.rollingAverageManureLevel)
+        setXMLInt(xmlFile, farmKey .. "#pendingManureSpread", farmData.pendingManureSpread)
         i = i + 1
     end
 end
@@ -105,14 +98,14 @@ function FarmGatherer:loadFromXMLFile(xmlFile, key)
         local farmId = getXMLInt(xmlFile, farmKey .. "#id")
         self.data[farmId] = {
             pendingSprayViolations = getXMLInt(xmlFile, farmKey .. "#pendingSprayViolations"),
-            totalSprayViolations = getXMLInt(xmlFile, farmKey .. "#totalSprayViolations"),
             pendingEmptyStrawCount = getXMLInt(xmlFile, farmKey .. "#pendingEmptyStrawCount"),
             pendingFullSlurryCount = getXMLInt(xmlFile, farmKey .. "#pendingFullSlurryCount"),
             pendingEmptyFoodCount = getXMLInt(xmlFile, farmKey .. "#pendingEmptyFoodCount"),
             pendingLowProductivityHusbandry = getXMLInt(xmlFile, farmKey .. "#pendingLowProductivityHusbandry"),
-            totalLowProductivityHusbandry = getXMLInt(xmlFile, farmKey .. "#totalLowProductivityHusbandry"),
             pendingAnimalSpaceViolations = getXMLInt(xmlFile, farmKey .. "#pendingAnimalSpaceViolations"),
-            totalAnimalSpaceViolations = getXMLInt(xmlFile, farmKey .. "#totalAnimalSpaceViolations")
+            currentManureLevel = getXMLInt(xmlFile, farmKey .. "#currentManureLevel"),
+            rollingAverageManureLevel = getXMLInt(xmlFile, farmKey .. "#rollingAverageManureLevel"),
+            pendingManureSpread = getXMLInt(xmlFile, farmKey .. "#pendingManureSpread")
         }
         i = i + 1
     end

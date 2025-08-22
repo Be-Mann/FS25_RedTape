@@ -8,6 +8,8 @@ Policy_mt = Class(Policy)
 --     COMPLETE = 4
 -- }
 
+Policy.FORCE_EVALUATE_ALL = true -- TODO once testing complete
+
 function Policy.new()
     local self = {}
     setmetatable(self, Policy_mt)
@@ -18,7 +20,6 @@ function Policy.new()
     self.evaluationCount = 0
     self.skipNextEvaluation = false
     self.policySystem = g_currentMission.RedTape.PolicySystem
-    self.isComplete = false
 
     return self
 end
@@ -29,7 +30,6 @@ function Policy:writeStream(streamId, connection)
     streamWriteInt32(streamId, self.nextEvaluationYear)
     streamWriteInt32(streamId, self.evaluationCount)
     streamWriteBool(streamId, self.skipNextEvaluation)
-    streamWriteBool(streamId, self.isComplete)
 end
 
 function Policy:readStream(streamId, connection)
@@ -38,7 +38,6 @@ function Policy:readStream(streamId, connection)
     self.nextEvaluationYear = streamReadInt32(streamId)
     self.evaluationCount = streamReadInt32(streamId)
     self.skipNextEvaluation = streamReadBool(streamId)
-    self.isComplete = streamReadBool(streamId)
 end
 
 function Policy:saveToXmlFile(xmlFile, key)
@@ -48,7 +47,6 @@ function Policy:saveToXmlFile(xmlFile, key)
     setXMLInt(xmlFile, key .. "#nextEvaluationYear", self.nextEvaluationYear)
     setXMLInt(xmlFile, key .. "#evaluationCount", self.evaluationCount)
     setXMLBool(xmlFile, key .. "#skipNextEvaluation", self.skipNextEvaluation)
-    setXMLBool(xmlFile, key .. "#isComplete", self.isComplete)
 end
 
 function Policy:loadFromXMLFile(xmlFile, key)
@@ -58,7 +56,6 @@ function Policy:loadFromXMLFile(xmlFile, key)
     self.nextEvaluationYear = getXMLInt(xmlFile, key .. "#nextEvaluationYear")
     self.evaluationCount = getXMLInt(xmlFile, key .. "#evaluationCount")
     self.skipNextEvaluation = getXMLBool(xmlFile, key .. "#skipNextEvaluation")
-    self.isComplete = getXMLBool(xmlFile, key .. "#isComplete")
 end
 
 function Policy:getName()
@@ -123,24 +120,8 @@ function Policy:evaluate()
     end
 
     self.evaluationCount = self.evaluationCount + 1
-    self.isComplete = self.evaluationCount >= policyInfo.maxEvaluationCount
-
-    if not self.isComplete then
-        self.nextEvaluationPeriod = currentPeriod + policyInfo.evaluationInterval
-        if self.nextEvaluationPeriod > 12 then
-            self.nextEvaluationPeriod = self.nextEvaluationPeriod - 12
-        end
-    end
-end
-
-function Policy:complete()
-    local policyInfo = Policies[self.policyIndex]
-
-    for _, farm in pairs(g_farmManager.farmIdToFarm) do
-        local points = policyInfo.complete(policyInfo, self, farm.farmId)
-        if points ~= 0 then
-            local reason = string.format(g_i18n:getText("rt_policy_reason_completion"), points, self:getName())
-            g_client:getServerConnection():sendEvent(PolicyPointsEvent.new(farm.farmId, reason))
-        end
+    self.nextEvaluationPeriod = currentPeriod + policyInfo.evaluationInterval
+    if self.nextEvaluationPeriod > 12 then
+        self.nextEvaluationPeriod = self.nextEvaluationPeriod - 12
     end
 end

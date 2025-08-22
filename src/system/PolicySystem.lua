@@ -79,16 +79,14 @@ end
 function PolicySystem:periodChanged()
     local policySystem = g_currentMission.RedTape.PolicySystem
 
-    local complete = {}
     for _, policy in ipairs(policySystem.policies) do
         policy:evaluate()
-        if policy.isComplete then table.insert(complete, policy) end
     end
 
-    for i, p in pairs(complete) do
-        p:complete()
-        g_client:getServerConnection():sendEvent(PolicyCompletedEvent.new(p.policyIndex))
-    end
+    -- for i, p in pairs(complete) do
+    --     p:complete()
+    --     g_client:getServerConnection():sendEvent(PolicyCompletedEvent.new(p.policyIndex))
+    -- end
 
     policySystem:generatePolicies()
 end
@@ -102,10 +100,7 @@ function PolicySystem:generatePolicies()
             local policy = Policy.new()
             policy.policyIndex = self:getNextPolicyIndex()
             if policy.policyIndex == nil then
-                print("No more policies available, stopping generation.")
                 break
-            else
-                print("Assigned policy index: " .. policy.policyIndex)
             end
             policy:activate()
             g_client:getServerConnection():sendEvent(PolicyActivatedEvent.new(policy))
