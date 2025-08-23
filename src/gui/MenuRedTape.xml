@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8" standalone="no" ?>
-<GUI name="ingameMenuGameStats">
+<GUI name="menuRedTape">
     <GuiElement profile="fs25_menuContainer">
         <GuiElement profile="fs25_menuHeaderPanel">
             <Bitmap profile="fs25_menuHeaderIconBg">
@@ -32,170 +32,52 @@
         <ThreePartBitmap profile="fs25_lineSeparatorTopHighlighted" position="0px -57px"/>
         <MultiTextOption profile="fs25_subCategorySelectorTabbed" id="subCategoryPaging" position="0px -10px" onClick="updateSubCategoryPages"/>
         <GuiElement profile="fs25_subCategorySelectorTabbedContainer" id="subCategoryPages[1]">
-            <GuiElement profile="fs25_statisticsHeaderBox">
-                <Text profile="fs25_statisticsHeaderText" text="$l10n_statistic_commodity"/>
-                <Text profile="fs25_statisticsHeaderText" text="$l10n_statistic_storage" position="116px 0px" textAlignment="right"/>
-                <Text profile="fs25_statisticsHeaderText" text="$l10n_ui_stations" position="456px 0px"/>
-                <Text profile="fs25_statisticsHeaderText" text="$l10n_ui_distance" position="877px 0px"/>
-                <Bitmap profile="fs25_statisticsHeaderIcon" position="1144px 0px"/>
-                <Text profile="fs25_statisticsHeaderText" text="$l10n_ui_buy" position="1134px 0px"/>
-                <Bitmap profile="fs25_statisticsHeaderIcon" position="1390px 0px" imageSliceId="gui.prices_selling"/>
-                <Text profile="fs25_statisticsHeaderText" text="$l10n_ui_sellItem" position="1376px 0px"/>
-                <ThreePartBitmap profile="fs25_lineSeparatorBottom" position="0px -2dp"/>
-            </GuiElement>
-            <SmoothList profile="fs25_pricesProductList" id="productList" listSectionHeader="section">
-                <ListItem profile="fs25_pricesProductListItem">
-                    <Bitmap profile="fs25_pricesProductListItemIcon" name="icon"/>
-                    <Text profile="fs25_pricesProductListItemName" name="title"/>
-                    <Text profile="fs25_pricesProductListItemStorage" name="storage"/>
-                </ListItem>
-                <ListItem profile="fs25_pricesProductListSection" name="section">
-                    <Text profile="fs25_pricesProductListSectionTitle" name="title"/>
-                </ListItem>
-            </SmoothList>
-            <ThreePartBitmap profile="fs25_pricesProductListSliderBox">
-                <Slider profile="fs25_listSlider" dataElementId="productList"/>
-            </ThreePartBitmap>
-            <SmoothList profile="fs25_pricesPriceList" id="priceList">
-                <ListItem profile="fs25_pricesPriceListItem">
-                    <Bitmap profile="fs25_pricesPriceListItemHotspot" name="hotspot"/>
-                    <Text profile="fs25_pricesPriceListItemName" name="title">
-                        <Bitmap profile="fs25_pricesPriceListItemIconTrain" name="iconTrain"/>
-                        <Bitmap profile="fs25_pricesPriceListItemIconPallet" name="iconPallet"/>
-                    </Text>
-                    <Bitmap profile="fs25_pricesPriceListArrow" name="priceTrend"/>
-                    <Text profile="fs25_pricesPriceListItemInfo" name="distance" position="-320px 0px"/>
-                    <Text profile="fs25_pricesPriceListItemInfo" name="buyPrice"/>
-                    <Text profile="fs25_pricesPriceListItemInfo" name="price" position="180px 0px"/>
-                </ListItem>
-            </SmoothList>
-            <ThreePartBitmap profile="fs25_pricesPriceSliderBox">
-                <Slider profile="fs25_listSlider" dataElementId="priceList"/>
-            </ThreePartBitmap>
-            <Text profile="fs25_pricesNoSellpointsText" id="noSellpointsText" text="$l10n_ui_noSellPointsForThisFillType"/>
-            <Text profile="fs25_pricesNoSellpointsText" id="noFluctuationsText" text="$l10n_ui_noFluctuationsForThisFillType" position="200px -550px"/>
-            <Bitmap profile="fs25_pricesSeparator" id="separatorTemplate"/>
-            <Text profile="fs25_pricesMonthText" id="monthTextTemplate"/>
-            <BoxLayout profile="fs25_pricesFluctuationsLayoutBg" id="fluctuationsLayoutBg"/>
-            <GuiElement profile="fs25_pricesFluctuationsContainer" id="fluctuationsContainer">
-                <Bitmap profile="fs25_pricesFluctuationsTodayBar" id="todayBar"/>
-                <Text profile="fs25_pricesFluctuationsPrice" id="fluctuationHigh" position="0px 340px">
-                    <ThreePartBitmap profile="fs25_pricesFluctuationsPriceBg"/>
-                </Text>
-                <Text profile="fs25_pricesFluctuationsPrice" id="fluctuationLow">
-                    <ThreePartBitmap profile="fs25_pricesFluctuationsPriceBg"/>
-                </Text>
-            </GuiElement>
+
         </GuiElement>
         <GuiElement profile="fs25_subCategorySelectorTabbedContainer" id="subCategoryPages[2]">
-
-            <GuiElement position="0 -20px">
+            <GuiElement position="0px -20px">
                 <Text profile="rtLabelTopLeft" text="$l10n_rt_label_active_policies" position="0px 20px"/>
                 <GuiElement id="activePoliciesContainer">
                     <GuiElement profile="fs25_statisticsHeaderBox">
                         <Button profile="rtTableHeader" position="40px -20px" text="$l10n_rt_tableheader_name" handleFocus="false" />
-                        <Button profile="rtTableHeader" position="250px -20px" text="$l10n_rt_tableheader_description" handleFocus="false" />
-                        <Button profile="rtTableHeader" position="570px -20px" text="$l10n_rt_tableheader_next" handleFocus="false" />
                     </GuiElement>
 
-                    <SmoothList id="activePoliciesTable" profile="rt_table" position="20px -50px" size="1480px 290px">
+                    <SmoothList id="activePoliciesTable" profile="rt_table" position="20px -50px" size="400px 670px">
                         <ListItem profile="rtTableListItem">
                             <Text profile="rtListRowCellLeft" position="20px 0px" size="210px 32px" name="name"/>
-                            <Text profile="rtListRowCellLeft" position="230px 0px" size="320px 32px" name="description"/>
-                            <Text profile="rtListRowCellLeft" position="550px 0px" size="150px 32px" name="next"/>
                         </ListItem>
                     </SmoothList>
 
-                    <ThreePartBitmap profile="rt_slider_box" position="0px -50px" size="6px 290px">
+                    <ThreePartBitmap profile="rt_slider_box_left" position="440px -20px" size="6px 670px">
                         <Slider profile="fs25_listSlider" dataElementId="activePoliciesTable" />
                     </ThreePartBitmap>
                 </GuiElement>
 
                 <GuiElement id="noActivePoliciesContainer">
-                    <Text profile="rt_no_events" text="$l10n_ui_noShopItems" position="0px -60px" width="350px" />
+                    <Text profile="rt_header_top_left" text="$l10n_ui_noShopItems" position="0px -60px" width="350px" />
+                    <ThreePartBitmap profile="fs25_contractsContentSeparator"/>
                 </GuiElement>
 
+                <Text profile="rt_header_top_left" text="$l10n_rt_header_compliance_tier" position="460px 20px" width="500px" />
+                <GuiElement profile="fs25_contractsProgressBox" id="progressBox" position="480px -50px">
+                    <Text profile="fs25_contractsContentTitle" id="complianceTier"/>
+                    <Text profile="fs25_contractsContentValue" id="progressText"/>
+                    <ThreePartBitmap profile="fs25_contractsProgressBarBg" id="progressBarBg">
+                        <ThreePartBitmap profile="fs25_contractsProgressBar" id="progressBar"/>
+                    </ThreePartBitmap>
+                </GuiElement>
+
+                <Text profile="rt_header_top_left" text="$l10n_rt_header_policy_compliance" position="460px -240px" width="500px" />
+                <Text profile="rt_header_top_left" text="$l10n_rt_header_no_selected_policy" position="460px -270px" width="500px" />
+
             </GuiElement>
-
-            <ThreePartBitmap profile="fs25_lineSeparatorTop" position="0px -340px" />
-
-            <GuiElement position="0 -320px">
-                <Text profile="rt_no_events" text="TEMP TEXT" position="0px -60px" width="350px" />
-            </GuiElement>
-
         </GuiElement>
         <GuiElement profile="fs25_subCategorySelectorTabbedContainer" id="subCategoryPages[3]">
-            <BoxLayout profile="fs25_statisticsHeaderBox" numFlows="2">
-                <Button profile="fs25_vehiclesHeaderName" text="$l10n_ui_handTool" onClick="onClickButtonSortByNameHandTools" onCreate="onCreateButtonSortByNameHandTools">
-                    <Bitmap profile="fs25_vehiclesHeaderIconSortAscending" position="10.5px 0px" name="iconAscending"/>
-                    <Bitmap profile="fs25_vehiclesHeaderIconSortDescending" position="10.5px 0px" name="iconDescending"/>
-                </Button>
-                <GuiElement profile="fs25_vehiclesHeaderTextContainer" position="450px 0px">
-                    <Button profile="fs25_vehiclesHeaderText" text="$l10n_ui_age" onClick="onClickButtonSortByAgeHandTools" onCreate="onCreateButtonSortByAgeHandTools">
-                        <Bitmap profile="fs25_vehiclesHeaderIconSortAscending" name="iconAscending"/>
-                        <Bitmap profile="fs25_vehiclesHeaderIconSortDescending" name="iconDescending"/>
-                    </Button>
-                </GuiElement>
-                <GuiElement profile="fs25_vehiclesHeaderTextContainer" position="670px 0px">
-                    <Button profile="fs25_vehiclesHeaderText" textAlignment="left" text="$l10n_ui_holder" onClick="onClickButtonSortByHolder" onCreate="onCreateButtonSortByHolder">
-                        <Bitmap profile="fs25_vehiclesHeaderIconSortAscending" position="-15px 0px" name="iconAscending"/>
-                        <Bitmap profile="fs25_vehiclesHeaderIconSortDescending" position="-15px 0px" name="iconDescending"/>
-                    </Button>
-                </GuiElement>
-                <ThreePartBitmap profile="fs25_lineSeparatorBottom" position="0px -2dp"/>
-            </BoxLayout>
-            <SmoothList profile="fs25_vehiclesList" id="handToolsList" endClipperElementName="bottomClipper" absoluteSizeOffset="0px 34px">
-                <ListItem profile="fs25_vehiclesListItem" name="rowTemplate">
-                    <ThreePartBitmap profile="fs25_vehiclesListItemBg" name="alternating"/>
-                    <Text profile="fs25_vehiclesListItemName" name="name"/>
-                    <Text profile="fs25_vehiclesListItemInfo" position="450px 0px" name="age"/>
-                    <Text profile="fs25_vehiclesListItemInfoLarge" position="675px 0px" name="holder"/>
-                </ListItem>
-            </SmoothList>
-            <ThreePartBitmap profile="fs25_lineSeparatorBottom" name="bottomClipper" position="0px -2dp"/>
+
         </GuiElement>
         <GuiElement profile="fs25_subCategorySelectorTabbedContainer" id="subCategoryPages[4]">
-            <GuiElement profile="fs25_statisticsHeaderBox">
-                <Text profile="fs25_statisticsHeaderName" text="$l10n_ui_incomeExpenditure"/>
-                <Text profile="fs25_financesHeaderTodayMinusFour" id="pastDayHeader[4]"/>
-                <Text profile="fs25_financesHeaderTodayMinusThree" id="pastDayHeader[3]"/>
-                <Text profile="fs25_financesHeaderTodayMinusTwo" id="pastDayHeader[2]"/>
-                <Text profile="fs25_financesHeaderTodayMinusOne" id="pastDayHeader[1]"/>
-                <Text profile="fs25_financesHeaderToday" id="pastDayHeader[0]" text="$l10n_ui_today"/>
-                <ThreePartBitmap profile="fs25_lineSeparatorBottom" position="0px -2dp"/>
-            </GuiElement>
-            <SmoothList profile="fs25_financesList" id="financesList">
-                <ListItem profile="fs25_financesListItem">
-                    <ThreePartBitmap profile="fs25_financesListItemBg" name="alternating"/>
-                    <Text profile="fs25_financesListItemName" name="name"/>
-                    <Text profile="fs25_financesListItemToday" name="todayMinusFour" position="-860px 0px"/>
-                    <Text profile="fs25_financesListItemToday" name="todayMinusThree" position="-670px 0px"/>
-                    <Text profile="fs25_financesListItemToday" name="todayMinusTwo" position="-480px 0px"/>
-                    <Text profile="fs25_financesListItemToday" name="todayMinusOne" position="-290px 0px"/>
-                    <Text profile="fs25_financesListItemToday" name="today"/>
-                </ListItem>
-            </SmoothList>
-            <GuiElement profile="fs25_financesFooterBox">
-                <ThreePartBitmap profile="fs25_lineSeparatorTop"/>
-                <GuiElement profile="fs25_financesTotalContainer">
-                    <Text profile="fs25_financesTotalName" text="$l10n_ui_total"/>
-                    <Text profile="fs25_financesListItemToday" id="totalText[5]" textBold="true" position="-860px 0px"/>
-                    <Text profile="fs25_financesListItemToday" id="totalText[4]" textBold="true" position="-670px 0px"/>
-                    <Text profile="fs25_financesListItemToday" id="totalText[3]" textBold="true" position="-480px 0px"/>
-                    <Text profile="fs25_financesListItemToday" id="totalText[2]" textBold="true" position="-290px 0px"/>
-                    <Text profile="fs25_financesListItemToday" id="totalText[1]" textBold="true"/>
-                </GuiElement>
-                <GuiElement profile="fs25_financesBalanceContainer">
-                    <ThreePartBitmap profile="fs25_lineSeparatorTopSoft"/>
-                    <Text profile="fs25_financesTotalName" text="$l10n_ui_balance"/>
-                    <Text profile="fs25_financesListItemToday" id="balanceText" textBold="true"/>
-                </GuiElement>
-                <GuiElement profile="fs25_financesLoanContainer">
-                    <ThreePartBitmap profile="fs25_lineSeparatorTopSoft"/>
-                    <Text profile="fs25_financesTotalName" text="$l10n_ui_loan"/>
-                    <Text profile="fs25_financesListItemToday" id="loanText" textBold="true"/>
-                </GuiElement>
-            </GuiElement>
+
+
         </GuiElement>
         <GuiElement profile="fs25_subCategorySelectorTabbedContainer" id="subCategoryPages[5]">
             <GuiElement id="farmEventsContainer">
@@ -219,13 +101,8 @@
             </GuiElement>
 
             <GuiElement id="noFarmEventsContainer">
-                <Text profile="rt_no_events" text="$l10n_ui_noShopItems" position="0px -60px" width="350px" />
+                <Text profile="rt_header_top_center" text="$l10n_ui_noShopItems" position="0px -60px" width="350px" />
             </GuiElement>
         </GuiElement>
     </GuiElement>
-    <!-- <ThreePartBitmap profile="fs25_sliderDockedBg" id="statisticsSliderBox">
-        <ThreePartBitmap profile="fs25_sliderDockedBox">
-            <Slider profile="fs25_sliderDocked" id="statisticsSlider" dataElementId="financesList"/>
-        </ThreePartBitmap>
-    </ThreePartBitmap> -->
 </GUI>

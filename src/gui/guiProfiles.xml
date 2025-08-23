@@ -29,7 +29,9 @@
     <Profile name="rtListRowCellRight" extends="rtListRowCellLeft">
         <textAlignment value="right" />
     </Profile>
-    <Profile name="rt_no_events" extends="fs25_statisticsHeaderText" with="anchorTopCenter" />
+    <Profile name="rt_header_top_center" extends="fs25_statisticsHeaderText" with="anchorTopCenter" />
+    <Profile name="rt_header_top_left" extends="fs25_statisticsHeaderText" with="anchorTopLeft" />
     <Profile name="rt_table" extends="emptyPanel" with="anchorStretchingYLeft pivotTopLeft" />
     <Profile name="rt_slider_box" extends="fs25_listSliderBox" with="anchorTopRight" />
+    <Profile name="rt_slider_box_left" extends="fs25_listSliderBox" with="anchorTopLeft" />
 </GUIProfiles>

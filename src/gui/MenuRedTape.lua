@@ -82,7 +82,7 @@ function MenuRedTape:onFrameOpen()
         self:updateContent()
     end, self)
     self:updateContent()
-    FocusManager:setFocus(self.subCategoryPaging)
+    -- FocusManager:setFocus(self.subCategoryPaging)
 end
 
 function MenuRedTape:onFrameClose()
@@ -112,7 +112,7 @@ end
 
 function MenuRedTape:updateSubCategoryPages(subCategoryIndex)
     self:updateContent()
-    FocusManager:setFocus(self.subCategoryPaging)
+    -- FocusManager:setFocus(self.subCategoryPaging)
 end
 
 function MenuRedTape:updateContent()
@@ -128,7 +128,17 @@ function MenuRedTape:updateContent()
     if state == MenuRedTape.SUB_CATEGORY.OVERVIEW then
         print("Overview sub-category selected")
     elseif state == MenuRedTape.SUB_CATEGORY.POLICIES then
-        local activePolicies = g_currentMission.RedTape.PolicySystem.policies
+        local policySystem = g_currentMission.RedTape.PolicySystem
+        local activePolicies = policySystem.policies
+        local progress = policySystem:getProgressForCurrentFarm()
+
+        self.complianceTier:setText(string.format(g_i18n:getText("rt_header_current_tier"),
+            PolicySystem.TIER_NAMES[progress.tier]))
+        self.progressText:setText(string.format("%d/%d", progress.points, progress.nextTierPoints))
+        local fullWidth = self.progressBarBg.size[1] - self.progressBar.margin[1] * 2
+        local minProgressBarWidthRatio = self.progressBar.startSize[1] * 2 / fullWidth
+        local progressBarRatio = math.max(progress.points / progress.nextTierPoints, minProgressBarWidthRatio)
+        self.progressBar:setSize(fullWidth * math.min(progressBarRatio, 1), nil)
 
         if #activePolicies == 0 then
             self.activePoliciesContainer:setVisible(false)
@@ -141,6 +151,9 @@ function MenuRedTape:updateContent()
 
         self.activePoliciesRenderer:setData(activePolicies)
         self.activePoliciesTable:reloadData()
+
+        -- FocusManager:linkElements(self.activePoliciesTable, FocusManager.TOP, self.subCategoryPaging)
+        -- FocusManager:linkElements(self.subCategoryPaging, FocusManager.BOTTOM, self.activePoliciesTable)
     elseif state == MenuRedTape.SUB_CATEGORY.SCHEMES then
         print("Schemes sub-category selected")
     elseif state == MenuRedTape.SUB_CATEGORY.EVENTLOG then

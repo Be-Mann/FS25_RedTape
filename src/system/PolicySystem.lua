@@ -1,12 +1,27 @@
 PolicySystem = {}
 PolicySystem_mt = Class(PolicySystem)
 
-PolicySystem.COMPLIANCE_LEVEL = {
-    D = 1,
-    C = 2,
-    B = 3,
-    A = 4
+PolicySystem.TIER = {
+    A = 1,
+    B = 2,
+    C = 3,
+    D = 4
 }
+
+PolicySystem.TIER_NAMES = {
+    [PolicySystem.TIER.A] = "A",
+    [PolicySystem.TIER.B] = "B",
+    [PolicySystem.TIER.C] = "C",
+    [PolicySystem.TIER.D] = "D"
+}
+
+PolicySystem.THRESHOLDS = {
+    [PolicySystem.TIER.A] = 1500,
+    [PolicySystem.TIER.B] = 750,
+    [PolicySystem.TIER.C] = 300,
+    [PolicySystem.TIER.D] = 0
+}
+
 PolicySystem.DESIRED_POLICY_COUNT = 10
 
 function PolicySystem.new()
@@ -45,6 +60,20 @@ function PolicySystem:loadFromXMLFile()
             i = i + 1
         end
 
+        local j = 0
+        while true do
+            local pointsKey = string.format(key .. ".points.farm(%d)", j)
+            if not hasXMLProperty(xmlFile, pointsKey) then
+                break
+            end
+
+            local farmId = getXMLInt(xmlFile, pointsKey .. "#farmId")
+            local points = getXMLInt(xmlFile, pointsKey .. "#points")
+            self.points[farmId] = points
+            j = j + 1
+        end
+
+
         delete(xmlFile)
     end
 end
@@ -66,6 +95,14 @@ function PolicySystem:saveToXmlFile()
         local groupKey = string.format("%s.policies.policy(%d)", key, i)
         group:saveToXmlFile(xmlFile, groupKey)
         i = i + 1
+    end
+
+    local j = 0
+    for farmId, points in pairs(self.points) do
+        local pointsKey = string.format("%s.points.farm(%d)", key, j)
+        setXMLInt(xmlFile, pointsKey .. "#farmId", farmId)
+        setXMLInt(xmlFile, pointsKey .. "#points", points)
+        j = j + 1
     end
 
     saveXMLFile(xmlFile);
@@ -192,4 +229,33 @@ function PolicySystem:removePolicy(policyIndex)
 
     g_currentMission.RedTape.EventLog:addEvent(nil, EventLogItem.EVENT_TYPE.POLICY_COMPLETED,
         string.format(g_i18n:getText("rt_notify_completed_policy"), removed), true)
+end
+
+function PolicySystem:getProgressForCurrentFarm()
+    local farmId = g_currentMission:getFarmId()
+    local points = self.points[farmId] or 0
+
+    local currentTier = PolicySystem.TIER.D
+    for tier = PolicySystem.TIER.A, PolicySystem.TIER.D do
+        local threshold = PolicySystem.THRESHOLDS[tier]
+        if points >= threshold then
+            currentTier = tier
+            break
+        end
+    end
+
+    if currentTier == PolicySystem.TIER.A then
+        return {
+            points = points,
+            tier = currentTier,
+            nextTierPoints = PolicySystem.THRESHOLDS[currentTier] -- maxed out
+        }
+    end
+
+    local nextTierPoints = PolicySystem.THRESHOLDS[currentTier - 1]
+    return {
+        points = points,
+        tier = currentTier,
+        nextTierPoints = nextTierPoints
+    }
 end

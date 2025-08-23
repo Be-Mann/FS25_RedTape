@@ -59,18 +59,24 @@ Policies = {
                 end
             end
 
+            local reward = 0
             if totalHa == 0 then
                 print("Farm " .. farmId .. ": No area to check.")
-                return 0
+                reward = 0
             elseif nonCompliantHa == 0 then
                 print("Farm " .. farmId .. ": All farmlands compliant with Crop Rotation policy.")
-                return policyInfo.periodicReward
+                reward = policyInfo.periodicReward
             else
                 local nonCompliantProportion = nonCompliantHa / totalHa
                 print("Farm " .. farmId .. ": Non-compliant area: " .. nonCompliantHa .. " ha, Total area: " ..
                     totalHa .. " ha, Compliance rate: " .. nonCompliantProportion)
-                return policyInfo.periodicPenalty * nonCompliantProportion
+                reward = policyInfo.periodicPenalty * nonCompliantProportion
             end
+
+            local report = {}
+            table.insert(report, { name = "Total Area (ha)", value = g_i18n:formatArea(totalHa, 2) })
+            table.insert(report, { name = "Non-Compliant Area (ha)", value = g_i18n:formatArea(nonCompliantHa, 2) })
+            return reward, report
         end,
     },
 
@@ -101,8 +107,11 @@ Policies = {
             else
                 reward = policyInfo.periodicReward
             end
+
+            local report = {}
+            table.insert(report, { name = "Spray Violations", value = pendingSprayViolations })
             farmData.pendingSprayViolations = 0
-            return reward
+            return reward, report
         end,
     },
 
@@ -132,8 +141,11 @@ Policies = {
             else
                 reward = policyInfo.periodicReward
             end
+            local report = {}
+            table.insert(report, { name = "Hours without straw", value = pendingEmptyStrawCount })
+
             farmData.pendingEmptyStrawCount = 0
-            return reward
+            return reward, report
         end,
     },
 
@@ -163,8 +175,12 @@ Policies = {
             else
                 reward = policyInfo.periodicReward
             end
+
+            local report = {}
+            table.insert(report, { name = "Hours with full slurry tank", value = pendingFullSlurryCount })
+
             farmData.pendingFullSlurryCount = 0
-            return reward
+            return reward, report
         end
     },
 
@@ -196,8 +212,12 @@ Policies = {
             else
                 reward = policyInfo.periodicReward
             end
+
+            local report = {}
+            table.insert(report, { name = "Hours without food", value = pendingEmptyFoodCount })
+
             farmData.pendingEmptyFoodCount = 0
-            return reward
+            return reward, report
         end,
     },
 
@@ -227,8 +247,12 @@ Policies = {
             else
                 reward = policyInfo.periodicReward
             end
+
+            local report = {}
+            table.insert(report, { name = "Animal Space Violations", value = pendingViolations })
+
             farmData.pendingAnimalSpaceViolations = 0
-            return reward
+            return reward, report
         end,
     },
 
@@ -258,8 +282,12 @@ Policies = {
             else
                 reward = policyInfo.periodicReward
             end
+
+            local report = {}
+            table.insert(report, { name = "Low Productivity Hours", value = pendingViolations })
+
             farmData.pendingLowProductivityHusbandry = 0
-            return reward
+            return reward, report
         end,
     },
 
@@ -296,8 +324,19 @@ Policies = {
             else
                 reward = policyInfo.periodicReward
             end
+
+            local report = {}
+            table.insert(report,
+                { name = "Actual manure spread", value = g_i18n:formatVolume(farmData.pendingManureSpread, 0) })
+            table.insert(report, { name = "Expected manure spread", value = g_i18n:formatVolume(expectedSpread, 0) })
+            table.insert(report,
+                {
+                    name = "Rolling average manure level",
+                    value = g_i18n:formatVolume(farmData.rollingAverageManureLevel, 0)
+                })
+
             farmData.pendingManureSpread = 0
-            return reward
+            return reward, report
         end
     },
 }

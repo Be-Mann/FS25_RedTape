@@ -360,7 +360,7 @@ function FarmGatherer:updateManureLevels()
             end
         end
 
-        if placeable.spec_husbandry ~= nil then
+        if placeable.spec_husbandry ~= nil and placeable.spec_husbandry.storage ~= nil then
             for fillTypeIndex, fillLevel in pairs(placeable.spec_husbandry.storage.fillLevels) do
                 if fillTypeIndex ~= FillType.MANURE then
                     continue

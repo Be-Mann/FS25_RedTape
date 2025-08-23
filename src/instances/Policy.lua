@@ -20,6 +20,7 @@ function Policy.new()
     self.evaluationCount = 0
     self.skipNextEvaluation = false
     self.policySystem = g_currentMission.RedTape.PolicySystem
+    self.lastEvaluationReport = {}
 
     return self
 end
@@ -30,6 +31,12 @@ function Policy:writeStream(streamId, connection)
     streamWriteInt32(streamId, self.nextEvaluationYear)
     streamWriteInt32(streamId, self.evaluationCount)
     streamWriteBool(streamId, self.skipNextEvaluation)
+
+    streamWriteInt32(streamId, #self.lastEvaluationReport)
+    for i, report in ipairs(self.lastEvaluationReport) do
+        streamWriteString(streamId, report.name)
+        streamWriteString(streamId, report.value)
+    end
 end
 
 function Policy:readStream(streamId, connection)
@@ -38,24 +45,51 @@ function Policy:readStream(streamId, connection)
     self.nextEvaluationYear = streamReadInt32(streamId)
     self.evaluationCount = streamReadInt32(streamId)
     self.skipNextEvaluation = streamReadBool(streamId)
+
+    local reportCount = streamReadInt32(streamId)
+    for i = 1, reportCount do
+        local report = {
+            name = streamReadString(streamId),
+            value = streamReadString(streamId)
+        }
+        table.insert(self.lastEvaluationReport, report)
+    end
 end
 
 function Policy:saveToXmlFile(xmlFile, key)
-    -- TODO save commons here, then use the policy info to save specific data
     setXMLInt(xmlFile, key .. "#policyIndex", self.policyIndex)
     setXMLInt(xmlFile, key .. "#nextEvaluationPeriod", self.nextEvaluationPeriod)
     setXMLInt(xmlFile, key .. "#nextEvaluationYear", self.nextEvaluationYear)
     setXMLInt(xmlFile, key .. "#evaluationCount", self.evaluationCount)
     setXMLBool(xmlFile, key .. "#skipNextEvaluation", self.skipNextEvaluation)
+
+    for i, report in ipairs(self.lastEvaluationReport) do
+        local reportKey = string.format("%s#report(%d)", key, i)
+        setXMLString(xmlFile, reportKey .. "#name", report.name)
+        setXMLString(xmlFile, reportKey .. "#value", report.value)
+    end
 end
 
 function Policy:loadFromXMLFile(xmlFile, key)
-    -- TODO load commons here, then use the policy info to load specific data
     self.policyIndex = getXMLInt(xmlFile, key .. "#policyIndex")
     self.nextEvaluationPeriod = getXMLInt(xmlFile, key .. "#nextEvaluationPeriod")
     self.nextEvaluationYear = getXMLInt(xmlFile, key .. "#nextEvaluationYear")
     self.evaluationCount = getXMLInt(xmlFile, key .. "#evaluationCount")
     self.skipNextEvaluation = getXMLBool(xmlFile, key .. "#skipNextEvaluation")
+
+    local i = 0
+    while true do
+        local reportKey = string.format("%s#report(%d)", key, i)
+        if not hasXMLProperty(xmlFile, reportKey) then
+            break
+        end
+        local report = {
+            name = getXMLString(xmlFile, reportKey .. "#name"),
+            value = getXMLString(xmlFile, reportKey .. "#value")
+        }
+        table.insert(self.lastEvaluationReport, report)
+        i = i + 1
+    end
 end
 
 function Policy:getName()
@@ -112,7 +146,8 @@ function Policy:evaluate()
     end
 
     for _, farm in pairs(g_farmManager.farmIdToFarm) do
-        local points = policyInfo.evaluate(policyInfo, self, farm.farmId)
+        local points, report = policyInfo.evaluate(policyInfo, self, farm.farmId)
+        self.lastEvaluationReport = report or {}
         if points ~= 0 then
             local reason = string.format(g_i18n:getText("rt_policy_reason_evaluation"), points, self:getName())
             g_client:getServerConnection():sendEvent(PolicyPointsEvent.new(farm.farmId, points, reason))
