@@ -11,6 +11,15 @@ function FarmlandGatherer.new()
 end
 
 function FarmlandGatherer:hourChanged()
+    -- for _, farmland in pairs(g_farmlandManager.farmlands) do
+    --     if farmland.showOnFarmlandsScreen and farmland.field ~= nil then
+    --         local farmlandData = self:getFarmlandData(farmland.id)
+    --         local field = farmland.field
+    --         local x, z = field:getCenterOfFieldWorldPosition()
+    --         local fruitTypeIndexPos, growthState = FSDensityMapUtil.getFruitTypeIndexAtWorldPos(x, z)
+    --         local currentFruit = g_fruitTypeManager:getFruitTypeByIndex(fruitTypeIndexPos)
+    --     end
+    -- end
 end
 
 function FarmlandGatherer:periodChanged()
@@ -22,8 +31,14 @@ function FarmlandGatherer:periodChanged()
             local x, z = field:getCenterOfFieldWorldPosition()
             local fruitTypeIndexPos, growthState = FSDensityMapUtil.getFruitTypeIndexAtWorldPos(x, z)
             local currentFruit = g_fruitTypeManager:getFruitTypeByIndex(fruitTypeIndexPos)
+            local currentMonth = g_currentMission.RedTape.periodToMonth(g_currentMission.environment.currentPeriod)
+
+            if currentMonth == 4 then
+                farmlandData.retainedSpringGrass = true
+            end
 
             if currentFruit == nil then
+                farmlandData.retainedSpringGrass = false
                 farmlandData.fallowMonths = farmlandData.fallowMonths + 1
                 if farmlandData.mostRecentFruit ~= nil then
                     farmlandData.previousFruit = farmlandData.mostRecentFruit
@@ -31,6 +46,10 @@ function FarmlandGatherer:periodChanged()
                 farmlandData.mostRecentFruit = nil
             else
                 farmlandData.fallowMonths = 0
+
+                if currentFruit ~= FruitType.GRASS then
+                    farmlandData.retainedSpringGrass = false
+                end
 
                 -- if there is a fruit and it different from the previous one, update it
                 if farmlandData.mostRecentFruit ~= nil and farmlandData.mostRecentFruit ~= fruitTypeIndexPos then
@@ -49,7 +68,9 @@ function FarmlandGatherer:getFarmlandData(farmlandId)
             fallowMonths = 0,
             mostRecentFruit = nil,
             previousFruit = nil,
-            areaHa = 0
+            areaHa = 0,
+            lastHarvestPeriod = -1,
+            retainedSpringGrass = false
         }
     end
     return self.data[farmlandId]
@@ -64,6 +85,8 @@ function FarmlandGatherer:saveToXmlFile(xmlFile, key)
         setXMLInt(xmlFile, farmlandKey .. "#mostRecentFruit", farmlandData.mostRecentFruit)
         setXMLInt(xmlFile, farmlandKey .. "#previousFruit", farmlandData.previousFruit)
         setXMLInt(xmlFile, farmlandKey .. "#areaHa", farmlandData.areaHa)
+        setXMLInt(xmlFile, farmlandKey .. "#lastHarvestPeriod", farmlandData.lastHarvestPeriod)
+        setXMLBool(xmlFile, farmlandKey .. "#retainedSpringGrass", farmlandData.retainedSpringGrass)
         i = i + 1
     end
 end
@@ -81,8 +104,30 @@ function FarmlandGatherer:loadFromXMLFile(xmlFile, key)
             fallowMonths = getXMLInt(xmlFile, farmlandKey .. "#fallowMonths"),
             mostRecentFruit = getXMLInt(xmlFile, farmlandKey .. "#mostRecentFruit"),
             previousFruit = getXMLInt(xmlFile, farmlandKey .. "#previousFruit"),
-            areaHa = getXMLInt(xmlFile, farmlandKey .. "#areaHa")
+            areaHa = getXMLInt(xmlFile, farmlandKey .. "#areaHa"),
+            lastHarvestPeriod = getXMLInt(xmlFile, farmlandKey .. "#lastHarvestPeriod"),
+            retainedSpringGrass = getXMLBool(xmlFile, farmlandKey .. "#retainedSpringGrass")
         }
         i = i + 1
+    end
+end
+
+function FarmlandGatherer:checkHarvestedState()
+    for _, farmland in pairs(g_farmlandManager.farmlands) do
+        if farmland.showOnFarmlandsScreen and farmland.field ~= nil then
+            local farmlandData = self:getFarmlandData(farmland.id)
+            local field = farmland.field
+            local x, z = field:getCenterOfFieldWorldPosition()
+            local fruitTypeIndexPos, growthState = FSDensityMapUtil.getFruitTypeIndexAtWorldPos(x, z)
+            local currentFruit = g_fruitTypeManager:getFruitTypeByIndex(fruitTypeIndexPos)
+
+            if currentFruit == nil then
+                continue
+            end
+
+            if currentFruit and growthState == currentFruit.cutState then
+                farmlandData.lastHarvestPeriod = g_currentMission.environment.currentPeriod
+            end
+        end
     end
 end

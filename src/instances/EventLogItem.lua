@@ -6,6 +6,7 @@ EventLogItem.EVENT_TYPE = {
     POLICY_POINTS = 2,
     POLICY_ACTIVATED = 3,
     POLICY_COMPLETED = 4,
+    SCHEME_ACTIVATED = 5,
 }
 
 EventLogItem.EVENT_TYPE_LABELS = {

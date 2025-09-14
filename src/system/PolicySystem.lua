@@ -129,11 +129,12 @@ function PolicySystem:periodChanged()
 end
 
 function PolicySystem:generatePolicies()
-    if #self.policies < PolicySystem.DESIRED_POLICY_COUNT then
+    local rt = g_currentMission.RedTape
+    local existingCount = rt:tableCount(self.policies)
+    if existingCount < PolicySystem.DESIRED_POLICY_COUNT then
         print("Generating new policies...")
-        -- generate new policies if needed
-        for i = #self.policies + 1, PolicySystem.DESIRED_POLICY_COUNT do
-            print("Creating policy " .. i)
+        local toCreate = PolicySystem.DESIRED_POLICY_COUNT - existingCount
+        for i = 1, toCreate do
             local policy = Policy.new()
             policy.policyIndex = self:getNextPolicyIndex()
             if policy.policyIndex == nil then
@@ -193,14 +194,14 @@ function PolicySystem:getNextPolicyIndex()
     return nil
 end
 
--- Called from PolicyActivatedEvent, runs on client
+-- Called from PolicyActivatedEvent, runs on client and server
 function PolicySystem:registerActivatedPolicy(policy)
     table.insert(self.policies, policy)
     g_currentMission.RedTape.EventLog:addEvent(policy.farmId, EventLogItem.EVENT_TYPE.POLICY_ACTIVATED,
         string.format(g_i18n:getText("rt_notify_active_policy"), policy:getName()), true)
 end
 
--- Called from PolicyPointsEvent, runs on client
+-- Called from PolicyPointsEvent, runs on client and server
 function PolicySystem:applyPoints(farmId, points, reason)
     if self.points[farmId] == nil then
         self.points[farmId] = 0
@@ -233,6 +234,10 @@ end
 
 function PolicySystem:getProgressForCurrentFarm()
     local farmId = g_currentMission:getFarmId()
+    return self:getProgressForFarm(farmId)
+end
+
+function PolicySystem:getProgressForFarm(farmId)
     local points = self.points[farmId] or 0
 
     local currentTier = PolicySystem.TIER.D

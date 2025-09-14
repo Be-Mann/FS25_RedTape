@@ -19,6 +19,7 @@ function EventLog.new()
     return self
 end
 
+-- Should not be called directly, only via an broadcasted Event
 function EventLog:addEvent(farmId, eventType, detail, sendNotification)
     local event = EventLogItem.new()
     local rt = g_currentMission.RedTape

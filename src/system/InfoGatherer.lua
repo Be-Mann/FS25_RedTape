@@ -8,14 +8,14 @@ INFO_KEYS = {
     FARMS = "farms",
 }
 
-SAVE_FUNCTIONS = {
-    [INFO_KEYS.FARMLANDS] = function(self, xmlFile, key)
-        setXMLString(xmlFile, key, table.concat(self.data.farmlands, ","))
-    end,
-    [INFO_KEYS.FARMS] = function(self, xmlFile, key)
-        setXMLString(xmlFile, key, table.concat(self.data.farms, ","))
-    end
-}
+-- SAVE_FUNCTIONS = {
+--     [INFO_KEYS.FARMLANDS] = function(self, xmlFile, key)
+--         setXMLString(xmlFile, key, table.concat(self.data.farmlands, ","))
+--     end,
+--     [INFO_KEYS.FARMS] = function(self, xmlFile, key)
+--         setXMLString(xmlFile, key, table.concat(self.data.farms, ","))
+--     end
+-- }
 
 function InfoGatherer.new()
     local self = {}
@@ -30,9 +30,9 @@ function InfoGatherer.new()
 end
 
 function InfoGatherer:loadFromXMLFile()
-    if (not g_currentMission:getIsServer()) then return end
+    if not g_currentMission:getIsServer() then return end
 
-    local savegameFolderPath = g_currentMission.missionInfo.savegameDirectory;
+    local savegameFolderPath = g_currentMission.missionInfo.savegameDirectory
     if savegameFolderPath == nil then
         savegameFolderPath = ('%ssavegame%d'):format(getUserProfileAppPath(), g_currentMission.missionInfo.savegameIndex)
     end
@@ -40,19 +40,13 @@ function InfoGatherer:loadFromXMLFile()
     local key = "InfoGatherer"
 
     if fileExists(savegameFolderPath .. "RedTape.xml") then
-        local xmlFile = loadXMLFile(key, savegameFolderPath .. "RedTape.xml");
+        local xmlFile = loadXMLFile(key, savegameFolderPath .. "RedTape.xml")
 
-        local i = 0
-        while true do
-            local policyKey = string.format(key .. ".policies.policy(%d)", i)
-            if not hasXMLProperty(xmlFile, policyKey) then
-                break
+        for infoKey, gatherer in pairs(self.gatherers) do
+            local gathererKey = key .. ".gatherers"
+            if gatherer.loadFromXMLFile ~= nil then
+                gatherer:loadFromXMLFile(xmlFile, gathererKey)
             end
-
-            local policy = Policy.new()
-            policy:loadFromXMLFile(xmlFile, policyKey)
-            g_client:getServerConnection():sendEvent(PolicyActivatedEvent.new(policy))
-            i = i + 1
         end
 
         delete(xmlFile)
@@ -71,8 +65,8 @@ function InfoGatherer:saveToXmlFile()
     local key = "InfoGatherer";
     local xmlFile = createXMLFile(key, savegameFolderPath .. "RedTape.xml", key);
 
-    for _, value in self.gatherers do
-        value:saveToXmlFile(xmlFile, key .. ".gatherers")
+    for _, gatherer in self.gatherers do
+        gatherer:saveToXmlFile(xmlFile, key .. ".gatherers")
     end
 
     saveXMLFile(xmlFile);
@@ -81,6 +75,10 @@ end
 
 function InfoGatherer:runConstantChecks()
     self.gatherers[INFO_KEYS.FARMS]:checkSprayers()
+end
+
+function InfoGatherer:runInfrequentChecks()
+    self.gatherers[INFO_KEYS.FARMLANDS]:checkHarvestedState()
 end
 
 function InfoGatherer:hourChanged()

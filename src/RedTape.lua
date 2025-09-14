@@ -7,8 +7,10 @@ function RedTape:loadMap()
     MessageType.EVENT_LOG_UPDATED = nextMessageTypeId()
 
     self.leaseDeals = {}
-    self.updateIntervalMs = 2000      -- interval for constant checks
-    self.updateTime = 5000            -- initial interval post load
+    self.constantChecksUpdateIntervalMs = 2000      -- interval for constant checks
+    self.constantChecksUpdateTime = 5000            -- initial interval post load
+    self.infrequentChecksUpdateIntervalMs = 300000 -- interval for infrequent checks
+    self.infrequentChecksUpdateTime = 30000 -- initial interval for infrequent checks
     self.sprayAreaCheckInterval = 500 -- interval for spray area checks
     self.sprayCheckTime = 0           -- initial time for spray area checks
     self.fillTypeCache = nil
@@ -35,11 +37,18 @@ function RedTape:loadMap()
 end
 
 function RedTape:update(dt)
-    if self.updateTime > 0 then
-        self.updateTime = self.updateTime - dt
+    if self.constantChecksUpdateTime > 0 then
+        self.constantChecksUpdateTime = self.constantChecksUpdateTime - dt
     else
         self.InfoGatherer:runConstantChecks()
-        self.updateTime = self.updateIntervalMs
+        self.constantChecksUpdateTime = self.constantChecksUpdateIntervalMs
+    end
+
+    if self.infrequentChecksUpdateTime > 0 then
+        self.infrequentChecksUpdateTime = self.infrequentChecksUpdateTime - dt
+    else
+        self.InfoGatherer:runInfrequentChecks()
+        self.infrequentChecksUpdateTime = self.infrequentChecksUpdateIntervalMs
     end
 end
 
@@ -132,7 +141,7 @@ function RedTape.addIngameMenuPage(frame, pageName, uvs, predicateFunc, insertAf
 
     g_inGameMenu:registerPage(g_inGameMenu[pageName], nil, predicateFunc)
 
-    local iconFileName = Utils.getFilename('images/menuIcon.dds', RedTape.dir)
+    local iconFileName = Utils.getFilename('images/possible-new-icon.dds', RedTape.dir)
     g_inGameMenu:addPageTab(g_inGameMenu[pageName], iconFileName, GuiUtils.getUVs(uvs))
 
     for i = 1, #g_inGameMenu.pageFrames do
@@ -191,6 +200,18 @@ function RedTape:tableHasValue(tab, val)
         end
     end
     return false
+end
+
+function RedTape:tableHasKey(tab, key)
+    return tab[key] ~= nil
+end
+
+function RedTape:tableCount(table)
+    local count = 0
+    for _, _ in pairs(table) do
+        count = count + 1
+    end
+    return count
 end
 
 FSBaseMission.saveSavegame = Utils.appendedFunction(FSBaseMission.saveSavegame, RedTape.saveToXmlFile)

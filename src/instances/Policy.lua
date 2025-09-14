@@ -8,7 +8,7 @@ Policy_mt = Class(Policy)
 --     COMPLETE = 4
 -- }
 
-Policy.FORCE_EVALUATE_ALL = true -- TODO once testing complete
+-- Policy.FORCE_EVALUATE_ALL = true -- TODO once testing complete
 
 function Policy.new()
     local self = {}
@@ -134,7 +134,7 @@ end
 function Policy:evaluate()
     if self.skipNextEvaluation then
         self.skipNextEvaluation = false
-        return 0, false
+        return
     end
 
     local policyInfo = Policies[self.policyIndex]
@@ -142,7 +142,7 @@ function Policy:evaluate()
     if currentPeriod ~= self.nextEvaluationPeriod then
         print("Policy not ready for evaluation. Current period: " .. currentPeriod ..
             ", Next evaluation period: " .. self.nextEvaluationPeriod)
-        return 0, false
+        return
     end
 
     for _, farm in pairs(g_farmManager.farmIdToFarm) do

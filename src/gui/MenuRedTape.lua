@@ -33,6 +33,7 @@ function MenuRedTape.new(i18n, messageCenter)
 
     self.eventLogRenderer = EventLogRenderer.new(self)
     self.activePoliciesRenderer = ActivePoliciesRenderer.new(self)
+    self.availableSchemesRenderer = AvailableSchemesRenderer.new(self)
 
     return self
 end
@@ -155,7 +156,20 @@ function MenuRedTape:updateContent()
         -- FocusManager:linkElements(self.activePoliciesTable, FocusManager.TOP, self.subCategoryPaging)
         -- FocusManager:linkElements(self.subCategoryPaging, FocusManager.BOTTOM, self.activePoliciesTable)
     elseif state == MenuRedTape.SUB_CATEGORY.SCHEMES then
-        print("Schemes sub-category selected")
+        local schemeSystem = g_currentMission.RedTape.SchemeSystem
+        local availableSchemes = schemeSystem:getAvailableSchemesForCurrentFarm()
+
+        if #availableSchemes == 0 then
+            self.availableSchemesContainer:setVisible(false)
+            self.noAvailableSchemesContainer:setVisible(true)
+            return
+        end
+
+        self.availableSchemesContainer:setVisible(true)
+        self.noAvailableSchemesContainer:setVisible(false)
+
+        self.availableSchemesRenderer:setData(availableSchemes)
+        self.availableSchemesTable:reloadData()
     elseif state == MenuRedTape.SUB_CATEGORY.EVENTLOG then
         local farmEvents = g_currentMission.RedTape.EventLog:getEventsForCurrentFarm()
 
