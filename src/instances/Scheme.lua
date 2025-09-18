@@ -44,7 +44,7 @@ end
 -- Called by the SchemeSystem when generating schemes
 function Scheme:initialise()
     local schemeInfo = Schemes[self.schemeIndex]
-    schemeInfo:initialise(schemeInfo, self)
+    schemeInfo.initialise(schemeInfo, self)
 end
 
 function Scheme:getName()
@@ -84,7 +84,16 @@ end
 
 function Scheme:evaluate()
     local schemeInfo = Schemes[self.schemeIndex]
-    schemeInfo:evaluate(schemeInfo, self, self.activatedTier)
+    schemeInfo.evaluate(schemeInfo, self, self.activatedTier)
+end
+
+function Scheme:selected()
+    if not g_currentMission:getIsServer() then
+        return
+    end
+
+    local schemeInfo = Schemes[self.schemeIndex]
+    schemeInfo.selected(schemeInfo, self, self.farmId)
 end
 
 -- Creates a new farm specific scheme from

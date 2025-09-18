@@ -3,6 +3,9 @@ SchemeSystem_mt = Class(SchemeSystem)
 
 SchemeSystem.OPEN_SCHEMES_PER_TIER = 10
 
+table.insert(FinanceStats.statNames, "schemePayout")
+FinanceStats.statNameToIndex["schemePayout"] = #FinanceStats.statNames
+
 function SchemeSystem.new()
     local self = {}
     setmetatable(self, SchemeSystem_mt)
@@ -15,6 +18,9 @@ function SchemeSystem.new()
     self.activeSchemesByFarm = {}
 
     self:loadFromXMLFile()
+
+    MoneyType.SCHEME_PAYOUT = MoneyType.register("schemePayout", "rt_ui_schemePayout")
+    MoneyType.LAST_ID = MoneyType.LAST_ID + 1
 
     return self
 end
@@ -162,6 +168,11 @@ function SchemeSystem:registerSelectedScheme(scheme, farmId)
 
     local schemeForFarm = scheme:createFarmScheme(farmId)
     table.insert(activeSchemes, schemeForFarm)
+
+    if g_currentMission:getIsServer() then
+        schemeForFarm:selected()
+    end
+
     g_messageCenter:publish(MessageType.SCHEMES_UPDATED)
 end
 

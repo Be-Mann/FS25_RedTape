@@ -33,7 +33,10 @@ Schemes = {
         },
         probability = 1,
         initialise = function(schemeInfo, scheme)
-
+            -- Init of an available scheme, prior to selection by a farm
+        end,
+        selected = function(schemeInfo, scheme)
+            -- Any action when applying the scheme to a farm, e.g. initial payout or equipment            
         end,
         evaluate = function(schemeInfo, scheme, tier)
             local rt = g_currentMission.RedTape
@@ -51,8 +54,8 @@ Schemes = {
                     local didHarvest = rt:tableHasValue(invalidMonths, farmlandData.lastHarvestMonth)
                     if farmlandData.retainedSpringGrass and not didHarvest then
                         local bonusPerHa = schemeInfo.tiers[tier].bonusPerHa
-                        local payout = farmlandData.areaHa * bonusPerHa * EconomyManager.getPriceMultiplier()
-                        -- TODO event for payout
+                        local payout = farmlandData.areaHa * bonusPerHa
+                        g_client:getServerConnection():sendEvent(SchemePayoutEvent.new(scheme, farmId, payout))
                     end
                 end
             end
