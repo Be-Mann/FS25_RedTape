@@ -51,7 +51,12 @@ Schemes = {
             for _, farmland in pairs(g_farmlandManager.farmlands) do
                 if farmland.farmId == farmId then
                     local farmlandData = gatherer:getFarmlandData(farmland.id)
-                    local didHarvest = rt:tableHasValue(invalidMonths, farmlandData.lastHarvestMonth)
+                    local lastHarvestMonth = rt.periodToMonth(farmlandData.lastHarvestPeriod)
+                    if farmlandData.lastHarvestPeriod == -1 then
+                        lastHarvestMonth = -1
+                    end
+
+                    local didHarvest = rt:tableHasValue(invalidMonths, lastHarvestMonth)
                     if farmlandData.retainedSpringGrass and not didHarvest then
                         local bonusPerHa = schemeInfo.tiers[tier].bonusPerHa
                         local payout = farmlandData.areaHa * bonusPerHa
