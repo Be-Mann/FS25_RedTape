@@ -5,6 +5,8 @@ RedTape.SaveKey = "RedTape"
 source(RedTape.dir .. "src/gui/MenuRedTape.lua")
 
 function RedTape:loadMap()
+    g_currentMission.RedTape = self
+
     MessageType.EVENT_LOG_UPDATED = nextMessageTypeId()
     MessageType.SCHEMES_UPDATED = nextMessageTypeId()
 
@@ -37,8 +39,6 @@ function RedTape:loadMap()
     g_messageCenter:subscribe(MessageType.PERIOD_CHANGED, RedTape.periodChanged)
 
     self:loadFromXMLFile()
-
-    g_currentMission.RedTape = self
 end
 
 function RedTape:update(dt)

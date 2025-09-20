@@ -50,9 +50,6 @@ function InfoGatherer:saveToXmlFile(xmlFile)
     for _, gatherer in self.gatherers do
         gatherer:saveToXmlFile(xmlFile, key .. ".gatherers")
     end
-
-    saveXMLFile(xmlFile);
-    delete(xmlFile);
 end
 
 function InfoGatherer:runConstantChecks()

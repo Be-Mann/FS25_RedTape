@@ -86,9 +86,6 @@ function SchemeSystem:saveToXmlFile(xmlFile)
         end
         j = j + 1
     end
-
-    saveXMLFile(xmlFile);
-    delete(xmlFile);
 end
 
 function SchemeSystem:hourChanged()

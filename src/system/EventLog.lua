@@ -76,7 +76,7 @@ function EventLog:loadFromXMLFile(xmlFile)
         if not hasXMLProperty(xmlFile, eventKey) then
             break
         end
-        local event = Event.new()
+        local event = EventLogItem.new()
         event:loadFromXMLFile(xmlFile, eventKey)
         table.insert(self.events, event)
         i = i + 1
@@ -94,9 +94,6 @@ function EventLog:saveToXmlFile(xmlFile)
         event:saveToXmlFile(xmlFile, eventKey)
         i = i + 1
     end
-
-    saveXMLFile(xmlFile);
-    delete(xmlFile);
 end
 
 -- function EventLog:saveToXmlFile(xmlFile, key)

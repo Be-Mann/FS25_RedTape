@@ -84,9 +84,6 @@ function PolicySystem:saveToXmlFile(xmlFile)
         setXMLInt(xmlFile, pointsKey .. "#points", points)
         j = j + 1
     end
-
-    saveXMLFile(xmlFile);
-    delete(xmlFile);
 end
 
 function PolicySystem:hourChanged()

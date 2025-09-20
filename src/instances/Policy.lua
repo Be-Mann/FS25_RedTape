@@ -148,6 +148,12 @@ function Policy:evaluate()
     for _, farm in pairs(g_farmManager.farmIdToFarm) do
         local points, report = policyInfo.evaluate(policyInfo, self, farm.farmId)
         self.lastEvaluationReport = report or {}
+
+        -- Ensure all report values are strings
+        for i, report in ipairs(self.lastEvaluationReport) do
+            report.value = tostring(report.value)
+        end
+
         if points ~= 0 then
             local reason = string.format(g_i18n:getText("rt_policy_reason_evaluation"), points, self:getName())
             g_client:getServerConnection():sendEvent(PolicyPointsEvent.new(farm.farmId, points, reason))

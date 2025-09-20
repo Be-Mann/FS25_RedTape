@@ -41,9 +41,6 @@ function TaxSystem:saveToXmlFile(xmlFile)
         group:saveToXmlFile(xmlFile, groupKey)
         i = i + 1
     end
-
-    saveXMLFile(xmlFile);
-    delete(xmlFile);
 end
 
 function TaxSystem:hourChanged()
