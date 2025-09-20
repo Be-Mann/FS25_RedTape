@@ -47,8 +47,29 @@ function SchemeSystem:loadFromXMLFile()
 
             local scheme = Scheme.new()
             scheme:loadFromXMLFile(xmlFile, schemeKey)
-            table.insert(self.availableSchemes, scheme)
+            local tier = getXMLInt(xmlFile, schemeKey .. "#tier")
+            if self.availableSchemes[tier] == nil then
+                self.availableSchemes[tier] = {}
+            end
+            table.insert(self.availableSchemes[tier], scheme)
             i = i + 1
+        end
+
+        local j = 0
+        while true do
+            local schemeKey = string.format(key .. ".activeSchemes.scheme(%d)", j)
+            if not hasXMLProperty(xmlFile, schemeKey) then
+                break
+            end
+
+            local scheme = Scheme.new()
+            scheme:loadFromXMLFile(xmlFile, schemeKey)
+            local farmId = scheme.farmId
+            if self.activeSchemesByFarm[farmId] == nil then
+                self.activeSchemesByFarm[farmId] = {}
+            end
+            table.insert(self.activeSchemesByFarm[farmId], scheme)
+            j = j + 1
         end
 
         delete(xmlFile)
@@ -68,10 +89,22 @@ function SchemeSystem:saveToXmlFile()
     local xmlFile = createXMLFile(key, savegameFolderPath .. "RedTape.xml", key);
 
     local i = 0
-    for _, scheme in pairs(self.availableSchemes) do
-        local schemeKey = string.format("%s.schemes.scheme(%d)", key, i)
-        scheme:saveToXmlFile(xmlFile, schemeKey)
-        i = i + 1
+    for tier, schemes in pairs(self.availableSchemes) do
+        for _, scheme in pairs(schemes) do
+            local schemeKey = string.format("%s.schemes.scheme(%d)", key, i)
+            scheme:saveToXmlFile(xmlFile, schemeKey)
+            setXMLInt(xmlFile, schemeKey .. "#tier", tier)
+            i = i + 1
+        end
+    end
+
+    local j = 0
+    for _, schemes in pairs(self.activeSchemesByFarm) do
+        for _, scheme in pairs(schemes) do
+            local schemeKey = string.format("%s.activeSchemes.scheme(%d)", key, j)
+            scheme:saveToXmlFile(xmlFile, schemeKey)
+        end
+        j = j + 1
     end
 
     saveXMLFile(xmlFile);

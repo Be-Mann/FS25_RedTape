@@ -137,7 +137,7 @@ function PolicySystem:generatePolicies()
         for i = 1, toCreate do
             local policy = Policy.new()
             policy.policyIndex = self:getNextPolicyIndex()
-            if policy.policyIndex == nil then
+            if policy.policyIndex == -1 then
                 break
             end
             policy:activate()

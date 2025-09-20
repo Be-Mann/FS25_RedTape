@@ -14,9 +14,8 @@ function Policy.new()
     local self = {}
     setmetatable(self, Policy_mt)
 
-    self.policyIndex = nil
-    self.nextEvaluationPeriod = nil
-    self.nextEvaluationYear = nil
+    self.policyIndex = -1
+    self.nextEvaluationPeriod = -1
     self.evaluationCount = 0
     self.skipNextEvaluation = false
     self.policySystem = g_currentMission.RedTape.PolicySystem
@@ -28,7 +27,6 @@ end
 function Policy:writeStream(streamId, connection)
     streamWriteInt32(streamId, self.policyIndex)
     streamWriteInt32(streamId, self.nextEvaluationPeriod)
-    streamWriteInt32(streamId, self.nextEvaluationYear)
     streamWriteInt32(streamId, self.evaluationCount)
     streamWriteBool(streamId, self.skipNextEvaluation)
 
@@ -42,7 +40,6 @@ end
 function Policy:readStream(streamId, connection)
     self.policyIndex = streamReadInt32(streamId)
     self.nextEvaluationPeriod = streamReadInt32(streamId)
-    self.nextEvaluationYear = streamReadInt32(streamId)
     self.evaluationCount = streamReadInt32(streamId)
     self.skipNextEvaluation = streamReadBool(streamId)
 
@@ -59,7 +56,6 @@ end
 function Policy:saveToXmlFile(xmlFile, key)
     setXMLInt(xmlFile, key .. "#policyIndex", self.policyIndex)
     setXMLInt(xmlFile, key .. "#nextEvaluationPeriod", self.nextEvaluationPeriod)
-    setXMLInt(xmlFile, key .. "#nextEvaluationYear", self.nextEvaluationYear)
     setXMLInt(xmlFile, key .. "#evaluationCount", self.evaluationCount)
     setXMLBool(xmlFile, key .. "#skipNextEvaluation", self.skipNextEvaluation)
 
@@ -73,7 +69,6 @@ end
 function Policy:loadFromXMLFile(xmlFile, key)
     self.policyIndex = getXMLInt(xmlFile, key .. "#policyIndex")
     self.nextEvaluationPeriod = getXMLInt(xmlFile, key .. "#nextEvaluationPeriod")
-    self.nextEvaluationYear = getXMLInt(xmlFile, key .. "#nextEvaluationYear")
     self.evaluationCount = getXMLInt(xmlFile, key .. "#evaluationCount")
     self.skipNextEvaluation = getXMLBool(xmlFile, key .. "#skipNextEvaluation")
 
@@ -93,7 +88,7 @@ function Policy:loadFromXMLFile(xmlFile, key)
 end
 
 function Policy:getName()
-    if self.policyIndex == nil then
+    if self.policyIndex == -1 then
         return nil
     end
 
@@ -103,7 +98,7 @@ function Policy:getName()
 end
 
 function Policy:getDescription()
-    if self.policyIndex == nil then
+    if self.policyIndex == -1 then
         return nil
     end
 
