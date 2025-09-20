@@ -21,7 +21,7 @@ function EventLogItem.new()
     local self = {}
     setmetatable(self, EventLogItem_mt)
 
-    self.farmId = nil
+    self.farmId = -1
     self.eventType = EventLogItem.EVENT_TYPE.NONE
     self.detail = ""
     self.month = 0

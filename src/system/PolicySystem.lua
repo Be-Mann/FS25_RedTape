@@ -30,65 +30,45 @@ function PolicySystem.new()
     self.policies = {}
     self.points = {}
 
-    self:loadFromXMLFile()
     return self
 end
 
-function PolicySystem:loadFromXMLFile()
+function PolicySystem:loadFromXMLFile(xmlFile)
     if (not g_currentMission:getIsServer()) then return end
 
-    local savegameFolderPath = g_currentMission.missionInfo.savegameDirectory;
-    if savegameFolderPath == nil then
-        savegameFolderPath = ('%ssavegame%d'):format(getUserProfileAppPath(), g_currentMission.missionInfo.savegameIndex)
+    local key = RedTape.SaveKey .. ".policySystem"
+
+    local i = 0
+    while true do
+        local policyKey = string.format(key .. ".policies.policy(%d)", i)
+        if not hasXMLProperty(xmlFile, policyKey) then
+            break
+        end
+
+        local policy = Policy.new()
+        policy:loadFromXMLFile(xmlFile, policyKey)
+        g_client:getServerConnection():sendEvent(PolicyActivatedEvent.new(policy))
+        i = i + 1
     end
-    savegameFolderPath = savegameFolderPath .. "/"
-    local key = "PolicySystem"
 
-    if fileExists(savegameFolderPath .. "RedTape.xml") then
-        local xmlFile = loadXMLFile(key, savegameFolderPath .. "RedTape.xml");
-
-        local i = 0
-        while true do
-            local policyKey = string.format(key .. ".policies.policy(%d)", i)
-            if not hasXMLProperty(xmlFile, policyKey) then
-                break
-            end
-
-            local policy = Policy.new()
-            policy:loadFromXMLFile(xmlFile, policyKey)
-            g_client:getServerConnection():sendEvent(PolicyActivatedEvent.new(policy))
-            i = i + 1
+    local j = 0
+    while true do
+        local pointsKey = string.format(key .. ".points.farm(%d)", j)
+        if not hasXMLProperty(xmlFile, pointsKey) then
+            break
         end
 
-        local j = 0
-        while true do
-            local pointsKey = string.format(key .. ".points.farm(%d)", j)
-            if not hasXMLProperty(xmlFile, pointsKey) then
-                break
-            end
-
-            local farmId = getXMLInt(xmlFile, pointsKey .. "#farmId")
-            local points = getXMLInt(xmlFile, pointsKey .. "#points")
-            self.points[farmId] = points
-            j = j + 1
-        end
-
-
-        delete(xmlFile)
+        local farmId = getXMLInt(xmlFile, pointsKey .. "#farmId")
+        local points = getXMLInt(xmlFile, pointsKey .. "#points")
+        self.points[farmId] = points
+        j = j + 1
     end
 end
 
-function PolicySystem:saveToXmlFile()
+function PolicySystem:saveToXmlFile(xmlFile)
     if (not g_currentMission:getIsServer()) then return end
 
-    local savegameFolderPath = g_currentMission.missionInfo.savegameDirectory .. "/"
-    if savegameFolderPath == nil then
-        savegameFolderPath = ('%ssavegame%d'):format(getUserProfileAppPath(),
-            g_currentMission.missionInfo.savegameIndex .. "/")
-    end
-
-    local key = "PolicySystem";
-    local xmlFile = createXMLFile(key, savegameFolderPath .. "RedTape.xml", key);
+    local key = RedTape.SaveKey .. ".policySystem"
 
     local i = 0
     for _, group in pairs(self.policies) do
@@ -120,11 +100,6 @@ function PolicySystem:periodChanged()
         policy:evaluate()
     end
 
-    -- for i, p in pairs(complete) do
-    --     p:complete()
-    --     g_client:getServerConnection():sendEvent(PolicyCompletedEvent.new(p.policyIndex))
-    -- end
-
     policySystem:generatePolicies()
 end
 
@@ -132,14 +107,14 @@ function PolicySystem:generatePolicies()
     local rt = g_currentMission.RedTape
     local existingCount = rt:tableCount(self.policies)
     if existingCount < PolicySystem.DESIRED_POLICY_COUNT then
-        print("Generating new policies...")
         local toCreate = PolicySystem.DESIRED_POLICY_COUNT - existingCount
         for i = 1, toCreate do
             local policy = Policy.new()
-            policy.policyIndex = self:getNextPolicyIndex()
-            if policy.policyIndex == -1 then
+            local nextIndex = self:getNextPolicyIndex()
+            if nextIndex == nil then
                 break
             end
+            policy.policyIndex = nextIndex
             policy:activate()
             g_client:getServerConnection():sendEvent(PolicyActivatedEvent.new(policy))
         end

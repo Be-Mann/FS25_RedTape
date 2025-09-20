@@ -29,41 +29,23 @@ function InfoGatherer.new()
     return self
 end
 
-function InfoGatherer:loadFromXMLFile()
+function InfoGatherer:loadFromXMLFile(xmlFile)
     if not g_currentMission:getIsServer() then return end
 
-    local savegameFolderPath = g_currentMission.missionInfo.savegameDirectory
-    if savegameFolderPath == nil then
-        savegameFolderPath = ('%ssavegame%d'):format(getUserProfileAppPath(), g_currentMission.missionInfo.savegameIndex)
-    end
-    savegameFolderPath = savegameFolderPath .. "/"
-    local key = "InfoGatherer"
+    local key = RedTape.SaveKey .. ".infoGatherer"
 
-    if fileExists(savegameFolderPath .. "RedTape.xml") then
-        local xmlFile = loadXMLFile(key, savegameFolderPath .. "RedTape.xml")
-
-        for infoKey, gatherer in pairs(self.gatherers) do
-            local gathererKey = key .. ".gatherers"
-            if gatherer.loadFromXMLFile ~= nil then
-                gatherer:loadFromXMLFile(xmlFile, gathererKey)
-            end
+    for infoKey, gatherer in pairs(self.gatherers) do
+        local gathererKey = key .. ".gatherers"
+        if gatherer.loadFromXMLFile ~= nil then
+            gatherer:loadFromXMLFile(xmlFile, gathererKey)
         end
-
-        delete(xmlFile)
     end
 end
 
-function InfoGatherer:saveToXmlFile()
+function InfoGatherer:saveToXmlFile(xmlFile)
     if (not g_currentMission:getIsServer()) then return end
 
-    local savegameFolderPath = g_currentMission.missionInfo.savegameDirectory .. "/"
-    if savegameFolderPath == nil then
-        savegameFolderPath = ('%ssavegame%d'):format(getUserProfileAppPath(),
-            g_currentMission.missionInfo.savegameIndex .. "/")
-    end
-
-    local key = "InfoGatherer";
-    local xmlFile = createXMLFile(key, savegameFolderPath .. "RedTape.xml", key);
+    local key = RedTape.SaveKey .. ".infoGatherer"
 
     for _, gatherer in self.gatherers do
         gatherer:saveToXmlFile(xmlFile, key .. ".gatherers")

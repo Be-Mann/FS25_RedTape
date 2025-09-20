@@ -110,6 +110,11 @@ end
 function Policy:activate()
     local policyInfo = Policies[self.policyIndex]
 
+    if policyInfo == nil then
+        print("Error: Invalid policy index " .. tostring(self.policyIndex))
+        return
+    end
+
     if policyInfo.evaluationInterval > 0 then
         self.nextEvaluationPeriod = g_currentMission.environment.currentPeriod + policyInfo.evaluationInterval
         if self.nextEvaluationPeriod > 12 then

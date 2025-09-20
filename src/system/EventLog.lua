@@ -15,7 +15,6 @@ function EventLog.new()
 
     self.events = {}
 
-    self:loadFromXMLFile()
     return self
 end
 
@@ -24,7 +23,7 @@ function EventLog:addEvent(farmId, eventType, detail, sendNotification)
     local event = EventLogItem.new()
     local rt = g_currentMission.RedTape
 
-    event.farmId = farmId
+    event.farmId = farmId or -1
     event.eventType = eventType
     event.detail = detail
     event.month = rt.periodToMonth(g_currentMission.environment.currentPeriod)
@@ -58,7 +57,7 @@ function EventLog:getEventsForCurrentFarm()
     local farmEvents = {}
 
     for _, event in pairs(self.events) do
-        if event.farmId == nil or event.farmId == farmId then
+        if event.farmId == -1 or event.farmId == farmId then
             table.insert(farmEvents, event)
         end
     end
@@ -67,46 +66,27 @@ function EventLog:getEventsForCurrentFarm()
     return farmEvents
 end
 
-function EventLog:loadFromXMLFile()
+function EventLog:loadFromXMLFile(xmlFile)
     if (not g_currentMission:getIsServer()) then return end
 
-    local savegameFolderPath = g_currentMission.missionInfo.savegameDirectory;
-    if savegameFolderPath == nil then
-        savegameFolderPath = ('%ssavegame%d'):format(getUserProfileAppPath(), g_currentMission.missionInfo.savegameIndex)
-    end
-    savegameFolderPath = savegameFolderPath .. "/"
-    local key = "EventLog"
-
-    if fileExists(savegameFolderPath .. "RedTape.xml") then
-        local xmlFile = loadXMLFile(key, savegameFolderPath .. "RedTape.xml");
-
-        local i = 0
-        while true do
-            local eventKey = string.format("%s.events.event(%d)", key, i)
-            if not hasXMLProperty(xmlFile, eventKey) then
-                break
-            end
-            local event = Event.new()
-            event:loadFromXMLFile(xmlFile, eventKey)
-            table.insert(self.events, event)
-            i = i + 1
+    local key = RedTape.SaveKey .. ".eventLog"
+    local i = 0
+    while true do
+        local eventKey = string.format("%s.events.event(%d)", key, i)
+        if not hasXMLProperty(xmlFile, eventKey) then
+            break
         end
-
-        delete(xmlFile)
+        local event = Event.new()
+        event:loadFromXMLFile(xmlFile, eventKey)
+        table.insert(self.events, event)
+        i = i + 1
     end
 end
 
-function EventLog:saveToXmlFile()
+function EventLog:saveToXmlFile(xmlFile)
     if (not g_currentMission:getIsServer()) then return end
 
-    local savegameFolderPath = g_currentMission.missionInfo.savegameDirectory .. "/"
-    if savegameFolderPath == nil then
-        savegameFolderPath = ('%ssavegame%d'):format(getUserProfileAppPath(),
-            g_currentMission.missionInfo.savegameIndex .. "/")
-    end
-
-    local key = "EventLog";
-    local xmlFile = createXMLFile(key, savegameFolderPath .. "RedTape.xml", key);
+    local key = RedTape.SaveKey .. ".eventLog"
 
     local i = 0
     for _, event in pairs(self.events) do

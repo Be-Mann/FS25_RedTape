@@ -1,5 +1,6 @@
 RedTape = {}
 RedTape.dir = g_currentModDirectory
+RedTape.SaveKey = "RedTape"
 
 source(RedTape.dir .. "src/gui/MenuRedTape.lua")
 
@@ -8,12 +9,12 @@ function RedTape:loadMap()
     MessageType.SCHEMES_UPDATED = nextMessageTypeId()
 
     self.leaseDeals = {}
-    self.constantChecksUpdateIntervalMs = 2000      -- interval for constant checks
-    self.constantChecksUpdateTime = 5000            -- initial interval post load
+    self.constantChecksUpdateIntervalMs = 2000     -- interval for constant checks
+    self.constantChecksUpdateTime = 5000           -- initial interval post load
     self.infrequentChecksUpdateIntervalMs = 300000 -- interval for infrequent checks
-    self.infrequentChecksUpdateTime = 30000 -- initial interval for infrequent checks
-    self.sprayAreaCheckInterval = 500 -- interval for spray area checks
-    self.sprayCheckTime = 0           -- initial time for spray area checks
+    self.infrequentChecksUpdateTime = 30000        -- initial interval for infrequent checks
+    self.sprayAreaCheckInterval = 500              -- interval for spray area checks
+    self.sprayCheckTime = 0                        -- initial time for spray area checks
     self.fillTypeCache = nil
 
     g_gui:loadProfiles(RedTape.dir .. "src/gui/guiProfiles.xml")
@@ -34,6 +35,8 @@ function RedTape:loadMap()
 
     g_messageCenter:subscribe(MessageType.HOUR_CHANGED, RedTape.hourChanged)
     g_messageCenter:subscribe(MessageType.PERIOD_CHANGED, RedTape.periodChanged)
+
+    self:loadFromXMLFile()
 
     g_currentMission.RedTape = self
 end
@@ -90,12 +93,46 @@ function RedTape:getFillTypeCache()
     return self.fillTypeCache
 end
 
+function RedTape:loadFromXMLFile()
+    if (not g_currentMission:getIsServer()) then return end
+
+    local savegameFolderPath = g_currentMission.missionInfo.savegameDirectory;
+    if savegameFolderPath == nil then
+        savegameFolderPath = ('%ssavegame%d'):format(getUserProfileAppPath(), g_currentMission.missionInfo.savegameIndex)
+    end
+    savegameFolderPath = savegameFolderPath .. "/"
+
+    if fileExists(savegameFolderPath .. RedTape.SaveKey .. ".xml") then
+        local xmlFile = loadXMLFile(RedTape.SaveKey, savegameFolderPath .. RedTape.SaveKey .. ".xml");
+        g_currentMission.RedTape.PolicySystem:loadFromXMLFile(xmlFile)
+        g_currentMission.RedTape.SchemeSystem:loadFromXMLFile(xmlFile)
+        g_currentMission.RedTape.TaxSystem:loadFromXMLFile(xmlFile)
+        g_currentMission.RedTape.EventLog:loadFromXMLFile(xmlFile)
+        g_currentMission.RedTape.InfoGatherer:loadFromXMLFile(xmlFile)
+
+        delete(xmlFile)
+    end
+end
+
 function RedTape:saveToXmlFile()
-    g_currentMission.RedTape.PolicySystem:saveToXmlFile()
-    g_currentMission.RedTape.SchemeSystem:saveToXmlFile()
-    g_currentMission.RedTape.TaxSystem:saveToXmlFile()
-    g_currentMission.RedTape.EventLog:saveToXmlFile()
-    g_currentMission.RedTape.InfoGatherer:saveToXmlFile()
+    if (not g_currentMission:getIsServer()) then return end
+
+    local savegameFolderPath = g_currentMission.missionInfo.savegameDirectory .. "/"
+    if savegameFolderPath == nil then
+        savegameFolderPath = ('%ssavegame%d'):format(getUserProfileAppPath(),
+            g_currentMission.missionInfo.savegameIndex .. "/")
+    end
+
+    local xmlFile = createXMLFile(RedTape.SaveKey, savegameFolderPath .. RedTape.SaveKey .. ".xml", RedTape.SaveKey);
+
+    g_currentMission.RedTape.PolicySystem:saveToXmlFile(xmlFile)
+    g_currentMission.RedTape.SchemeSystem:saveToXmlFile(xmlFile)
+    g_currentMission.RedTape.TaxSystem:saveToXmlFile(xmlFile)
+    g_currentMission.RedTape.EventLog:saveToXmlFile(xmlFile)
+    g_currentMission.RedTape.InfoGatherer:saveToXmlFile(xmlFile)
+
+    saveXMLFile(xmlFile);
+    delete(xmlFile);
 end
 
 -- from Courseplay
@@ -193,7 +230,6 @@ function RedTape.monthToString(month)
         return g_i18n:getText("ui_month12")
     end
 end
-
 
 function RedTape:tableHasValue(tab, val)
     for _, value in ipairs(tab) do

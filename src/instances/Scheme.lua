@@ -6,13 +6,13 @@ function Scheme.new()
     local self = {}
     setmetatable(self, Scheme_mt)
 
-    self.schemeIndex = nil
+    self.schemeIndex = -1
 
     -- if -1, the scheme is open for selection by farms
     self.farmId = -1
 
     -- Set when a farm chooses a scheme
-    self.activatedTier = nil
+    self.activatedTier = -1
 
     return self
 end
@@ -48,7 +48,7 @@ function Scheme:initialise()
 end
 
 function Scheme:getName()
-    if self.schemeIndex == nil then
+    if self.schemeIndex == -1 then
         return nil
     end
 

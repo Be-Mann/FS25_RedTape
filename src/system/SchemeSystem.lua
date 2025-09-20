@@ -17,76 +17,56 @@ function SchemeSystem.new()
     }
     self.activeSchemesByFarm = {}
 
-    self:loadFromXMLFile()
-
     MoneyType.SCHEME_PAYOUT = MoneyType.register("schemePayout", "rt_ui_schemePayout")
     MoneyType.LAST_ID = MoneyType.LAST_ID + 1
 
     return self
 end
 
-function SchemeSystem:loadFromXMLFile()
+function SchemeSystem:loadFromXMLFile(xmlFile)
     if (not g_currentMission:getIsServer()) then return end
 
-    local savegameFolderPath = g_currentMission.missionInfo.savegameDirectory;
-    if savegameFolderPath == nil then
-        savegameFolderPath = ('%ssavegame%d'):format(getUserProfileAppPath(), g_currentMission.missionInfo.savegameIndex)
+    local key = RedTape.SaveKey .. ".schemeSystem"
+
+    local i = 0
+    while true do
+        local schemeKey = string.format(key .. ".schemes.scheme(%d)", i)
+        if not hasXMLProperty(xmlFile, schemeKey) then
+            break
+        end
+
+        local scheme = Scheme.new()
+        scheme:loadFromXMLFile(xmlFile, schemeKey)
+        local tier = getXMLInt(xmlFile, schemeKey .. "#tier")
+        if self.availableSchemes[tier] == nil then
+            self.availableSchemes[tier] = {}
+        end
+        table.insert(self.availableSchemes[tier], scheme)
+        i = i + 1
     end
-    savegameFolderPath = savegameFolderPath .. "/"
-    local key = "SchemeSystem"
 
-    if fileExists(savegameFolderPath .. "RedTape.xml") then
-        local xmlFile = loadXMLFile(key, savegameFolderPath .. "RedTape.xml");
-
-        local i = 0
-        while true do
-            local schemeKey = string.format(key .. ".schemes.scheme(%d)", i)
-            if not hasXMLProperty(xmlFile, schemeKey) then
-                break
-            end
-
-            local scheme = Scheme.new()
-            scheme:loadFromXMLFile(xmlFile, schemeKey)
-            local tier = getXMLInt(xmlFile, schemeKey .. "#tier")
-            if self.availableSchemes[tier] == nil then
-                self.availableSchemes[tier] = {}
-            end
-            table.insert(self.availableSchemes[tier], scheme)
-            i = i + 1
+    local j = 0
+    while true do
+        local schemeKey = string.format(key .. ".activeSchemes.scheme(%d)", j)
+        if not hasXMLProperty(xmlFile, schemeKey) then
+            break
         end
 
-        local j = 0
-        while true do
-            local schemeKey = string.format(key .. ".activeSchemes.scheme(%d)", j)
-            if not hasXMLProperty(xmlFile, schemeKey) then
-                break
-            end
-
-            local scheme = Scheme.new()
-            scheme:loadFromXMLFile(xmlFile, schemeKey)
-            local farmId = scheme.farmId
-            if self.activeSchemesByFarm[farmId] == nil then
-                self.activeSchemesByFarm[farmId] = {}
-            end
-            table.insert(self.activeSchemesByFarm[farmId], scheme)
-            j = j + 1
+        local scheme = Scheme.new()
+        scheme:loadFromXMLFile(xmlFile, schemeKey)
+        local farmId = scheme.farmId
+        if self.activeSchemesByFarm[farmId] == nil then
+            self.activeSchemesByFarm[farmId] = {}
         end
-
-        delete(xmlFile)
+        table.insert(self.activeSchemesByFarm[farmId], scheme)
+        j = j + 1
     end
 end
 
-function SchemeSystem:saveToXmlFile()
+function SchemeSystem:saveToXmlFile(xmlFile)
     if (not g_currentMission:getIsServer()) then return end
 
-    local savegameFolderPath = g_currentMission.missionInfo.savegameDirectory .. "/"
-    if savegameFolderPath == nil then
-        savegameFolderPath = ('%ssavegame%d'):format(getUserProfileAppPath(),
-            g_currentMission.missionInfo.savegameIndex .. "/")
-    end
-
-    local key = "SchemeSystem";
-    local xmlFile = createXMLFile(key, savegameFolderPath .. "RedTape.xml", key);
+    local key = RedTape.SaveKey .. ".schemeSystem"
 
     local i = 0
     for tier, schemes in pairs(self.availableSchemes) do
@@ -137,13 +117,14 @@ function SchemeSystem:generateSchemes()
             for i = 1, toCreate do
                 local scheme = Scheme.new()
                 scheme.tier = tier
-                scheme.schemeIndex = self:getNextSchemeIndex(tier)
+                local nextIndex = self:getNextSchemeIndex(tier)
 
-                if scheme.schemeIndex == nil then
+                if nextIndex == nil then
                     print("No more schemes available for tier " .. tier)
                     break
                 end
 
+                scheme.schemeIndex = nextIndex
                 scheme:initialise()
                 g_client:getServerConnection():sendEvent(SchemeActivatedEvent.new(scheme))
             end
