@@ -32,8 +32,9 @@ function Policy:writeStream(streamId, connection)
 
     streamWriteInt32(streamId, #self.lastEvaluationReport)
     for i, report in ipairs(self.lastEvaluationReport) do
-        streamWriteString(streamId, report.name)
-        streamWriteString(streamId, report.value)
+        streamWriteString(streamId, report.cell1)
+        streamWriteString(streamId, report.cell2)
+        streamWriteString(streamId, report.cell3)
     end
 end
 
@@ -46,8 +47,9 @@ function Policy:readStream(streamId, connection)
     local reportCount = streamReadInt32(streamId)
     for i = 1, reportCount do
         local report = {
-            name = streamReadString(streamId),
-            value = streamReadString(streamId)
+            cell1 = streamReadString(streamId),
+            cell2 = streamReadString(streamId),
+            cell3 = streamReadString(streamId)
         }
         table.insert(self.lastEvaluationReport, report)
     end
@@ -61,8 +63,9 @@ function Policy:saveToXmlFile(xmlFile, key)
 
     for i, report in ipairs(self.lastEvaluationReport) do
         local reportKey = string.format("%s#report(%d)", key, i)
-        setXMLString(xmlFile, reportKey .. "#name", report.name)
-        setXMLString(xmlFile, reportKey .. "#value", report.value)
+        setXMLString(xmlFile, reportKey .. "#cell1", report.cell1)
+        setXMLString(xmlFile, reportKey .. "#cell2", report.cell2)
+        setXMLString(xmlFile, reportKey .. "#cell3", report.cell3)
     end
 end
 
@@ -79,8 +82,9 @@ function Policy:loadFromXMLFile(xmlFile, key)
             break
         end
         local report = {
-            name = getXMLString(xmlFile, reportKey .. "#name"),
-            value = getXMLString(xmlFile, reportKey .. "#value")
+            cell1 = getXMLString(xmlFile, reportKey .. "#cell1"),
+            cell2 = getXMLString(xmlFile, reportKey .. "#cell2"),
+            cell3 = getXMLString(xmlFile, reportKey .. "#cell3")
         }
         table.insert(self.lastEvaluationReport, report)
         i = i + 1
