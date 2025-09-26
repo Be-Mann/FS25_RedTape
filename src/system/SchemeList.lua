@@ -17,6 +17,7 @@ Schemes = {
         id = SchemeIds.DELAYED_MOWING_WILDLIFE,
         name = "rt_scheme_delayed_mowing",
         description = "rt_scheme_desc_delayed_mowing",
+        report_description = "rt_scheme_report_desc_delayed_mowing",
         duplicationKey = "DELAYED_HARVEST",
         tiers = {
             [PolicySystem.TIER.A] = {
@@ -58,7 +59,7 @@ Schemes = {
                         lastHarvestMonth = -1
                     end
 
-                    local didHarvest = rt:tableHasValue(invalidMonths, lastHarvestMonth)
+                    local didHarvest = rt.tableHasValue(invalidMonths, lastHarvestMonth)
                     if farmlandData.retainedSpringGrass and not didHarvest then
                         local bonusPerHa = schemeInfo.tiers[tier].bonusPerHa
                         print("Payout multiplier: " .. tostring(EconomyManager.getPriceMultiplier()))

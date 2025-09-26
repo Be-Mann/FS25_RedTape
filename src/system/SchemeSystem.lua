@@ -107,7 +107,7 @@ function SchemeSystem:generateSchemes()
     local rt = g_currentMission.RedTape
 
     for tier, schemes in pairs(self.availableSchemes) do
-        local existingCount = rt:tableCount(schemes)
+        local existingCount = rt.tableCount(schemes)
         if existingCount < SchemeSystem.OPEN_SCHEMES_PER_TIER then
             print("Generating new schemes for tier " .. tier)
             local toCreate = SchemeSystem.OPEN_SCHEMES_PER_TIER - existingCount
@@ -138,7 +138,7 @@ function SchemeSystem:getNextSchemeIndex(tier)
 
     local availableSchemes = {}
     for _, schemeInfo in pairs(Schemes) do
-        if rt:tableHasKey(schemeInfo.tiers, tier) and not rt:tableHasValue(currentSchemeDupeKeys, schemeInfo.duplicationKey) then
+        if rt.tableHasKey(schemeInfo.tiers, tier) and not rt.tableHasValue(currentSchemeDupeKeys, schemeInfo.duplicationKey) then
             table.insert(availableSchemes, schemeInfo)
         end
     end

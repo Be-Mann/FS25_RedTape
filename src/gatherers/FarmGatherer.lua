@@ -127,7 +127,7 @@ function FarmGatherer:checkSprayers()
         local fillUnitIndex = sprayer:getSprayerFillUnitIndex()
         local fillType = sprayer:getFillUnitFillType(fillUnitIndex)
 
-        if not RedTape:tableHasValue(checkFillTypes, fillType) then
+        if not RedTape.tableHasValue(checkFillTypes, fillType) then
             print("Ignoring sprayer fill type " .. fillType)
             continue
         end

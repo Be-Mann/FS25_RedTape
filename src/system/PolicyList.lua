@@ -15,6 +15,7 @@ Policies = {
         id = PolicyIds.CROP_ROTATION,
         name = "rt_policy_croprotation",
         description = "rt_policy_description_croprotation",
+        report_description = "rt_policy_report_description_croprotation",
         probability = 0.8,
         periodicReward = 100,
         periodicPenalty = -200,
@@ -42,7 +43,7 @@ Policies = {
                         continue
                     end
 
-                    if mostRecentFruit and not RedTape:tableHasValue(fruitsToSkip, mostRecentFruit) then
+                    if mostRecentFruit and not RedTape.tableHasValue(fruitsToSkip, mostRecentFruit) then
                         print("Skipping farmland " .. farmland.id .. " with fruit " .. mostRecentFruit)
                         continue
                     end
@@ -84,6 +85,7 @@ Policies = {
         id = PolicyIds.SPRAY_VIOLATION,
         name = "rt_policy_sprayviolation",
         description = "rt_policy_description_sprayviolation",
+        report_description = "rt_policy_report_description_sprayviolation",
         probability = 0.5,
         periodicReward = 5,
         periodicPenaltyPerViolation = -1,
@@ -119,6 +121,7 @@ Policies = {
         id = PolicyIds.EMPTY_STRAW,
         name = "rt_policy_empty_straw",
         description = "rt_policy_description_empty_straw",
+        report_description = "rt_policy_report_description_empty_straw",
         probability = 0.6,
         periodicReward = 5,
         periodicPenaltyPerViolation = -2,
@@ -153,6 +156,7 @@ Policies = {
         id = PolicyIds.FULL_SLURRY,
         name = "rt_policy_full_slurry",
         description = "rt_policy_description_full_slurry",
+        report_description = "rt_policy_report_description_full_slurry",
         probability = 0.5,
         periodicReward = 5,
         periodicPenaltyPerViolation = -3,
@@ -188,6 +192,7 @@ Policies = {
         id = PolicyIds.EMPTY_FOOD,
         name = "rt_policy_empty_food",
         description = "rt_policy_description_empty_food",
+        report_description = "rt_policy_report_description_empty_food",
         probability = 0.7,
         periodicReward = 5,
         periodicPenaltyPerViolation = -3,
@@ -225,6 +230,7 @@ Policies = {
         id = PolicyIds.ANIMAL_SPACE,
         name = "rt_policy_animal_space",
         description = "rt_policy_description_animal_space",
+        report_description = "rt_policy_report_description_animal_space",
         probability = 0.6,
         periodicReward = 10,
         periodicPenaltyPerViolation = -1,
@@ -260,6 +266,7 @@ Policies = {
         id = PolicyIds.ANIMAL_PRODUCTIVITY,
         name = "rt_policy_animal_productivity",
         description = "rt_policy_description_animal_productivity",
+        report_description = "rt_policy_report_description_animal_productivity",
         probability = 0.3,
         periodicReward = 5,
         periodicPenaltyPerViolation = -1,
@@ -295,6 +302,7 @@ Policies = {
         id = PolicyIds.MANURE_SPREADING,
         name = "rt_policy_manure_spreading",
         description = "rt_policy_description_manure_spreading",
+        report_description = "rt_policy_report_description_manure_spreading",
         probability = 0.4,
         periodicReward = 50,
         periodicPenalty = -100,

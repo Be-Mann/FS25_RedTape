@@ -73,19 +73,22 @@ function MenuRedTape:displaySelectedScheme()
         local selection = self.schemeDisplaySwitcher:getState()
         local scheme = self.schemesRenderer.data[selection][index]
 
-        if scheme ~= nil then            
+        if scheme ~= nil then
             self.schemeInfoContainer:setVisible(true)
             self.noSelectedSchemeText:setVisible(false)
             self.selectedSchemeName:setText(scheme:getName())
             self.selectedSchemeDescription:setText(scheme:getDescription())
-
-            if rt:tableCount(scheme.lastEvaluationReport) == 0 then
+            
+            if rt.tableCount(scheme.lastEvaluationReport) == 0 then
                 self.schemeReportContainer:setVisible(false)
                 self.noSchemeReportContainer:setVisible(true)
+                self.selectedSchemeReportDescription:setVisible(false)
             else
                 self.schemeReportContainer:setVisible(true)
                 self.noSchemeReportContainer:setVisible(false)
                 self.schemeReportRenderer:setData(scheme.lastEvaluationReport)
+                self.selectedSchemeReportDescription:setVisible(true)
+                self.selectedSchemeReportDescription:setText(scheme:getReportDescription())
                 self.schemeReportTable:reloadData()
             end
         else

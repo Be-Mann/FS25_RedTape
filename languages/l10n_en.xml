@@ -53,7 +53,16 @@
 		<text name="rt_policy_description_full_slurry" text="Requires slurry tanks not to be full."/>
 		<text name="rt_policy_description_animal_productivity" text="Requires animals to be kept in good conditions."/>
 		<text name="rt_policy_description_animal_space" text="Requires sufficient space for animals."/>
-		<text name="rt_policy_description_manure_spreading" text="Requires compliance with manure spreading regulations."/>
+		<text name="rt_policy_description_manure_spreading" text="You should not let manure sit idle indefinitely. Ensure you spread at least 50% of the manure you produce on a rolling basis. If you do not produce manure you will not be affected by this policy."/>
+
+		<text name="rt_policy_report_description_croprotation" text="The report shows totals for compliant and non-compliant land."/>
+		<text name="rt_policy_report_description_sprayviolation" text="The report shows how many spraying violations occurred in the last month."/>
+		<text name="rt_policy_report_description_empty_food" text="The report shows how many combined hours food was empty in animal pens."/>
+		<text name="rt_policy_report_description_empty_straw" text="The report shows how many combined hours straw was empty in animal pens."/>
+		<text name="rt_policy_report_description_full_slurry" text="The report shows how many combined hours slurry tanks were full."/>
+		<text name="rt_policy_report_description_animal_productivity" text="The report shows how many combined hours animals were unproductive."/>
+		<text name="rt_policy_report_description_animal_space" text="The report shows how many times insufficient space for animals was recorded."/>
+		<text name="rt_policy_report_description_manure_spreading" text="The report shows how actual vs expected manure spreading compliance rates."/>
 
 		<text name="rt_report_name_farmland" text="Farmland %s"/>
 				
@@ -61,7 +70,8 @@
 		<text name="rt_report_value_false" text="False"/>
 
 		<text name="rt_scheme_delayed_mowing" text="Avoid Mowing During Spring"/>
-		<text name="rt_scheme_desc_delayed_mowing" text="Do not cut your grass during the spring months (March to June) to protect wildlife. In July, you will be compensated for any unharvested grass."/>
+		<text name="rt_scheme_desc_delayed_mowing" text="Do not cut your grass during the spring months (March to June) to protect wildlife. In July, you will be compensated for any uncut grass."/>
+		<text name="rt_scheme_report_desc_delayed_mowing" text="The report shows a list of farmlands owned by you and the amount paid out during the last evaluation."/>
 		
 
 		<text name="rt_btn_select_scheme" text="Select Scheme"/>

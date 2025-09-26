@@ -88,9 +88,7 @@
         <GuiElement profile="fs25_subCategorySelectorTabbedContainer" id="subCategoryPages[3]">
             <GuiElement position="0px -20px">
                 <MultiTextOption profile="rt_scheme_display_switcher" id="schemeDisplaySwitcher" onClick="onSwitchSchemeDisplay" size="400px 32px" position="0px 10px"/>
-                <!-- <Text profile="rtLabelTopLeft" text="$l10n_rt_label_available_schemes" position="0px 20px"/> -->
                 <GuiElement id="schemesContainer">
-
                     <SmoothList id="schemesTable" profile="rt_table" position="20px -40px" size="400px 690px">
                         <ListItem profile="rtTableListItem">
                             <Text profile="rtListRowCellLeft" position="20px 0px" size="210px 32px" name="name"/>
@@ -114,15 +112,16 @@
                     <Text profile="rt_header_top_left" id="selectedSchemeName" position="0px 0px" width="500px" />
                     <Text profile="rt_scheme_policy_info" id="selectedSchemeDescription" position="40px -40px" size="800px 400px" />
                     <Text profile="rt_header_top_left" text="$l10n_rt_header_latest_report" position="0px -140px" width="500px" />
+                    <Text profile="rt_scheme_policy_info" id="selectedSchemeReportDescription" position="40px -180px" size="800px 100px" />
                     <GuiElement id="schemeReportContainer">
-                        <SmoothList id="schemeReportTable" profile="rt_table" position="40px -180px" size="900px 400px">
+                        <SmoothList id="schemeReportTable" profile="rt_table" position="40px -250px" size="700px 400px">
                             <ListItem profile="rtTableListItem">
                                 <Text profile="rtListRowCellLeft" position="20px 0px" size="300px 32px" name="cell1"/>
                                 <Text profile="rtListRowCellLeft" position="320px 0px" size="300px 32px" name="cell2"/>
                                 <Text profile="rtListRowCellLeft" position="620px 0px" size="300px 32px" name="cell3"/>
                             </ListItem>
                         </SmoothList>
-                        <ThreePartBitmap profile="rt_slider_box_left" position="950px -180px" size="6px 400px">
+                        <ThreePartBitmap profile="rt_slider_box_left" position="760px -250px" size="6px 400px">
                             <Slider profile="fs25_listSlider" dataElementId="schemeReportTable" />
                         </ThreePartBitmap>
                     </GuiElement>

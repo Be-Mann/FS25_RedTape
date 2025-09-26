@@ -102,7 +102,7 @@ end
 
 function PolicySystem:generatePolicies()
     local rt = g_currentMission.RedTape
-    local existingCount = rt:tableCount(self.policies)
+    local existingCount = rt.tableCount(self.policies)
     if existingCount < PolicySystem.DESIRED_POLICY_COUNT then
         local toCreate = PolicySystem.DESIRED_POLICY_COUNT - existingCount
         for i = 1, toCreate do

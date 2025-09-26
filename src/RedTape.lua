@@ -231,7 +231,7 @@ function RedTape.monthToString(month)
     end
 end
 
-function RedTape:tableHasValue(tab, val)
+function RedTape.tableHasValue(tab, val)
     for _, value in ipairs(tab) do
         if value == val then
             return true
@@ -240,11 +240,11 @@ function RedTape:tableHasValue(tab, val)
     return false
 end
 
-function RedTape:tableHasKey(tab, key)
+function RedTape.tableHasKey(tab, key)
     return tab[key] ~= nil
 end
 
-function RedTape:tableCount(table)
+function RedTape.tableCount(table)
     local count = 0
     for _, _ in pairs(table) do
         count = count + 1

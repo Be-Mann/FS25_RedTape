@@ -108,6 +108,16 @@ function Scheme:getDescription()
     return g_i18n:getText(schemeInfo.description)
 end
 
+function Scheme:getReportDescription()
+    if self.schemeIndex == -1 then
+        return nil
+    end
+
+    local schemeInfo = Schemes[self.schemeIndex]
+
+    return g_i18n:getText(schemeInfo.report_description)
+end
+
 function Scheme:availableForCurrentFarm()
     local rt = g_currentMission.RedTape
     local schemeSystem = g_currentMission.RedTape.SchemeSystem
@@ -126,7 +136,7 @@ function Scheme:availableForCurrentFarm()
     end
 
     -- Check if the scheme supports the current farm tier
-    if not rt:tableHasKey(schemeInfo.tiers, farmTier) then
+    if not rt.tableHasKey(schemeInfo.tiers, farmTier) then
         return false
     end
 
@@ -138,7 +148,7 @@ function Scheme:evaluate()
     local schemeInfo = Schemes[self.schemeIndex]
     local report = schemeInfo.evaluate(schemeInfo, self, self.activatedTier)
 
-    if rt:tableCount(report) > 0 then
+    if report ~= nil and rt.tableCount(report) > 0 then
         self.lastEvaluationReport = report or {}
 
         -- Ensure all report values are strings

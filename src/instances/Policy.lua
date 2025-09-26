@@ -111,6 +111,16 @@ function Policy:getDescription()
     return g_i18n:getText(policyInfo.description)
 end
 
+function Policy:getReportDescription()
+    if self.policyIndex == -1 then
+        return nil
+    end
+
+    local policyInfo = Policies[self.policyIndex]
+
+    return g_i18n:getText(policyInfo.report_description)
+end
+
 function Policy:activate()
     local policyInfo = Policies[self.policyIndex]
 
@@ -152,7 +162,7 @@ function Policy:evaluate()
 
     for _, farm in pairs(g_farmManager.farmIdToFarm) do
         local points, report = policyInfo.evaluate(policyInfo, self, farm.farmId)
-        if rt:tableCount(report) > 0 then
+        if report ~= nil and rt.tableCount(report) > 0 then
             self.lastEvaluationReport = report or {}
 
             -- Ensure all report values are strings
