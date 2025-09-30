@@ -113,7 +113,12 @@ Policies = {
             local report = {}
             table.insert(report, { cell1 = "Spray Violations", cell2 = pendingSprayViolations })
             farmData.pendingSprayViolations = 0
-            return reward, report
+
+            if reward ~= 0 then
+                g_client:getServerConnection():sendEvent(PolicyPointsEvent.new(farmId, reward, policy))
+            end
+
+            return report
         end,
     },
 
@@ -148,7 +153,12 @@ Policies = {
             table.insert(report, { cell1 = "Hours without straw", cell2 = pendingEmptyStrawCount })
 
             farmData.pendingEmptyStrawCount = 0
-            return reward, report
+
+            if reward ~= 0 then
+                g_client:getServerConnection():sendEvent(PolicyPointsEvent.new(farmId, reward, policy))
+            end
+
+            return report
         end,
     },
 
@@ -184,7 +194,12 @@ Policies = {
             table.insert(report, { cell1 = "Hours with full slurry tank", cell2 = pendingFullSlurryCount })
 
             farmData.pendingFullSlurryCount = 0
-            return reward, report
+
+            if reward ~= 0 then
+                g_client:getServerConnection():sendEvent(PolicyPointsEvent.new(farmId, reward, policy))
+            end
+
+            return report
         end
     },
 
@@ -222,7 +237,12 @@ Policies = {
             table.insert(report, { cell1 = "Hours without food", cell2 = pendingEmptyFoodCount })
 
             farmData.pendingEmptyFoodCount = 0
-            return reward, report
+
+            if reward ~= 0 then
+                g_client:getServerConnection():sendEvent(PolicyPointsEvent.new(farmId, reward, policy))
+            end
+
+            return report
         end,
     },
 
@@ -258,7 +278,12 @@ Policies = {
             table.insert(report, { cell1 = "Animal Space Violations", cell2 = pendingViolations })
 
             farmData.pendingAnimalSpaceViolations = 0
-            return reward, report
+
+            if reward ~= 0 then
+                g_client:getServerConnection():sendEvent(PolicyPointsEvent.new(farmId, reward, policy))
+            end
+
+            return report
         end,
     },
 
@@ -294,7 +319,12 @@ Policies = {
             table.insert(report, { cell1 = "Low Productivity Hours", cell2 = pendingViolations })
 
             farmData.pendingLowProductivityHusbandry = 0
-            return reward, report
+
+            if reward ~= 0 then
+                g_client:getServerConnection():sendEvent(PolicyPointsEvent.new(farmId, reward, policy))
+            end
+
+            return report
         end,
     },
 
@@ -344,7 +374,12 @@ Policies = {
                 })
 
             farmData.pendingManureSpread = 0
-            return reward, report
+
+            if reward ~= 0 then
+                g_client:getServerConnection():sendEvent(PolicyPointsEvent.new(farmId, reward, policy))
+            end
+
+            return report
         end
     },
 }

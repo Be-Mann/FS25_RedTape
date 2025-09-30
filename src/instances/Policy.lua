@@ -161,7 +161,7 @@ function Policy:evaluate()
     end
 
     for _, farm in pairs(g_farmManager.farmIdToFarm) do
-        local points, report = policyInfo.evaluate(policyInfo, self, farm.farmId)
+        local report = policyInfo.evaluate(policyInfo, self, farm.farmId)
         if report ~= nil and rt.tableCount(report) > 0 then
             self.lastEvaluationReport = report or {}
 
@@ -171,12 +171,6 @@ function Policy:evaluate()
                 report.cell2 = tostring(report.cell2 or "")
                 report.cell3 = tostring(report.cell3 or "")
             end
-        end
-
-        -- TODO move this to within the policyInfo as per schemes
-        if points ~= 0 then
-            local reason = string.format(g_i18n:getText("rt_policy_reason_evaluation"), points, self:getName())
-            g_client:getServerConnection():sendEvent(PolicyPointsEvent.new(farm.farmId, points, reason))
         end
     end
 

@@ -21,7 +21,7 @@ function FarmGatherer:hourChanged()
         local farmId = husbandry:getOwnerFarmId()
         local farmData = self:getFarmData(farmId)
 
-        if stats.slurry and stats.slurry == stats.slurryCapacity then
+        if stats.slurry and stats.slurry > 0 and stats.slurry == stats.slurryCapacity then
             farmData.pendingFullSlurryCount = farmData.pendingFullSlurryCount + 1
         end
 

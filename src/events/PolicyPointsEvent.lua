@@ -9,11 +9,12 @@ function PolicyPointsEvent.emptyNew()
     return self
 end
 
-function PolicyPointsEvent.new(farmId, pointChange, reason)
+function PolicyPointsEvent.new(farmId, pointChange, policy)
     local self = PolicyPointsEvent.emptyNew()
     self.farmId = farmId
     self.pointChange = pointChange
-    self.reason = reason
+
+    self.reason = string.format(g_i18n:getText("rt_policy_reason_evaluation"), pointChange, policy:getName())
     return self
 end
 
