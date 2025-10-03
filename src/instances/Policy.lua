@@ -62,7 +62,7 @@ function Policy:saveToXmlFile(xmlFile, key)
     setXMLBool(xmlFile, key .. "#skipNextEvaluation", self.skipNextEvaluation)
 
     for i, report in ipairs(self.lastEvaluationReport) do
-        local reportKey = string.format("%s#report(%d)", key, i)
+        local reportKey = string.format("%s.reportItems.item(%d)", key, i)
         setXMLString(xmlFile, reportKey .. "#cell1", report.cell1)
         setXMLString(xmlFile, reportKey .. "#cell2", report.cell2)
         setXMLString(xmlFile, reportKey .. "#cell3", report.cell3)
@@ -77,7 +77,7 @@ function Policy:loadFromXMLFile(xmlFile, key)
 
     local i = 0
     while true do
-        local reportKey = string.format("%s#report(%d)", key, i)
+        local reportKey = string.format("%s.reportItems.item(%d)", key, i)
         if not hasXMLProperty(xmlFile, reportKey) then
             break
         end

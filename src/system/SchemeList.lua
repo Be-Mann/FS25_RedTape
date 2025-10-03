@@ -37,7 +37,7 @@ Schemes = {
         initialise = function(schemeInfo, scheme)
             -- Init of an available scheme, prior to selection by a farm
         end,
-        selected = function(schemeInfo, scheme)
+        selected = function(schemeInfo, scheme, tier)
             -- Any action when applying the scheme to a farm, e.g. initial payout or equipment
         end,
         evaluate = function(schemeInfo, scheme, tier)
@@ -79,6 +79,68 @@ Schemes = {
             end
 
             return report
+        end
+    },
+
+    [SchemeIds.CROP_PROMOTION] = {
+        id = SchemeIds.CROP_PROMOTION,
+        name = "rt_scheme_crop_promotion",
+        report_description = "rt_scheme_report_desc_crop_promotion",
+        duplicationKey = "CROP_PROMOTION",
+        tiers = {
+            [PolicySystem.TIER.A] = {
+                variants = { "SUGARBEET", "POTATO" },
+                size = "large",
+            },
+            [PolicySystem.TIER.B] = {
+                variants = { "SUGARBEET", "POTATO" },
+                size = "medium",
+            },
+            [PolicySystem.TIER.C] = {
+                variants = { "SUGARBEET", "POTATO" },
+                size = "small",
+            },
+            [PolicySystem.TIER.D] = {
+                variants = { "SUGARBEET", "POTATO" },
+                size = "small",
+            },
+        },
+        probability = 1,
+        descriptionFunction = function(schemeInfo, scheme)
+            local fruitType = tonumber(scheme.props['fruitType'])
+            local title = g_fruitTypeManager.fruitTypes[fruitType].title
+            return string.format(g_i18n:getText("rt_scheme_desc_crop_promotion"), title)
+        end,
+        initialise = function(schemeInfo, scheme)
+            -- Init of an available scheme, prior to selection by a farm
+            local fruitTypes = {
+                [FruitType.SUGARBEET] = "SUGARBEET",
+                [FruitType.POTATO] = "POTATO",
+                [FruitType.PARSNIP] = "VEGETABLES",
+                [FruitType.GREENBEAN] = "GREENBEAN",
+                [FruitType.PEA] = "PEA",
+                [FruitType.SPINACH] = "SPINACH",
+                [FruitType.CARROT] = "VEGETABLES",
+            }
+            local chosenIndex = math.random(1, RedTape.tableCount(fruitTypes))
+            local i = 1
+            for fruitType, fruitName in pairs(fruitTypes) do
+                if i == chosenIndex then
+                    scheme.props['fruitType'] = tostring(fruitType)
+                    scheme.props['variant'] = fruitName
+                    break
+                end
+                i = i + 1
+            end
+        end,
+        selected = function(schemeInfo, scheme, tier)
+            -- Any action when applying the scheme to a farm, e.g. initial payout or equipment
+            local farmId = scheme.farmId
+            local vehicles = g_currentMission.RedTape.SchemeSystem:getVehicleGroup(schemeInfo.tiers[tier].size,
+                scheme.props['variant'])
+            print("Selected vehicles for crop promotion scheme:")
+        end,
+        evaluate = function(schemeInfo, scheme, tier)
         end
     }
 

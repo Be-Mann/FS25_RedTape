@@ -130,15 +130,16 @@ function MenuRedTape:onGuiSetupFinished()
     self.schemesTable:setDelegate(self.schemesRenderer)
 
     self.schemesRenderer.indexChangedCallback = function(index)
-        self.noSelectedSchemeText:setVisible(index == -1)
-        self.schemeInfoContainer:setVisible(index ~= -1)
+        self:displaySelectedScheme()
+        -- self.noSelectedSchemeText:setVisible(index == -1)
+        -- self.schemeInfoContainer:setVisible(index ~= -1)
 
-        if index ~= -1 then
-            local selection = self.schemeDisplaySwitcher:getState()
-            local scheme = self.schemesRenderer.data[selection][index]
-            self.schemeReportRenderer:setData(scheme.lastEvaluationReport)
-            self.schemeReportTable:reloadData()
-        end
+        -- if index ~= -1 then
+        --     local selection = self.schemeDisplaySwitcher:getState()
+        --     local scheme = self.schemesRenderer.data[selection][index]
+        --     self.schemeReportRenderer:setData(scheme.lastEvaluationReport)
+        --     self.schemeReportTable:reloadData()
+        -- end
     end
 
     self.schemeReportTable:setDataSource(self.schemeReportRenderer)

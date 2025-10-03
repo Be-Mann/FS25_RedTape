@@ -85,9 +85,13 @@
 		<text name="rt_report_value_false" text="False"/>
 
 		<text name="rt_scheme_delayed_mowing" text="Avoid Mowing During Spring"/>
+		<text name="rt_scheme_crop_promotion" text="Crop Promotion"/>
+
 		<text name="rt_scheme_desc_delayed_mowing" text="Do not cut your grass during the spring months (March to June) to protect wildlife. In July, you will be compensated for any uncut grass."/>
+		<text name="rt_scheme_desc_crop_promotion" text="A government initiative to promote the growth of %s through financial incentives. You will be provided harvesting equipment for the duration of the initiative and receive a financial bonus for each field where you plant the crop."/>
+
 		<text name="rt_scheme_report_desc_delayed_mowing" text="The report shows a list of farmlands owned by you and the amount paid out during the last evaluation."/>
-		
+		<text name="rt_scheme_report_desc_crop_promotion" text="The report shows a list of farmlands owned by you and the amount paid out during the last evaluation."/>
 
 		<text name="rt_btn_select_scheme" text="Select Scheme"/>
 

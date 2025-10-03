@@ -208,3 +208,30 @@ function SchemeSystem:getAvailableSchemesForCurrentFarm()
 
     return availableForFarm
 end
+
+function SchemeSystem:getVehicleGroup(size, variant)
+    local sizes = { "small", "medium", "large" }
+    local vehicles = g_missionManager:getRandomVehicleGroup("harvestMission", size, variant)
+
+    -- if vehicles is nil, try the next bigger size up to large or return nil and print an errors
+    if vehicles == nil then
+        local found = false
+        for i, s in ipairs(sizes) do
+            if s == size then
+                found = true
+            elseif found then
+                print("Trying next size up: " .. s)
+                vehicles = g_missionManager:getRandomVehicleGroup("harvestMission", s, variant)
+                if vehicles ~= nil then
+                    break
+                end
+                if s == "large" then
+                    print("No vehicles found for any size up to large for variant " .. variant)
+                    return nil
+                end
+            end
+        end
+    end
+
+    return vehicles
+end

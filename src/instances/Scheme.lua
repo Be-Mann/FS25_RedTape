@@ -16,6 +16,8 @@ function Scheme.new()
 
     self.lastEvaluationReport = {}
 
+    self.props = {}
+
     return self
 end
 
@@ -29,6 +31,12 @@ function Scheme:writeStream(streamId, connection)
         streamWriteString(streamId, report.cell1)
         streamWriteString(streamId, report.cell2)
         streamWriteString(streamId, report.cell3)
+    end
+
+    streamWriteInt32(streamId, #self.props)
+    for key, value in pairs(self.props) do
+        streamWriteString(streamId, key)
+        streamWriteString(streamId, value)
     end
 end
 
@@ -46,6 +54,13 @@ function Scheme:readStream(streamId, connection)
         }
         table.insert(self.lastEvaluationReport, report)
     end
+
+    local propCount = streamReadInt32(streamId)
+    for i = 1, propCount do
+        local key = streamReadString(streamId)
+        local value = streamReadString(streamId)
+        self.props[key] = value
+    end
 end
 
 function Scheme:saveToXmlFile(xmlFile, key)
@@ -54,10 +69,18 @@ function Scheme:saveToXmlFile(xmlFile, key)
     setXMLInt(xmlFile, key .. "#activatedTier", self.activatedTier)
 
     for i, report in ipairs(self.lastEvaluationReport) do
-        local reportKey = string.format("%s#report(%d)", key, i)
+        local reportKey = string.format("%s.reportItems.item(%d)", key, i)
         setXMLString(xmlFile, reportKey .. "#cell1", report.cell1)
         setXMLString(xmlFile, reportKey .. "#cell2", report.cell2)
         setXMLString(xmlFile, reportKey .. "#cell3", report.cell3)
+    end
+
+    local i = 0
+    for key, value in pairs(self.props) do
+        local propKey = string.format("%s.propItems.item(%d)", key, i)
+        setXMLString(xmlFile, propKey .. "#key", key)
+        setXMLString(xmlFile, propKey .. "#value", value)
+        i = i + 1
     end
 end
 
@@ -68,7 +91,7 @@ function Scheme:loadFromXMLFile(xmlFile, key)
 
     local i = 0
     while true do
-        local reportKey = string.format("%s#report(%d)", key, i)
+        local reportKey = string.format("%s.reportItems.item(%d)", key, i)
         if not hasXMLProperty(xmlFile, reportKey) then
             break
         end
@@ -79,6 +102,18 @@ function Scheme:loadFromXMLFile(xmlFile, key)
         }
         table.insert(self.lastEvaluationReport, report)
         i = i + 1
+    end
+
+    local j = 0
+    while true do
+        local propKey = string.format("%s.propItems.item(%d)", key, j)
+        if not hasXMLProperty(xmlFile, propKey) then
+            break
+        end
+        local propKeyName = getXMLString(xmlFile, propKey .. "#key")
+        local propValue = getXMLString(xmlFile, propKey .. "#value")
+        self.props[propKeyName] = propValue
+        j = j + 1
     end
 end
 
@@ -104,6 +139,10 @@ function Scheme:getDescription()
     end
 
     local schemeInfo = Schemes[self.schemeIndex]
+
+    if schemeInfo.descriptionFunction ~= nil then
+        return schemeInfo.descriptionFunction(schemeInfo, self)
+    end
 
     return g_i18n:getText(schemeInfo.description)
 end
@@ -166,7 +205,7 @@ function Scheme:selected()
     end
 
     local schemeInfo = Schemes[self.schemeIndex]
-    schemeInfo.selected(schemeInfo, self, self.farmId)
+    schemeInfo.selected(schemeInfo, self, self.activatedTier)
 end
 
 -- Creates a new farm specific scheme from
@@ -176,5 +215,9 @@ function Scheme:createFarmScheme(farmId)
     farmScheme.schemeIndex = self.schemeIndex
     farmScheme.farmId = farmId
     farmScheme.activatedTier = policySystem:getProgressForFarm(farmId).tier
+
+    for key, value in pairs(self.props) do
+        farmScheme.props[key] = value
+    end
     return farmScheme
 end
