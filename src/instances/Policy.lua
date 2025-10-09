@@ -6,7 +6,7 @@ function Policy.new()
     setmetatable(self, Policy_mt)
 
     self.policyIndex = -1
-    self.nextEvaluationPeriod = -1
+    self.nextEvaluationMonth = -1
     self.evaluationCount = 0
     self.policySystem = g_currentMission.RedTape.PolicySystem
     self.lastEvaluationReport = {}
@@ -16,7 +16,7 @@ end
 
 function Policy:writeStream(streamId, connection)
     streamWriteInt32(streamId, self.policyIndex)
-    streamWriteInt32(streamId, self.nextEvaluationPeriod)
+    streamWriteInt32(streamId, self.nextEvaluationMonth)
     streamWriteInt32(streamId, self.evaluationCount)
 
     streamWriteInt32(streamId, #self.lastEvaluationReport)
@@ -29,7 +29,7 @@ end
 
 function Policy:readStream(streamId, connection)
     self.policyIndex = streamReadInt32(streamId)
-    self.nextEvaluationPeriod = streamReadInt32(streamId)
+    self.nextEvaluationMonth = streamReadInt32(streamId)
     self.evaluationCount = streamReadInt32(streamId)
 
     local reportCount = streamReadInt32(streamId)
@@ -45,7 +45,7 @@ end
 
 function Policy:saveToXmlFile(xmlFile, key)
     setXMLInt(xmlFile, key .. "#policyIndex", self.policyIndex)
-    setXMLInt(xmlFile, key .. "#nextEvaluationPeriod", self.nextEvaluationPeriod)
+    setXMLInt(xmlFile, key .. "#nextEvaluationMonth", self.nextEvaluationMonth)
     setXMLInt(xmlFile, key .. "#evaluationCount", self.evaluationCount)
 
     for i, report in ipairs(self.lastEvaluationReport) do
@@ -58,7 +58,7 @@ end
 
 function Policy:loadFromXMLFile(xmlFile, key)
     self.policyIndex = getXMLInt(xmlFile, key .. "#policyIndex")
-    self.nextEvaluationPeriod = getXMLInt(xmlFile, key .. "#nextEvaluationPeriod")
+    self.nextEvaluationMonth = getXMLInt(xmlFile, key .. "#nextEvaluationMonth")
     self.evaluationCount = getXMLInt(xmlFile, key .. "#evaluationCount")
 
     local i = 0
@@ -116,10 +116,7 @@ function Policy:activate()
     end
 
     if policyInfo.evaluationInterval > 0 then
-        self.nextEvaluationPeriod = RedTape.getCumulativePeriod() + policyInfo.evaluationInterval
-        if self.nextEvaluationPeriod > 12 then
-            self.nextEvaluationPeriod = self.nextEvaluationPeriod - 12
-        end
+        self.nextEvaluationMonth = RedTape.getCumulativeMonth() + policyInfo.evaluationInterval
     end
 
     for _, farm in pairs(g_farmManager.farmIdToFarm) do
@@ -133,10 +130,10 @@ function Policy:evaluate()
     local rt = g_currentMission.RedTape
 
     local policyInfo = Policies[self.policyIndex]
-    local cumulativePeriod = RedTape.getCumulativePeriod()
-    if cumulativePeriod ~= self.nextEvaluationPeriod then
-        print("Policy not ready for evaluation. Current period: " .. cumulativePeriod ..
-            ", Next evaluation period: " .. self.nextEvaluationPeriod)
+    local cumulativeMonth = RedTape.getCumulativeMonth()
+    if cumulativeMonth ~= self.nextEvaluationMonth then
+        print("Policy not ready for evaluation. Current month: " .. cumulativeMonth ..
+            ", Next evaluation month: " .. self.nextEvaluationMonth)
         return
     end
 
@@ -155,5 +152,5 @@ function Policy:evaluate()
     end
 
     self.evaluationCount = self.evaluationCount + 1
-    self.nextEvaluationPeriod = cumulativePeriod + policyInfo.evaluationInterval
+    self.nextEvaluationMonth = cumulativeMonth + policyInfo.evaluationInterval
 end

@@ -24,6 +24,8 @@ end
 
 function FarmlandGatherer:periodChanged()
     print("Gathering farmlands data...")
+    local currentMonth = g_currentMission.RedTape.periodToMonth(g_currentMission.environment.currentPeriod)
+    local oldestHistoryMonth = currentMonth - 24
     for _, farmland in pairs(g_farmlandManager.farmlands) do
         if farmland.showOnFarmlandsScreen and farmland.field ~= nil then
             local farmlandData = self:getFarmlandData(farmland.id)
@@ -31,33 +33,27 @@ function FarmlandGatherer:periodChanged()
             local x, z = field:getCenterOfFieldWorldPosition()
             local fruitTypeIndex, growthState = FSDensityMapUtil.getFruitTypeIndexAtWorldPos(x, z)
             local currentFruit = g_fruitTypeManager:getFruitTypeByIndex(fruitTypeIndex)
-            local currentMonth = g_currentMission.RedTape.periodToMonth(g_currentMission.environment.currentPeriod)
 
-            if currentMonth == 4 then
-                farmlandData.retainedSpringGrass = true
-            end
+            local cumulativeMonth = RedTape.getCumulativeMonth()
+
+            farmlandData.fruitHistory[cumulativeMonth] = {
+                name = currentFruit.name or "",
+                growthState = growthState
+            }
 
             if currentFruit == nil then
-                farmlandData.retainedSpringGrass = false
                 farmlandData.fallowMonths = farmlandData.fallowMonths + 1
-                if farmlandData.mostRecentFruit ~= "" then
-                    farmlandData.previousFruit = farmlandData.mostRecentFruit
-                end
-                farmlandData.mostRecentFruit = ""
             else
                 farmlandData.fallowMonths = 0
-
-                if fruitTypeIndex ~= FruitType.GRASS then
-                    farmlandData.retainedSpringGrass = false
-                end
-
-                -- if there is a fruit and it different from the previous one, update it
-                if farmlandData.mostRecentFruit ~= "" and farmlandData.mostRecentFruit ~= currentFruit.name then
-                    farmlandData.previousFruit = farmlandData.mostRecentFruit
-                end
-                farmlandData.mostRecentFruit = currentFruit.name
             end
             farmlandData.areaHa = field:getAreaHa()
+
+            -- remove history entries older than 24 months
+            for month, _ in pairs(farmlandData.fruitHistory) do
+                if month < oldestHistoryMonth then
+                    farmlandData.fruitHistory[month] = nil
+                end
+            end
         end
     end
 end
@@ -66,11 +62,9 @@ function FarmlandGatherer:getFarmlandData(farmlandId)
     if self.data[farmlandId] == nil then
         self.data[farmlandId] = {
             fallowMonths = 0,
-            mostRecentFruit = "",
-            previousFruit = "",
             areaHa = 0,
-            lastHarvestPeriod = -1,
-            retainedSpringGrass = false
+            lastHarvestMonth = -1,
+            fruitHistory = {}
         }
     end
     return self.data[farmlandId]
@@ -82,11 +76,18 @@ function FarmlandGatherer:saveToXmlFile(xmlFile, key)
         local farmlandKey = string.format("%s.farmlands.farmland(%d)", key, i)
         setXMLInt(xmlFile, farmlandKey .. "#id", farmlandId)
         setXMLInt(xmlFile, farmlandKey .. "#fallowMonths", farmlandData.fallowMonths)
-        setXMLString(xmlFile, farmlandKey .. "#mostRecentFruit", farmlandData.mostRecentFruit)
-        setXMLString(xmlFile, farmlandKey .. "#previousFruit", farmlandData.previousFruit)
         setXMLInt(xmlFile, farmlandKey .. "#areaHa", farmlandData.areaHa)
-        setXMLInt(xmlFile, farmlandKey .. "#lastHarvestPeriod", farmlandData.lastHarvestPeriod)
-        setXMLBool(xmlFile, farmlandKey .. "#retainedSpringGrass", farmlandData.retainedSpringGrass)
+        setXMLInt(xmlFile, farmlandKey .. "#lastHarvestMonth", farmlandData.lastHarvestMonth)
+
+        local j = 0
+        for month, fruitEntry in pairs(farmlandData.fruitHistory) do
+            local fruitKey = string.format("%s.fruitHistory.fruit(%d)", farmlandKey, j)
+            setXMLInt(xmlFile, fruitKey .. "#month", month)
+            setXMLString(xmlFile, fruitKey .. "#name", fruitEntry.name)
+            setXMLInt(xmlFile, fruitKey .. "#growthState", fruitEntry.growthState)
+            j = j + 1
+        end
+
         i = i + 1
     end
 end
@@ -102,12 +103,30 @@ function FarmlandGatherer:loadFromXMLFile(xmlFile, key)
         local farmlandId = getXMLInt(xmlFile, farmlandKey .. "#id")
         self.data[farmlandId] = {
             fallowMonths = getXMLInt(xmlFile, farmlandKey .. "#fallowMonths"),
-            mostRecentFruit = getXMLString(xmlFile, farmlandKey .. "#mostRecentFruit"),
-            previousFruit = getXMLString(xmlFile, farmlandKey .. "#previousFruit"),
             areaHa = getXMLInt(xmlFile, farmlandKey .. "#areaHa"),
-            lastHarvestPeriod = getXMLInt(xmlFile, farmlandKey .. "#lastHarvestPeriod"),
-            retainedSpringGrass = getXMLBool(xmlFile, farmlandKey .. "#retainedSpringGrass")
+            lastHarvestMonth = getXMLInt(xmlFile, farmlandKey .. "#lastHarvestMonth"),
         }
+
+        local j = 0
+        self.data[farmlandId].fruitHistory = {}
+        while true do
+            local fruitKey = string.format("%s.fruitHistory.fruit(%d)", farmlandKey, j)
+            if not hasXMLProperty(xmlFile, fruitKey) then
+                break
+            end
+
+            local month = getXMLInt(xmlFile, fruitKey .. "#month")
+            local name = getXMLString(xmlFile, fruitKey .. "#name")
+            local growthState = getXMLInt(xmlFile, fruitKey .. "#growthState")
+
+            self.data[farmlandId].fruitHistory[month] = {
+                name = name,
+                growthState = growthState
+            }
+
+            j = j + 1
+        end
+
         i = i + 1
     end
 end
@@ -126,8 +145,52 @@ function FarmlandGatherer:checkHarvestedState()
             end
 
             if currentFruit and growthState == currentFruit.cutState then
-                farmlandData.lastHarvestPeriod = g_currentMission.environment.currentPeriod
+                farmlandData.lastHarvestMonth = RedTape.getCumulativeMonth()
             end
         end
     end
+end
+
+-- Finds a previous fruit with a backwards search
+function FarmlandGatherer:getPreviousFruit(farmlandId, startMonth, endMonth, notFruit)
+    local farmlandData = self:getFarmlandData(farmlandId)
+    for month = startMonth, endMonth, -1 do
+        local fruitEntry = farmlandData.fruitHistory[month]
+        if fruitEntry ~= nil and fruitEntry.name ~= "" then
+            if notFruit == nil or fruitEntry.name ~= notFruit then
+                return fruitEntry.name, month
+            end
+        end
+    end
+    return nil, nil
+end
+
+
+-- Forwards search to see if any fruit recorded in the given range
+function FarmlandGatherer:hasRecordedFruit(farmlandId, startMonth, endMonth)
+    local farmlandData = self:getFarmlandData(farmlandId)
+    for month = startMonth, endMonth do
+        local fruitEntry = farmlandData.fruitHistory[month]
+        if fruitEntry ~= nil and fruitEntry.name ~= "" then
+            return true
+        end
+    end
+    return false
+end
+
+function FarmlandGatherer:wasFruitHarvestable(farmlandId, startMonth, endMonth, fruitType)
+    local fruit = g_fruitTypeManager:getFruitTypeByIndex(fruitType)
+    if fruit == nil then
+        return false
+    end
+    local farmlandData = self:getFarmlandData(farmlandId)
+    for month = startMonth, endMonth do
+        local fruitEntry = farmlandData.fruitHistory[month]
+        if fruitEntry ~= nil and fruitEntry.name == fruit.name then
+            if fruitEntry.growthState >= fruit.minHarvestingGrowthState then
+                return true
+            end
+        end
+    end
+    return false
 end

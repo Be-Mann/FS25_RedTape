@@ -43,25 +43,29 @@ Schemes = {
         evaluate = function(schemeInfo, scheme, tier)
             local currentMonth = RedTape.periodToMonth(g_currentMission.environment.currentPeriod)
             if currentMonth ~= 7 then return end -- Only evaluate in July
+            local cumulativeMonth = RedTape.getCumulativeMonth()
 
             local ig = g_currentMission.RedTape.InfoGatherer
             local gatherer = ig.gatherers[INFO_KEYS.FARMLANDS]
             local farmId = scheme.farmId
-            local invalidMonths = { 4, 5, 6 }
+            local invalidMonths = { cumulativeMonth - 1, cumulativeMonth - 2, cumulativeMonth - 3 }
 
             local report = {}
             for _, farmland in pairs(g_farmlandManager.farmlands) do
                 if farmland.farmId == farmId then
                     local farmlandData = gatherer:getFarmlandData(farmland.id)
-                    local lastHarvestMonth = RedTape.periodToMonth(farmlandData.lastHarvestPeriod)
-                    if farmlandData.lastHarvestPeriod == -1 then
-                        lastHarvestMonth = -1
-                    end
 
-                    local didHarvest = RedTape.tableHasValue(invalidMonths, lastHarvestMonth)
-                    if farmlandData.retainedSpringGrass and not didHarvest then
+                    local juneFruit = farmlandData.fruitHistory[cumulativeMonth - 1]
+                    local mayFruit = farmlandData.fruitHistory[cumulativeMonth - 2]
+                    local aprilFruit = farmlandData.fruitHistory[cumulativeMonth - 3]
+
+                    local retainedGrass = juneFruit ~= nil and juneFruit.name == "GRASS" and
+                        mayFruit ~= nil and mayFruit.name == "GRASS" and
+                        aprilFruit ~= nil and aprilFruit.name == "GRASS"
+
+                    local didHarvest = RedTape.tableHasValue(invalidMonths, farmlandData.lastHarvestMonth)
+                    if retainedGrass and not didHarvest then
                         local bonusPerHa = schemeInfo.tiers[tier].bonusPerHa
-                        print("Payout multiplier: " .. tostring(EconomyManager.getPriceMultiplier()))
                         local payout = farmlandData.areaHa * bonusPerHa * EconomyManager.getPriceMultiplier()
                         table.insert(report, {
                             cell1 = string.format(g_i18n:getText("rt_report_name_farmland"), farmland.id),
@@ -89,16 +93,16 @@ Schemes = {
         offerMonths = { 7, 8 },
         tiers = {
             [PolicySystem.TIER.A] = {
-                -- variants = { "SUGARBEET", "POTATO" },
+                bonusPerHa = 350,
             },
             [PolicySystem.TIER.B] = {
-                -- variants = { "SUGARBEET", "POTATO" },
+                bonusPerHa = 300,
             },
             [PolicySystem.TIER.C] = {
-                -- variants = { "SUGARBEET", "POTATO" },
+                bonusPerHa = 250,
             },
             [PolicySystem.TIER.D] = {
-                -- variants = { "SUGARBEET", "POTATO" },
+                bonusPerHa = 200,
             },
         },
         probability = 1,
@@ -131,7 +135,8 @@ Schemes = {
                 i = i + 1
             end
             scheme:setProp('size', SchemeSystem.getAvailableEquipmentSize(scheme.props['variant']))
-            local sizedVehicles = g_missionManager.missionVehicles[scheme.props['vehicleMissionType']][scheme.props['size']]
+            local sizedVehicles = g_missionManager.missionVehicles[scheme.props['vehicleMissionType']]
+                [scheme.props['size']]
             local variantIndices = {}
             for groupIndex, group in pairs(sizedVehicles) do
                 if group.variant == scheme.props['variant'] then
@@ -140,7 +145,6 @@ Schemes = {
             end
             local chosenGroupIndex = math.random(1, #variantIndices)
             scheme:setProp('vehicleGroup', variantIndices[chosenGroupIndex])
-            
         end,
         selected = function(schemeInfo, scheme, tier)
             -- Any action when applying the scheme to a farm, e.g. initial payout or equipment
@@ -153,16 +157,41 @@ Schemes = {
             local evaluationMonth = tonumber(scheme.props['evaluationMonth'])
             local currentYear = g_currentMission.environment.currentYear
             local currentMonth = RedTape.periodToMonth(g_currentMission.environment.currentPeriod)
+            local cumulativeMonth = RedTape.getCumulativeMonth()
+            local ig = g_currentMission.RedTape.InfoGatherer
+            local gatherer = ig.gatherers[INFO_KEYS.FARMLANDS]
+            local farmId = scheme.farmId
 
             if currentYear ~= evaluationYear or currentMonth ~= evaluationMonth then
                 return
             end
 
+            local fruitType = tonumber(scheme.props['fruitType'])
+
             local report = {}
-            -- todo: call endScheme on scheme
-            -- todo: calculate payout based on area harvested of the chosen crop
+            for _, farmland in pairs(g_farmlandManager.farmlands) do
+                if farmland.farmId == farmId and farmland.field ~= nil then
+                    local farmlandData = gatherer:getFarmlandData(farmland.id)
+                    local wasFruitHarvestable = gatherer:wasFruitHarvestable(farmland.id, cumulativeMonth - 12,
+                        cumulativeMonth, fruitType)
+                    if wasFruitHarvestable then
+                        local bonusPerHa = schemeInfo.tiers[tier].bonusPerHa
+                        local payout = farmlandData.areaHa * bonusPerHa * EconomyManager.getPriceMultiplier()
+                        table.insert(report, {
+                            cell1 = string.format(g_i18n:getText("rt_report_name_farmland"), farmland.id),
+                            cell2 = g_i18n:formatMoney(payout, 0, true, true)
+                        })
+                        g_client:getServerConnection():sendEvent(SchemePayoutEvent.new(scheme, farmId, payout))
+                    else
+                        table.insert(report, {
+                            cell1 = string.format(g_i18n:getText("rt_report_name_farmland"), farmland.id),
+                            cell2 = g_i18n:formatMoney(0, 0, true, true),
+                        })
+                    end
+                end
+            end
 
-
+            scheme:endScheme()
             return report
         end
     }

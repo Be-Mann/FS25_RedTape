@@ -29,13 +29,8 @@ end
 
 function ActivePoliciesRenderer:populateCellForItemInSection(list, section, index, cell)
     local activePolicy = self.data[index]
-    local rt = g_currentMission.RedTape
-
-    -- local nextEvaluationPeriod = rt.monthToString(rt.periodToMonth(activePolicy.nextEvaluationPeriod))
 
     cell:getAttribute("name"):setText(activePolicy:getName())
-    -- cell:getAttribute("description"):setText(activePolicy:getDescription())
-    -- cell:getAttribute("next"):setText(nextEvaluationPeriod)
 end
 
 function ActivePoliciesRenderer:onListSelectionChanged(list, section, index)

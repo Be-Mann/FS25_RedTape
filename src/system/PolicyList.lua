@@ -28,6 +28,7 @@ Policies = {
             local ig = g_currentMission.RedTape.InfoGatherer
             local gatherer = ig.gatherers[INFO_KEYS.FARMLANDS]
             local fruitsToSkip = { FruitType.GRASS, FruitType.MEADOW, FruitType.OILSEEDRADISH }
+            local cumulativeMonth = RedTape.getCumulativeMonth()
 
             local totalHa = 0
             local nonCompliantHa = 0
@@ -35,8 +36,6 @@ Policies = {
             for _, farmland in pairs(g_farmlandManager.farmlands) do
                 if farmland.farmId == farmId and farmland.field ~= nil then
                     local farmLandData = gatherer:getFarmlandData(farmland.id)
-                    local mostRecentFruit = farmLandData.mostRecentFruit
-                    local previousFruit = farmLandData.previousFruit
 
                     if farmLandData.fallowMonths > 10 then
                         print("Skipping farmland " ..
@@ -44,18 +43,31 @@ Policies = {
                         continue
                     end
 
-                    if mostRecentFruit and not RedTape.tableHasValue(fruitsToSkip, mostRecentFruit) then
+                    local mostRecentFruit = farmLandData.fruitHistory[cumulativeMonth]
+                    local mostRecentFruitMonth = cumulativeMonth
+                    if mostRecentFruit == nil then
+                        mostRecentFruit, mostRecentFruitMonth = gatherer:getPreviousFruit(farmland.id, cumulativeMonth - 1,
+                            cumulativeMonth - 12, nil)
+                    end
+
+                    if RedTape.tableHasValue(fruitsToSkip, mostRecentFruit) then
                         print("Skipping farmland " .. farmland.id .. " with fruit " .. mostRecentFruit)
                         continue
                     end
-
-                    if previousFruit == nil then
-                        print("Skipping farmland " .. farmland.id .. " due to no previous fruit.")
+                    
+                    -- Accounting for a new game where we have no history
+                    local hasAnyPreviousFruit = gatherer:hasRecordedFruit(farmland.id, cumulativeMonth - 12, cumulativeMonth - 1)
+                    if not hasAnyPreviousFruit then
+                        print("Skipping farmland " .. farmland.id .. " due to no previous fruit recorded")
                         continue
                     end
 
+                    -- Try to find a different fruit in the 12 months prior to the most recent fruit. Don't match the mostRecentFruit
+                    local previousFruit, _ = gatherer:getPreviousFruit(farmland.id, mostRecentFruitMonth, mostRecentFruitMonth - 12,
+                        mostRecentFruit)
+
                     totalHa = totalHa + farmLandData.areaHa
-                    if previousFruit == mostRecentFruit then
+                    if previousFruit == nil then
                         nonCompliantHa = nonCompliantHa + farmLandData.areaHa
                     end
                 end
@@ -76,8 +88,11 @@ Policies = {
             end
 
             local report = {}
-            table.insert(report, { cell1 = g_i18n:getText("rt_report_name_total_area_ha"), cell2 = g_i18n:formatArea(totalHa, 2) })
-            table.insert(report, { cell1 = g_i18n:getText("rt_report_name_non_compliant_area_ha"), cell2 = g_i18n:formatArea(nonCompliantHa, 2) })
+            table.insert(report,
+                { cell1 = g_i18n:getText("rt_report_name_total_area_ha"), cell2 = g_i18n:formatArea(totalHa, 2) })
+            table.insert(report,
+                { cell1 = g_i18n:getText("rt_report_name_non_compliant_area_ha"), cell2 = g_i18n:formatArea(
+                nonCompliantHa, 2) })
             return reward, report
         end,
     },
@@ -112,7 +127,8 @@ Policies = {
             end
 
             local report = {}
-            table.insert(report, { cell1 = g_i18n:getText("rt_report_name_spray_violations"), cell2 = pendingSprayViolations })
+            table.insert(report,
+                { cell1 = g_i18n:getText("rt_report_name_spray_violations"), cell2 = pendingSprayViolations })
             farmData.pendingSprayViolations = 0
 
             if reward ~= 0 then
@@ -276,7 +292,8 @@ Policies = {
             end
 
             local report = {}
-            table.insert(report, { cell1 = g_i18n:getText("rt_report_name_animal_space_violations"), cell2 = pendingViolations })
+            table.insert(report,
+                { cell1 = g_i18n:getText("rt_report_name_animal_space_violations"), cell2 = pendingViolations })
 
             farmData.pendingAnimalSpaceViolations = 0
 
@@ -317,7 +334,8 @@ Policies = {
             end
 
             local report = {}
-            table.insert(report, { cell1 = g_i18n:getText("rt_report_name_low_productivity_hours"), cell2 = pendingViolations })
+            table.insert(report,
+                { cell1 = g_i18n:getText("rt_report_name_low_productivity_hours"), cell2 = pendingViolations })
 
             farmData.pendingLowProductivityHusbandry = 0
 
@@ -366,8 +384,11 @@ Policies = {
 
             local report = {}
             table.insert(report,
-                { cell1 = g_i18n:getText("rt_report_name_manure_spread"), cell2 = g_i18n:formatVolume(farmData.pendingManureSpread, 0) })
-            table.insert(report, { cell1 = g_i18n:getText("rt_report_name_manure_spread_expected"), cell2 = g_i18n:formatVolume(expectedSpread, 0) })
+                { cell1 = g_i18n:getText("rt_report_name_manure_spread"), cell2 = g_i18n:formatVolume(
+                farmData.pendingManureSpread, 0) })
+            table.insert(report,
+                { cell1 = g_i18n:getText("rt_report_name_manure_spread_expected"), cell2 = g_i18n:formatVolume(
+                expectedSpread, 0) })
             table.insert(report,
                 {
                     cell1 = g_i18n:getText("rt_report_name_manure_spread_rolling_average"),
@@ -413,7 +434,8 @@ Policies = {
             end
 
             local report = {}
-            table.insert(report, { cell1 = g_i18n:getText("rt_report_name_restricted_slurry_violations"), cell2 = pendingViolations })
+            table.insert(report,
+                { cell1 = g_i18n:getText("rt_report_name_restricted_slurry_violations"), cell2 = pendingViolations })
 
             farmData.restrictedSlurryViolations = 0
 
