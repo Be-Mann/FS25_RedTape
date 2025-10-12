@@ -22,27 +22,27 @@ function FarmGatherer:hourChanged()
         local farmData = self:getFarmData(farmId)
 
         if stats.slurry and stats.slurry > 0 and stats.slurry == stats.slurryCapacity then
-            farmData.pendingFullSlurryCount = farmData.pendingFullSlurryCount + 1
+            farmData.monthlyFullSlurryCount = farmData.monthlyFullSlurryCount + 1
         end
 
         if stats.numAnimals and stats.numAnimals > 0 then
             if stats.straw and stats.straw == 0 then
-                farmData.pendingEmptyStrawCount = farmData.pendingEmptyStrawCount + 1
+                farmData.monthlyEmptyStrawCount = farmData.monthlyEmptyStrawCount + 1
             end
 
             if stats.totalFood and stats.totalFood == 0 then
-                farmData.pendingEmptyFoodCount = farmData.pendingEmptyFoodCount + 1
+                farmData.monthlyEmptyFoodCount = farmData.monthlyEmptyFoodCount + 1
             end
 
             if stats.productivity and stats.productivity < 70 then
-                farmData.pendingLowProductivityHusbandry = farmData.pendingLowProductivityHusbandry + 1
+                farmData.monthlyLowProductivityHusbandry = farmData.monthlyLowProductivityHusbandry + 1
             end
 
             local desiredSpacePerAnimal = self:getDesirableSpace(stats.animalType)
             local actualSpacePerAnimal = stats.navigableArea / stats.numAnimals
 
             if actualSpacePerAnimal < desiredSpacePerAnimal then
-                farmData.pendingAnimalSpaceViolations = farmData.pendingAnimalSpaceViolations + 1
+                farmData.monthlyAnimalSpaceViolations = farmData.monthlyAnimalSpaceViolations + 1
             end
         end
     end
@@ -50,21 +50,32 @@ end
 
 function FarmGatherer:periodChanged()
     self:updateManureLevels()
+
+    -- Reset monthly counters
+    for _, farmData in pairs(self.data) do
+        farmData.monthlySprayViolations = 0
+        farmData.monthlyEmptyStrawCount = 0
+        farmData.monthlyFullSlurryCount = 0
+        farmData.monthlyEmptyFoodCount = 0
+        farmData.monthlyLowProductivityHusbandry = 0
+        farmData.monthlyAnimalSpaceViolations = 0
+        farmData.monthlyRestrictedSlurryViolations = 0
+    end
 end
 
 function FarmGatherer:getFarmData(farmId)
     if self.data[farmId] == nil then
         self.data[farmId] = {
-            pendingSprayViolations = 0,
-            pendingEmptyStrawCount = 0,
-            pendingFullSlurryCount = 0,
-            pendingEmptyFoodCount = 0,
-            pendingLowProductivityHusbandry = 0,
-            pendingAnimalSpaceViolations = 0,
+            monthlySprayViolations = 0,
+            monthlyEmptyStrawCount = 0,
+            monthlyFullSlurryCount = 0,
+            monthlyEmptyFoodCount = 0,
+            monthlyLowProductivityHusbandry = 0,
+            monthlyAnimalSpaceViolations = 0,
+            monthlyRestrictedSlurryViolations = 0,
             currentManureLevel = 0,
             rollingAverageManureLevel = 0,
             pendingManureSpread = 0,
-            restrictedSlurryViolations = 0
         }
     end
     return self.data[farmId]
@@ -75,16 +86,16 @@ function FarmGatherer:saveToXmlFile(xmlFile, key)
     for farmId, farmData in pairs(self.data) do
         local farmKey = string.format("%s.farms.farm(%d)", key, i)
         setXMLInt(xmlFile, farmKey .. "#id", farmId)
-        setXMLInt(xmlFile, farmKey .. "#pendingSprayViolations", farmData.pendingSprayViolations)
-        setXMLInt(xmlFile, farmKey .. "#pendingEmptyStrawCount", farmData.pendingEmptyStrawCount)
-        setXMLInt(xmlFile, farmKey .. "#pendingFullSlurryCount", farmData.pendingFullSlurryCount)
-        setXMLInt(xmlFile, farmKey .. "#pendingEmptyFoodCount", farmData.pendingEmptyFoodCount)
-        setXMLInt(xmlFile, farmKey .. "#pendingLowProductivityHusbandry", farmData.pendingLowProductivityHusbandry)
-        setXMLInt(xmlFile, farmKey .. "#pendingAnimalSpaceViolations", farmData.pendingAnimalSpaceViolations)
+        setXMLInt(xmlFile, farmKey .. "#monthlySprayViolations", farmData.monthlySprayViolations)
+        setXMLInt(xmlFile, farmKey .. "#monthlyEmptyStrawCount", farmData.monthlyEmptyStrawCount)
+        setXMLInt(xmlFile, farmKey .. "#monthlyFullSlurryCount", farmData.monthlyFullSlurryCount)
+        setXMLInt(xmlFile, farmKey .. "#monthlyEmptyFoodCount", farmData.monthlyEmptyFoodCount)
+        setXMLInt(xmlFile, farmKey .. "#monthlyLowProductivityHusbandry", farmData.monthlyLowProductivityHusbandry)
+        setXMLInt(xmlFile, farmKey .. "#monthlyAnimalSpaceViolations", farmData.monthlyAnimalSpaceViolations)
         setXMLInt(xmlFile, farmKey .. "#currentManureLevel", farmData.currentManureLevel)
         setXMLInt(xmlFile, farmKey .. "#rollingAverageManureLevel", farmData.rollingAverageManureLevel)
         setXMLInt(xmlFile, farmKey .. "#pendingManureSpread", farmData.pendingManureSpread)
-        setXMLInt(xmlFile, farmKey .. "#restrictedSlurryViolations", farmData.restrictedSlurryViolations)
+        setXMLInt(xmlFile, farmKey .. "#monthlyRestrictedSlurryViolations", farmData.monthlyRestrictedSlurryViolations)
         i = i + 1
     end
 end
@@ -99,16 +110,16 @@ function FarmGatherer:loadFromXMLFile(xmlFile, key)
 
         local farmId = getXMLInt(xmlFile, farmKey .. "#id")
         self.data[farmId] = {
-            pendingSprayViolations = getXMLInt(xmlFile, farmKey .. "#pendingSprayViolations"),
-            pendingEmptyStrawCount = getXMLInt(xmlFile, farmKey .. "#pendingEmptyStrawCount"),
-            pendingFullSlurryCount = getXMLInt(xmlFile, farmKey .. "#pendingFullSlurryCount"),
-            pendingEmptyFoodCount = getXMLInt(xmlFile, farmKey .. "#pendingEmptyFoodCount"),
-            pendingLowProductivityHusbandry = getXMLInt(xmlFile, farmKey .. "#pendingLowProductivityHusbandry"),
-            pendingAnimalSpaceViolations = getXMLInt(xmlFile, farmKey .. "#pendingAnimalSpaceViolations"),
+            monthlySprayViolations = getXMLInt(xmlFile, farmKey .. "#monthlySprayViolations"),
+            monthlyEmptyStrawCount = getXMLInt(xmlFile, farmKey .. "#monthlyEmptyStrawCount"),
+            monthlyFullSlurryCount = getXMLInt(xmlFile, farmKey .. "#monthlyFullSlurryCount"),
+            monthlyEmptyFoodCount = getXMLInt(xmlFile, farmKey .. "#monthlyEmptyFoodCount"),
+            monthlyLowProductivityHusbandry = getXMLInt(xmlFile, farmKey .. "#monthlyLowProductivityHusbandry"),
+            monthlyAnimalSpaceViolations = getXMLInt(xmlFile, farmKey .. "#monthlyAnimalSpaceViolations"),
             currentManureLevel = getXMLInt(xmlFile, farmKey .. "#currentManureLevel"),
             rollingAverageManureLevel = getXMLInt(xmlFile, farmKey .. "#rollingAverageManureLevel"),
             pendingManureSpread = getXMLInt(xmlFile, farmKey .. "#pendingManureSpread"),
-            restrictedSlurryViolations = getXMLInt(xmlFile, farmKey .. "#restrictedSlurryViolations")
+            monthlyRestrictedSlurryViolations = getXMLInt(xmlFile, farmKey .. "#monthlyRestrictedSlurryViolations")
         }
         i = i + 1
     end
@@ -137,7 +148,7 @@ function FarmGatherer:checkSprayers()
         if RedTape.tableHasValue(restrictedSlurryPeriods, g_currentMission.environment.currentPeriod) and fillType == FillType.SLURRY then
             print("Slurry spraying is restricted during this period. Sprayer " ..
                 sprayer:getName() .. " is violating policy.")
-            farmData.restrictedSlurryViolations = farmData.restrictedSlurryViolations + 1
+            farmData.monthlyRestrictedSlurryViolations = farmData.monthlyRestrictedSlurryViolations + 1
         end
 
         if RedTape.tableHasValue(checkFillTypes, fillType) then
@@ -154,7 +165,7 @@ function FarmGatherer:checkSprayers()
 
             if raycastHit or overlapHit then
                 print("Water found for sprayer " .. sprayer:getName())
-                farmData.pendingSprayViolations = farmData.pendingSprayViolations + 1
+                farmData.monthlySprayViolations = farmData.monthlySprayViolations + 1
             else
                 print("No water found for sprayer " .. sprayer:getName())
             end

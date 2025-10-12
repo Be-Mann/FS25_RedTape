@@ -69,8 +69,8 @@
 		<text name="rt_policy_report_description_restricted_slurry" text="The report shows how many times slurry was applied during the restricted months."/>
 
 		<text name="rt_report_name_farmland" text="Farmland %s"/>
-		<text name="rt_report_name_total_area_ha" text="Total Area (ha)"/>
-		<text name="rt_report_name_non_compliant_area_ha" text="Non-Compliant Area (ha)"/>
+		<text name="rt_report_name_total_area" text="Total Area"/>
+		<text name="rt_report_name_non_compliant_area" text="Non-Compliant Area"/>
 		<text name="rt_report_name_spray_violations" text="Spray Violations"/>
 		<text name="rt_report_name_empty_food" text="Hours without food"/>
 		<text name="rt_report_name_empty_straw" text="Hours without straw"/>

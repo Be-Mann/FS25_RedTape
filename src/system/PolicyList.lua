@@ -92,10 +92,10 @@ Policies = {
 
             local report = {}
             table.insert(report,
-                { cell1 = g_i18n:getText("rt_report_name_total_area_ha"), cell2 = g_i18n:formatArea(totalHa, 2) })
+                { cell1 = g_i18n:getText("rt_report_name_total_area"), cell2 = g_i18n:formatArea(totalHa, 2) })
             table.insert(report,
                 {
-                    cell1 = g_i18n:getText("rt_report_name_non_compliant_area_ha"),
+                    cell1 = g_i18n:getText("rt_report_name_non_compliant_area"),
                     cell2 = g_i18n:formatArea(nonCompliantHa, 2)
                 })
 
@@ -117,28 +117,23 @@ Policies = {
         evaluationInterval = 1,
         minEvaluationCount = 12,
         activate = function(policyInfo, policy, farmId)
-            local ig = g_currentMission.RedTape.InfoGatherer
-            local gatherer = ig.gatherers[INFO_KEYS.FARMS]
-            local farmData = gatherer:getFarmData(farmId)
-            farmData.pendingSprayViolations = 0
         end,
         evaluate = function(policyInfo, policy, farmId)
             local ig = g_currentMission.RedTape.InfoGatherer
             local gatherer = ig.gatherers[INFO_KEYS.FARMS]
             local farmData = gatherer:getFarmData(farmId)
-            local pendingSprayViolations = farmData.pendingSprayViolations or 0
+            local monthlySprayViolations = farmData.monthlySprayViolations or 0
 
             local reward = 0
-            if pendingSprayViolations > 0 then
-                reward = policyInfo.periodicPenaltyPerViolation * pendingSprayViolations
+            if monthlySprayViolations > 0 then
+                reward = policyInfo.periodicPenaltyPerViolation * monthlySprayViolations
             else
                 reward = policyInfo.periodicReward
             end
 
             local report = {}
             table.insert(report,
-                { cell1 = g_i18n:getText("rt_report_name_spray_violations"), cell2 = pendingSprayViolations })
-            farmData.pendingSprayViolations = 0
+                { cell1 = g_i18n:getText("rt_report_name_spray_violations"), cell2 = monthlySprayViolations })
 
             if reward ~= 0 then
                 g_client:getServerConnection():sendEvent(PolicyPointsEvent.new(farmId, reward, policy:getName()))
@@ -159,26 +154,20 @@ Policies = {
         evaluationInterval = 1,
         minEvaluationCount = 12,
         activate = function(policyInfo, policy, farmId)
-            local ig = g_currentMission.RedTape.InfoGatherer
-            local gatherer = ig.gatherers[INFO_KEYS.FARMS]
-            local farmData = gatherer:getFarmData(farmId)
-            farmData.pendingEmptyStrawCount = 0
         end,
         evaluate = function(policyInfo, policy, farmId)
             local ig = g_currentMission.RedTape.InfoGatherer
             local gatherer = ig.gatherers[INFO_KEYS.FARMS]
             local farmData = gatherer:getFarmData(farmId)
-            local pendingEmptyStrawCount = farmData.pendingEmptyStrawCount or 0
+            local monthlyEmptyStrawCount = farmData.monthlyEmptyStrawCount or 0
             local reward = 0
-            if pendingEmptyStrawCount > 0 then
-                reward = policyInfo.periodicPenaltyPerViolation * pendingEmptyStrawCount
+            if monthlyEmptyStrawCount > 0 then
+                reward = policyInfo.periodicPenaltyPerViolation * monthlyEmptyStrawCount
             else
                 reward = policyInfo.periodicReward
             end
             local report = {}
-            table.insert(report, { cell1 = g_i18n:getText("rt_report_name_empty_straw"), cell2 = pendingEmptyStrawCount })
-
-            farmData.pendingEmptyStrawCount = 0
+            table.insert(report, { cell1 = g_i18n:getText("rt_report_name_empty_straw"), cell2 = monthlyEmptyStrawCount })
 
             if reward ~= 0 then
                 g_client:getServerConnection():sendEvent(PolicyPointsEvent.new(farmId, reward, policy:getName()))
@@ -199,27 +188,21 @@ Policies = {
         evaluationInterval = 1,
         minEvaluationCount = 12,
         activate = function(policyInfo, policy, farmId)
-            local ig = g_currentMission.RedTape.InfoGatherer
-            local gatherer = ig.gatherers[INFO_KEYS.FARMS]
-            local farmData = gatherer:getFarmData(farmId)
-            farmData.pendingFullSlurryCount = 0
         end,
         evaluate = function(policyInfo, policy, farmId)
             local ig = g_currentMission.RedTape.InfoGatherer
             local gatherer = ig.gatherers[INFO_KEYS.FARMS]
             local farmData = gatherer:getFarmData(farmId)
-            local pendingFullSlurryCount = farmData.pendingFullSlurryCount or 0
+            local monthlyFullSlurryCount = farmData.monthlyFullSlurryCount or 0
             local reward = 0
-            if pendingFullSlurryCount > 0 then
-                reward = policyInfo.periodicPenaltyPerViolation * pendingFullSlurryCount
+            if monthlyFullSlurryCount > 0 then
+                reward = policyInfo.periodicPenaltyPerViolation * monthlyFullSlurryCount
             else
                 reward = policyInfo.periodicReward
             end
 
             local report = {}
-            table.insert(report, { cell1 = g_i18n:getText("rt_report_name_full_slurry"), cell2 = pendingFullSlurryCount })
-
-            farmData.pendingFullSlurryCount = 0
+            table.insert(report, { cell1 = g_i18n:getText("rt_report_name_full_slurry"), cell2 = monthlyFullSlurryCount })
 
             if reward ~= 0 then
                 g_client:getServerConnection():sendEvent(PolicyPointsEvent.new(farmId, reward, policy:getName()))
@@ -242,27 +225,21 @@ Policies = {
         evaluationInterval = 1,
         minEvaluationCount = 12,
         activate = function(policyInfo, policy, farmId)
-            local ig = g_currentMission.RedTape.InfoGatherer
-            local gatherer = ig.gatherers[INFO_KEYS.FARMS]
-            local farmData = gatherer:getFarmData(farmId)
-            farmData.pendingEmptyFoodCount = 0
         end,
         evaluate = function(policyInfo, policy, farmId)
             local ig = g_currentMission.RedTape.InfoGatherer
             local gatherer = ig.gatherers[INFO_KEYS.FARMS]
             local farmData = gatherer:getFarmData(farmId)
-            local pendingEmptyFoodCount = farmData.pendingEmptyFoodCount or 0
+            local monthlyEmptyFoodCount = farmData.monthlyEmptyFoodCount or 0
             local reward = 0
-            if pendingEmptyFoodCount > 0 then
-                reward = policyInfo.periodicPenaltyPerViolation * pendingEmptyFoodCount
+            if monthlyEmptyFoodCount > 0 then
+                reward = policyInfo.periodicPenaltyPerViolation * monthlyEmptyFoodCount
             else
                 reward = policyInfo.periodicReward
             end
 
             local report = {}
-            table.insert(report, { cell1 = g_i18n:getText("rt_report_name_empty_food"), cell2 = pendingEmptyFoodCount })
-
-            farmData.pendingEmptyFoodCount = 0
+            table.insert(report, { cell1 = g_i18n:getText("rt_report_name_empty_food"), cell2 = monthlyEmptyFoodCount })
 
             if reward ~= 0 then
                 g_client:getServerConnection():sendEvent(PolicyPointsEvent.new(farmId, reward, policy:getName()))
@@ -283,16 +260,12 @@ Policies = {
         evaluationInterval = 1,
         minEvaluationCount = 12,
         activate = function(policyInfo, policy, farmId)
-            local ig = g_currentMission.RedTape.InfoGatherer
-            local gatherer = ig.gatherers[INFO_KEYS.FARMS]
-            local farmData = gatherer:getFarmData(farmId)
-            farmData.pendingAnimalSpaceViolations = 0
         end,
         evaluate = function(policyInfo, policy, farmId)
             local ig = g_currentMission.RedTape.InfoGatherer
             local gatherer = ig.gatherers[INFO_KEYS.FARMS]
             local farmData = gatherer:getFarmData(farmId)
-            local pendingViolations = farmData.pendingAnimalSpaceViolations or 0
+            local pendingViolations = farmData.monthlyAnimalSpaceViolations or 0
             local reward = 0
             if pendingViolations > 0 then
                 reward = policyInfo.periodicPenaltyPerViolation * pendingViolations
@@ -303,8 +276,6 @@ Policies = {
             local report = {}
             table.insert(report,
                 { cell1 = g_i18n:getText("rt_report_name_animal_space_violations"), cell2 = pendingViolations })
-
-            farmData.pendingAnimalSpaceViolations = 0
 
             if reward ~= 0 then
                 g_client:getServerConnection():sendEvent(PolicyPointsEvent.new(farmId, reward, policy:getName()))
@@ -325,16 +296,12 @@ Policies = {
         evaluationInterval = 1,
         minEvaluationCount = 12,
         activate = function(policyInfo, policy, farmId)
-            local ig = g_currentMission.RedTape.InfoGatherer
-            local gatherer = ig.gatherers[INFO_KEYS.FARMS]
-            local farmData = gatherer:getFarmData(farmId)
-            farmData.pendingLowProductivityHusbandry = 0
         end,
         evaluate = function(policyInfo, policy, farmId)
             local ig = g_currentMission.RedTape.InfoGatherer
             local gatherer = ig.gatherers[INFO_KEYS.FARMS]
             local farmData = gatherer:getFarmData(farmId)
-            local pendingViolations = farmData.pendingLowProductivityHusbandry or 0
+            local pendingViolations = farmData.monthlyLowProductivityHusbandry or 0
             local reward = 0
             if pendingViolations > 0 then
                 reward = policyInfo.periodicPenaltyPerViolation * pendingViolations
@@ -345,8 +312,6 @@ Policies = {
             local report = {}
             table.insert(report,
                 { cell1 = g_i18n:getText("rt_report_name_low_productivity_hours"), cell2 = pendingViolations })
-
-            farmData.pendingLowProductivityHusbandry = 0
 
             if reward ~= 0 then
                 g_client:getServerConnection():sendEvent(PolicyPointsEvent.new(farmId, reward, policy:getName()))
@@ -431,16 +396,12 @@ Policies = {
         evaluationInterval = 1,
         minEvaluationCount = 12,
         activate = function(policyInfo, policy, farmId)
-            local ig = g_currentMission.RedTape.InfoGatherer
-            local gatherer = ig.gatherers[INFO_KEYS.FARMS]
-            local farmData = gatherer:getFarmData(farmId)
-            farmData.restrictedSlurryViolations = 0
         end,
         evaluate = function(policyInfo, policy, farmId)
             local ig = g_currentMission.RedTape.InfoGatherer
             local gatherer = ig.gatherers[INFO_KEYS.FARMS]
             local farmData = gatherer:getFarmData(farmId)
-            local pendingViolations = farmData.restrictedSlurryViolations or 0
+            local pendingViolations = farmData.monthlyRestrictedSlurryViolations or 0
             local reward = 0
             if pendingViolations > 0 then
                 reward = policyInfo.periodicPenaltyPerViolation * pendingViolations
@@ -451,8 +412,6 @@ Policies = {
             local report = {}
             table.insert(report,
                 { cell1 = g_i18n:getText("rt_report_name_restricted_slurry_violations"), cell2 = pendingViolations })
-
-            farmData.restrictedSlurryViolations = 0
 
             if reward ~= 0 then
                 g_client:getServerConnection():sendEvent(PolicyPointsEvent.new(farmId, reward, policy:getName()))
