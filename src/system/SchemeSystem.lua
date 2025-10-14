@@ -268,32 +268,6 @@ function SchemeSystem:getIsSchemeVehicle(farmId, vehicle)
     return false
 end
 
--- function SchemeSystem.getAvailableEquipmentSize(variant)
---     local groups = g_missionManager.missionVehicles["harvestMission"]
---     local sizes = { "medium", "small", "large" }
---     local chosenSize = nil
---     local sized = nil
-
---     for _, s in ipairs(sizes) do
---         sized = groups[s]
---         if sized ~= nil then
---             for _, g in pairs(sized) do
---                 if g.variant == variant then
---                     chosenSize = s
---                     break
---                 end
---             end
---         end
---     end
-
---     if sized == nil then
---         print("No vehicle groups found for any size for variant " .. variant)
---         return nil
---     end
-
---     return chosenSize
--- end
-
 function SchemeSystem.isSpawnSpaceAvailable(storeItems)
     local usedStorePlaces = g_currentMission.usedStorePlaces
     local placesFilled = {}

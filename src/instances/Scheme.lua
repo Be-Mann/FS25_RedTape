@@ -281,16 +281,7 @@ end
 
 -- Get a list of vehicles to spawn.
 function Scheme:getVehiclesToSpawn()
-    local schemeInfo = Schemes[self.schemeIndex]
-    -- local categoriesToSkip = schemeInfo.vehicleGroupOmissions or {}
     local vehicles = {}
-
-    -- if self.props['vehicleMissionType'] == nil then
-    --     return vehicles
-    -- end
-
-    -- local groupVehicles = g_missionManager.missionVehicles[self.props['vehicleMissionType']][self.props['size']]
-    --     [tonumber(self.props['vehicleGroup'])]
 
     local vehicleSpawnIndex = 1
     while true do
@@ -302,15 +293,6 @@ function Scheme:getVehiclesToSpawn()
         table.insert(vehicles, storeItem)
         vehicleSpawnIndex = vehicleSpawnIndex + 1
     end
-
-    -- for _, vehicleInfo in pairs(groupVehicles.vehicles) do
-    --     local storeItem = g_storeManager:getItemByXMLFilename(vehicleInfo.filename)
-    --     if storeItem ~= nil then
-    --         if not RedTape.tableHasValue(categoriesToSkip, storeItem.categoryName) then
-    --             table.insert(vehicles, vehicleInfo)
-    --         end
-    --     end
-    -- end
 
     return vehicles
 end
