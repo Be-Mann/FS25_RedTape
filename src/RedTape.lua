@@ -34,6 +34,7 @@ function RedTape:loadMap()
     self.InfoGatherer = InfoGatherer.new()
     self.EventLog = EventLog.new()
     self.RedTapeMenu = guiRedTape
+    self.didLoadFromXML = false
 
     g_messageCenter:subscribe(MessageType.HOUR_CHANGED, RedTape.hourChanged)
     g_messageCenter:subscribe(MessageType.PERIOD_CHANGED, RedTape.periodChanged)
@@ -112,6 +113,7 @@ function RedTape:loadFromXMLFile()
         g_currentMission.RedTape.TaxSystem:loadFromXMLFile(xmlFile)
         g_currentMission.RedTape.EventLog:loadFromXMLFile(xmlFile)
         g_currentMission.RedTape.InfoGatherer:loadFromXMLFile(xmlFile)
+        self.didLoadFromXML = true
 
         delete(xmlFile)
     end
@@ -275,6 +277,17 @@ function RedTape.getCumulativeMonth()
     return (year * 12) + month
 end
 
+function RedTape:onStartMission()
+    if g_currentMission:getIsServer() then
+        -- Initialize RedTape on new game
+        local rt = g_currentMission.RedTape
+        if not rt.didLoadFromXML then
+            rt:periodChanged()
+        end
+    end
+end
+
 FSBaseMission.saveSavegame = Utils.appendedFunction(FSBaseMission.saveSavegame, RedTape.saveToXmlFile)
+FSBaseMission.onStartMission = Utils.prependedFunction(FSBaseMission.onStartMission, RedTape.onStartMission)
 
 addModEventListener(RedTape)

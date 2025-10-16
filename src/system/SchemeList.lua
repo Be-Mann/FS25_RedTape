@@ -1,12 +1,12 @@
 -- Maybe an incentive to use a natural fertiliser. Like sea weed fert, its a real  thing.
 
 SchemeIds = {
-    DELAYED_MOWING_WILDLIFE = 1, -- SFI, or just only cut twice for a payout
-    REDUCE_BALE_WRAPPING = 2,    -- He also got paid for hay making. Basically, he chose to make hay and not silage in some fields. Reasons are less plastic use from wrapping, and the seeds from the wildflowers and grass get spread when baling and loading, and moving the bales.
-    NATURAL_GRAZING = 3,         -- Promotes natural grazing
-    NATURAL_FERTILISER = 4,      -- Encourages the use of natural fertilizers to improve soil health
-    CROP_PROMOTION = 5,          -- promotes growing specific crops. possibly split this by tier, and give equipment or cash bonuses
-    TRACTOR_DEMO = 6,            -- Demo a tractor for some time
+    DELAYED_MOWING_WILDLIFE = 1,
+    REDUCE_BALE_WRAPPING = 2,
+    NATURAL_GRAZING = 3,
+    NATURAL_FERTILISER = 4,
+    CROP_PROMOTION = 5,
+    TRACTOR_DEMO = 6,
 }
 
 
