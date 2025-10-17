@@ -63,13 +63,24 @@ function SprayerExtension:onEndWorkAreaProcessing(dt, hasProcessed)
     local spec = self.spec_sprayer
     if spec.workAreaParameters.isActive then
         local sprayVehicle = spec.workAreaParameters.sprayVehicle
+        local usage = spec.workAreaParameters.usage
 
         if sprayVehicle ~= nil then
             local sprayFillType = spec.workAreaParameters.sprayFillType
-            if sprayFillType ~= nil and sprayFillType == FillType.MANURE then
-                local usage = spec.workAreaParameters.usage
-                local farmData = rt.InfoGatherer.gatherers[INFO_KEYS.FARMS]:getFarmData(sprayVehicle:getOwnerFarmId())
-                farmData.pendingManureSpread = farmData.pendingManureSpread + usage
+            local farmData = rt.InfoGatherer.gatherers[INFO_KEYS.FARMS]:getFarmData(sprayVehicle:getOwnerFarmId())
+            if sprayFillType ~= nil then
+                local cumulativeMonth = RedTape.getCumulativeMonth()
+                local sprayHistory = farmData.sprayHistory
+
+                if sprayHistory[cumulativeMonth] == nil then
+                    sprayHistory[cumulativeMonth] = {}
+                end
+                local fillTypeName = g_fillTypeManager:getFillTypeNameByIndex(sprayFillType)
+                if sprayHistory[cumulativeMonth][fillTypeName] == nil then
+                    sprayHistory[cumulativeMonth][fillTypeName] = 0
+                end
+
+                sprayHistory[cumulativeMonth][fillTypeName] = sprayHistory[cumulativeMonth][fillTypeName] + usage
             end
         end
     end

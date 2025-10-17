@@ -24,8 +24,8 @@ end
 
 function FarmlandGatherer:periodChanged()
     print("Gathering farmlands data...")
-    local currentMonth = g_currentMission.RedTape.periodToMonth(g_currentMission.environment.currentPeriod)
-    local oldestHistoryMonth = currentMonth - 24
+    local cumulativeMonth = RedTape.getCumulativeMonth()
+    local oldestHistoryMonth = cumulativeMonth - 24
     for _, farmland in pairs(g_farmlandManager.farmlands) do
         if farmland.showOnFarmlandsScreen and farmland.field ~= nil then
             local farmlandData = self:getFarmlandData(farmland.id)
@@ -34,8 +34,6 @@ function FarmlandGatherer:periodChanged()
             local x, z = field:getCenterOfFieldWorldPosition()
             local fruitTypeIndex, growthState = FSDensityMapUtil.getFruitTypeIndexAtWorldPos(x, z)
             local currentFruit = g_fruitTypeManager:getFruitTypeByIndex(fruitTypeIndex)
-
-            local cumulativeMonth = RedTape.getCumulativeMonth()
 
             if currentFruit == nil then
                 farmlandData.fallowMonths = farmlandData.fallowMonths + 1
@@ -125,12 +123,10 @@ function FarmlandGatherer:loadFromXMLFile(xmlFile, key)
             end
 
             local month = getXMLInt(xmlFile, fruitKey .. "#month")
-            local name = getXMLString(xmlFile, fruitKey .. "#name")
-            local growthState = getXMLInt(xmlFile, fruitKey .. "#growthState")
 
             self.data[farmlandId].fruitHistory[month] = {
-                name = name,
-                growthState = growthState
+                name = getXMLString(xmlFile, fruitKey .. "#name"),
+                growthState = getXMLInt(xmlFile, fruitKey .. "#growthState")
             }
 
             j = j + 1

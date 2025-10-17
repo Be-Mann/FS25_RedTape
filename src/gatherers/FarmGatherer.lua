@@ -54,6 +54,19 @@ end
 
 function FarmGatherer:periodChanged()
     self:updateManureLevels()
+
+    local cumulativeMonth = RedTape.getCumulativeMonth()
+    local oldestHistoryMonth = cumulativeMonth - 24
+
+    -- remove spray history entries older than 24 months
+    for _, farmData in pairs(self.data) do
+        for month, _ in pairs(farmData.sprayHistory) do
+            if month < oldestHistoryMonth then
+                farmData.sprayHistory[month] = nil
+            end
+        end
+    end
+    
 end
 
 function FarmGatherer:resetMonthlyData()
@@ -81,8 +94,8 @@ function FarmGatherer:getFarmData(farmId)
             monthlyRestrictedSlurryViolations = 0,
             currentManureLevel = 0,
             rollingAverageManureLevel = 0,
-            pendingManureSpread = 0,
-            monthlyAnimalGrazingHours = 0
+            monthlyAnimalGrazingHours = 0,
+            sprayHistory = {}
         }
     end
     return self.data[farmId]
@@ -101,9 +114,21 @@ function FarmGatherer:saveToXmlFile(xmlFile, key)
         setXMLInt(xmlFile, farmKey .. "#monthlyAnimalSpaceViolations", farmData.monthlyAnimalSpaceViolations)
         setXMLInt(xmlFile, farmKey .. "#currentManureLevel", farmData.currentManureLevel)
         setXMLInt(xmlFile, farmKey .. "#rollingAverageManureLevel", farmData.rollingAverageManureLevel)
-        setXMLInt(xmlFile, farmKey .. "#pendingManureSpread", farmData.pendingManureSpread)
         setXMLInt(xmlFile, farmKey .. "#monthlyRestrictedSlurryViolations", farmData.monthlyRestrictedSlurryViolations)
         setXMLInt(xmlFile, farmKey .. "#monthlyAnimalGrazingHours", farmData.monthlyAnimalGrazingHours)
+
+
+        local j = 0
+        for month, nameTable in pairs(farmData.sprayHistory) do
+            for name, amount in pairs(nameTable) do
+            local sprayKey = string.format("%s.sprayHistory.spray(%d)", farmKey, j)
+            setXMLInt(xmlFile, sprayKey .. "#month", month)
+            setXMLString(xmlFile, sprayKey .. "#name", name)
+            setXMLInt(xmlFile, sprayKey .. "#amount", amount)
+            j = j + 1
+            end
+        end
+
         i = i + 1
     end
 end
@@ -126,10 +151,30 @@ function FarmGatherer:loadFromXMLFile(xmlFile, key)
             monthlyAnimalSpaceViolations = getXMLInt(xmlFile, farmKey .. "#monthlyAnimalSpaceViolations") or 0,
             currentManureLevel = getXMLInt(xmlFile, farmKey .. "#currentManureLevel") or 0,
             rollingAverageManureLevel = getXMLInt(xmlFile, farmKey .. "#rollingAverageManureLevel") or 0,
-            pendingManureSpread = getXMLInt(xmlFile, farmKey .. "#pendingManureSpread") or 0,
             monthlyRestrictedSlurryViolations = getXMLInt(xmlFile, farmKey .. "#monthlyRestrictedSlurryViolations") or 0,
             monthlyAnimalGrazingHours = getXMLInt(xmlFile, farmKey .. "#monthlyAnimalGrazingHours") or 0
         }
+
+        local j = 0
+        self.data[farmId].sprayHistory = {}
+        while true do
+            local sprayKey = string.format("%s.sprayHistory.spray(%d)", farmKey, j)
+            if not hasXMLProperty(xmlFile, sprayKey) then
+                break
+            end
+
+            local month = getXMLInt(xmlFile, sprayKey .. "#month")
+            local name = getXMLString(xmlFile, sprayKey .. "#name")
+            local amount = getXMLInt(xmlFile, sprayKey .. "#amount")
+
+            if self.data[farmId].sprayHistory[month] == nil then
+                self.data[farmId].sprayHistory[month] = {}
+            end
+            self.data[farmId].sprayHistory[month][name] = amount
+
+            j = j + 1
+        end
+
         i = i + 1
     end
 end
@@ -140,7 +185,7 @@ end
 
 function FarmGatherer:checkSprayers()
     local checkFillTypes = { FillType.FERTILIZER, FillType.SLURRY, FillType.LIME, FillType.MANURE }
-    local restrictedSlurryPeriods = { 11, 12, 1, 2 } -- September to December
+    local restrictedSlurryMonths = { 9, 10, 11, 12 } -- September to December
 
     for uniqueId, sprayer in pairs(self.turnedOnSprayers) do
         local sprayerFarmId = sprayer:getOwnerFarmId()
@@ -153,10 +198,9 @@ function FarmGatherer:checkSprayers()
 
         local fillUnitIndex = sprayer:getSprayerFillUnitIndex()
         local fillType = sprayer:getFillUnitFillType(fillUnitIndex)
+        local currentMonth = RedTape.periodToMonth(g_currentMission.environment.currentPeriod)
 
-        if RedTape.tableHasValue(restrictedSlurryPeriods, g_currentMission.environment.currentPeriod) and fillType == FillType.SLURRY then
-            print("Slurry spraying is restricted during this period. Sprayer " ..
-                sprayer:getName() .. " is violating policy.")
+        if RedTape.tableHasValue(restrictedSlurryMonths, currentMonth) and fillType == FillType.SLURRY then
             farmData.monthlyRestrictedSlurryViolations = farmData.monthlyRestrictedSlurryViolations + 1
         end
 
@@ -218,8 +262,8 @@ function FarmGatherer:checkWaterByRaycast(sprayer, workingWidth)
     for _, yAngle in ipairs(yAngles) do
         for _, xAngle in ipairs(xAngles) do
             local dx, dy, dz = localDirectionToWorld(sprayer.rootNode, xAngle, yAngle, -1)
-            drawDebugArrow(rayStartX, rayStartY, rayStartZ, dx * length, dy * length, dz * length, 0.3, 0.3, 0.3, 0.8, 0,
-                0, true)
+            -- drawDebugArrow(rayStartX, rayStartY, rayStartZ, dx * length, dy * length, dz * length, 0.3, 0.3, 0.3, 0.8, 0,
+            --     0, true)
             raycastClosest(rayStartX, rayStartY, rayStartZ, dx, dy, dz, length, "raycastCallback", raycastResult,
                 CollisionFlag.WATER + CollisionFlag.TERRAIN)
         end
@@ -285,7 +329,7 @@ function FarmGatherer:checkCreekByOverlap(sprayer, workingWidth)
     overlapBox(x + dx, y + dy, z + dz, rx, ry, rz, sizeX, sizeY, sizeZ, "overlapCallback",
         overlapResult, CollisionFlag.STATIC_OBJECT, true, true, true, true)
 
-    DebugUtil.drawOverlapBox(x + dx, y + dy, z + dz, rx, ry, rz, sizeX, sizeY, sizeZ)
+    -- DebugUtil.drawOverlapBox(x + dx, y + dy, z + dz, rx, ry, rz, sizeX, sizeY, sizeZ)
 
     if overlapResult.foundWater then
         return true

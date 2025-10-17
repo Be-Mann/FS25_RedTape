@@ -332,50 +332,51 @@ Policies = {
         evaluationInterval = 6,
         minEvaluationCount = 2,
         activate = function(policyInfo, policy, farmId)
-            local ig = g_currentMission.RedTape.InfoGatherer
-            local gatherer = ig.gatherers[INFO_KEYS.FARMS]
-            local farmData = gatherer:getFarmData(farmId)
-            farmData.pendingManureSpread = 0
         end,
         evaluate = function(policyInfo, policy, farmId)
             local ig = g_currentMission.RedTape.InfoGatherer
             local gatherer = ig.gatherers[INFO_KEYS.FARMS]
             local farmData = gatherer:getFarmData(farmId)
+            local manureName = g_fillTypeManager:getFillTypeNameByIndex(FillType.MANURE)
 
-            if farmData.rollingAverageManureLevel == 0 then
-                farmData.pendingManureSpread = 0
-                return 0
+            local actualSpread = 0
+            local monthsToSearch = 6
+            local cumulativeMonth = RedTape.getCumulativeMonth()
+
+            for month = cumulativeMonth - monthsToSearch + 1, cumulativeMonth do
+                local sprayEntry = farmData.sprayHistory[month]
+                if sprayEntry ~= nil and sprayEntry[manureName] ~= nil then
+                    actualSpread = actualSpread + sprayEntry[manureName]
+                end
             end
 
-            local expectedSpread = farmData.rollingAverageManureLevel * 0.5
-
+            local expectedSpread = 0
             local reward = 0
-            if farmData.pendingManureSpread < expectedSpread then
-                reward = policyInfo.periodicPenalty
-            else
-                reward = policyInfo.periodicReward
+            if farmData.rollingAverageManureLevel > 0 then
+                expectedSpread = farmData.rollingAverageManureLevel * 0.5
+                if actualSpread < expectedSpread then
+                    reward = policyInfo.periodicPenalty
+                else
+                    reward = policyInfo.periodicReward
+                end
             end
 
             local report = {}
             table.insert(report,
                 {
                     cell1 = g_i18n:getText("rt_report_name_manure_spread"),
-                    cell2 = g_i18n:formatVolume(
-                        farmData.pendingManureSpread, 0)
+                    cell2 = g_i18n:formatVolume(actualSpread, 0)
                 })
             table.insert(report,
                 {
                     cell1 = g_i18n:getText("rt_report_name_manure_spread_expected"),
-                    cell2 = g_i18n:formatVolume(
-                        expectedSpread, 0)
+                    cell2 = g_i18n:formatVolume(expectedSpread, 0)
                 })
             table.insert(report,
                 {
                     cell1 = g_i18n:getText("rt_report_name_manure_spread_rolling_average"),
                     cell2 = g_i18n:formatVolume(farmData.rollingAverageManureLevel, 0)
                 })
-
-            farmData.pendingManureSpread = 0
 
             if reward ~= 0 then
                 g_client:getServerConnection():sendEvent(PolicyPointsEvent.new(farmId, reward, policy:getName()))

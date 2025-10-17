@@ -7,6 +7,7 @@ SchemeIds = {
     NATURAL_FERTILISER = 4,
     CROP_PROMOTION = 5,
     TRACTOR_DEMO = 6,
+    WINTER_COVER_CROPS = 7, -- look at crop calendar to work out what makes sense. SAM2 
 }
 
 
