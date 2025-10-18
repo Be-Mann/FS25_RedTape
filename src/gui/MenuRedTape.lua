@@ -35,11 +35,11 @@ function MenuRedTape.new(i18n, messageCenter)
     self.messageCenter = messageCenter
     self.menuButtonInfo = {}
 
-    self.eventLogRenderer = EventLogRenderer.new()
-    self.activePoliciesRenderer = ActivePoliciesRenderer.new()
-    self.schemesRenderer = SchemesRenderer.new()
-    self.schemeReportRenderer = ReportRenderer.new()
-    self.policyReportRenderer = ReportRenderer.new()
+    self.eventLogRenderer = RTEventLogRenderer.new()
+    self.activePoliciesRenderer = RTActivePoliciesRenderer.new()
+    self.schemesRenderer = RTSchemesRenderer.new()
+    self.schemeReportRenderer = RTReportRenderer.new()
+    self.policyReportRenderer = RTReportRenderer.new()
 
     self.vehicleElements = {}
 
@@ -138,7 +138,7 @@ function MenuRedTape:updateSchemeEquipmentBox(scheme)
     end
     self.vehicleElements = {}
     self.schemeVehiclesBox:invalidateLayout()
-    local schemeInfo = Schemes[scheme.schemeIndex]
+    local schemeInfo = RTSchemes[scheme.schemeIndex]
 
     local vehicles = scheme:getVehiclesToSpawn()
 
@@ -351,7 +351,7 @@ function MenuRedTape:updateContent()
         local progress = policySystem:getProgressForCurrentFarm()
 
         self.complianceTier:setText(string.format(g_i18n:getText("rt_header_current_tier"),
-            PolicySystem.TIER_NAMES[progress.tier]))
+            RTPolicySystem.TIER_NAMES[progress.tier]))
         self.progressText:setText(string.format("%d/%d", progress.points, progress.nextTierPoints))
         local fullWidth = self.progressBarBg.size[1] - self.progressBar.margin[1] * 2
         local minProgressBarWidthRatio = self.progressBar.startSize[1] * 2 / fullWidth
@@ -450,7 +450,7 @@ function MenuRedTape:onSelectScheme()
     end
 
     local farmId = g_currentMission:getFarmId()
-    g_client:getServerConnection():sendEvent(SchemeSelectedEvent.new(scheme, farmId))
+    g_client:getServerConnection():sendEvent(RTSchemeSelectedEvent.new(scheme, farmId))
 
     InfoDialog.show(g_i18n:getText("rt_info_scheme_selected"))
 end

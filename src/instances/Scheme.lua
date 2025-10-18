@@ -1,10 +1,10 @@
-Scheme = {}
-Scheme_mt = Class(Scheme)
+RTScheme = {}
+RTScheme_mt = Class(RTScheme)
 
 
-function Scheme.new()
+function RTScheme.new()
     local self = {}
-    setmetatable(self, Scheme_mt)
+    setmetatable(self, RTScheme_mt)
 
     self.id = RedTape.generateId()
     self.schemeIndex = -1
@@ -25,7 +25,7 @@ function Scheme.new()
     return self
 end
 
-function Scheme:checkPendingVehicles()
+function RTScheme:checkPendingVehicles()
     if self.pendingVehicleUniqueIds ~= nil then
         for i = #self.pendingVehicleUniqueIds, 1, -1 do
             local uniqueId = self.pendingVehicleUniqueIds[i]
@@ -41,7 +41,7 @@ function Scheme:checkPendingVehicles()
     end
 end
 
-function Scheme:writeStream(streamId, connection)
+function RTScheme:writeStream(streamId, connection)
     streamWriteString(streamId, self.id)
     streamWriteInt32(streamId, self.schemeIndex)
     streamWriteInt32(streamId, self.farmId)
@@ -62,7 +62,7 @@ function Scheme:writeStream(streamId, connection)
     end
 end
 
-function Scheme:readStream(streamId, connection)
+function RTScheme:readStream(streamId, connection)
     self.id = streamReadString(streamId)
     self.schemeIndex = streamReadInt32(streamId)
     self.farmId = streamReadInt32(streamId)
@@ -87,7 +87,7 @@ function Scheme:readStream(streamId, connection)
     end
 end
 
-function Scheme:saveToXmlFile(xmlFile, key)
+function RTScheme:saveToXmlFile(xmlFile, key)
     setXMLString(xmlFile, key .. "#id", self.id)
     setXMLInt(xmlFile, key .. "#schemeIndex", self.schemeIndex)
     setXMLInt(xmlFile, key .. "#farmId", self.farmId)
@@ -119,7 +119,7 @@ function Scheme:saveToXmlFile(xmlFile, key)
     end
 end
 
-function Scheme:loadFromXMLFile(xmlFile, key)
+function RTScheme:loadFromXMLFile(xmlFile, key)
     self.id = getXMLString(xmlFile, key .. "#id")
     self.schemeIndex = getXMLInt(xmlFile, key .. "#schemeIndex")
     self.farmId = getXMLInt(xmlFile, key .. "#farmId")
@@ -171,31 +171,31 @@ function Scheme:loadFromXMLFile(xmlFile, key)
 end
 
 -- Called by the SchemeSystem when generating schemes
-function Scheme:initialise()
-    local schemeInfo = Schemes[self.schemeIndex]
+function RTScheme:initialise()
+    local schemeInfo = RTSchemes[self.schemeIndex]
     schemeInfo.initialise(schemeInfo, self)
 end
 
-function Scheme:setProp(key, value)
+function RTScheme:setProp(key, value)
     self.props[key] = tostring(value)
 end
 
-function Scheme:getName()
+function RTScheme:getName()
     if self.schemeIndex == -1 then
         return nil
     end
 
-    local schemeInfo = Schemes[self.schemeIndex]
+    local schemeInfo = RTSchemes[self.schemeIndex]
 
     return g_i18n:getText(schemeInfo.name)
 end
 
-function Scheme:getDescription()
+function RTScheme:getDescription()
     if self.schemeIndex == -1 then
         return nil
     end
 
-    local schemeInfo = Schemes[self.schemeIndex]
+    local schemeInfo = RTSchemes[self.schemeIndex]
 
     if schemeInfo.descriptionFunction ~= nil then
         return schemeInfo.descriptionFunction(schemeInfo, self)
@@ -204,18 +204,18 @@ function Scheme:getDescription()
     return g_i18n:getText(schemeInfo.description)
 end
 
-function Scheme:getReportDescription()
+function RTScheme:getReportDescription()
     if self.schemeIndex == -1 then
         return nil
     end
 
-    local schemeInfo = Schemes[self.schemeIndex]
+    local schemeInfo = RTSchemes[self.schemeIndex]
 
     return g_i18n:getText(schemeInfo.report_description)
 end
 
-function Scheme:getNextEvaluationMonth()
-    local schemeInfo = Schemes[self.schemeIndex]
+function RTScheme:getNextEvaluationMonth()
+    local schemeInfo = RTSchemes[self.schemeIndex]
     if schemeInfo.getNextEvaluationMonth ~= nil then
         return schemeInfo.getNextEvaluationMonth(schemeInfo, self)
     end
@@ -227,12 +227,12 @@ function Scheme:getNextEvaluationMonth()
     return nextMonth
 end
 
-function Scheme:availableForCurrentFarm()
+function RTScheme:availableForCurrentFarm()
     local schemeSystem = g_currentMission.RedTape.SchemeSystem
     local policySystem = g_currentMission.RedTape.PolicySystem
     local farmId = g_currentMission:getFarmId()
     local farmTier = policySystem:getProgressForCurrentFarm().tier
-    local schemeInfo = Schemes[self.schemeIndex]
+    local schemeInfo = RTSchemes[self.schemeIndex]
 
     if self.tier ~= farmTier then
         return false
@@ -241,7 +241,7 @@ function Scheme:availableForCurrentFarm()
     -- Check if the scheme conflicts with another active scheme
     local activeSchemes = schemeSystem:getActiveSchemesForFarm(farmId)
     for _, scheme in pairs(activeSchemes) do
-        local activeSchemeInfo = Schemes[scheme.schemeIndex]
+        local activeSchemeInfo = RTSchemes[scheme.schemeIndex]
         if activeSchemeInfo.duplicationKey == schemeInfo.duplicationKey then
             return false
         end
@@ -250,9 +250,9 @@ function Scheme:availableForCurrentFarm()
     return true
 end
 
-function Scheme:evaluate()
+function RTScheme:evaluate()
     local rt = g_currentMission.RedTape
-    local schemeInfo = Schemes[self.schemeIndex]
+    local schemeInfo = RTSchemes[self.schemeIndex]
     local report = schemeInfo.evaluate(schemeInfo, self, self.tier)
 
     if report ~= nil then
@@ -269,9 +269,9 @@ end
 
 -- Called by SchemeSelectedEvent, runs on client and server
 -- Creates a new farm specific scheme from
-function Scheme:createFarmScheme(farmId)
+function RTScheme:createFarmScheme(farmId)
     local policySystem = g_currentMission.RedTape.PolicySystem
-    local farmScheme = Scheme.new()
+    local farmScheme = RTScheme.new()
     farmScheme.schemeIndex = self.schemeIndex
     farmScheme.farmId = farmId
     farmScheme.tier = policySystem:getProgressForFarm(farmId).tier
@@ -283,17 +283,17 @@ function Scheme:createFarmScheme(farmId)
 end
 
 -- Called by SchemeSelectedEvent, runs on server only
-function Scheme:selected()
+function RTScheme:selected()
     if not g_currentMission:getIsServer() then
         return
     end
 
-    local schemeInfo = Schemes[self.schemeIndex]
+    local schemeInfo = RTSchemes[self.schemeIndex]
     schemeInfo.selected(schemeInfo, self, self.tier)
 end
 
 -- Get a list of vehicles to spawn.
-function Scheme:getVehiclesToSpawn()
+function RTScheme:getVehiclesToSpawn()
     local vehicles = {}
 
     local vehicleSpawnIndex = 1
@@ -310,7 +310,7 @@ function Scheme:getVehiclesToSpawn()
     return vehicles
 end
 
-function Scheme:spawnVehicles()
+function RTScheme:spawnVehicles()
     if not g_currentMission:getIsServer() then
         return
     end
@@ -344,7 +344,7 @@ function Scheme:spawnVehicles()
     g_messageCenter:subscribe(MessageType.VEHICLE_RESET, self.onVehicleReset, self)
 end
 
-function Scheme:onSpawnedVehicle(vehicles, vehicleLoadState, loadingInfo)
+function RTScheme:onSpawnedVehicle(vehicles, vehicleLoadState, loadingInfo)
     table.removeElement(self.pendingVehicleLoadingData, loadingInfo.loadingData)
     if self.failedToLoadVehicles then
         for _, vehicle in pairs(vehicles) do
@@ -375,13 +375,13 @@ function Scheme:onSpawnedVehicle(vehicles, vehicleLoadState, loadingInfo)
     end
 end
 
-function Scheme:onVehicleReset(oldVehicle, newVehicle)
+function RTScheme:onVehicleReset(oldVehicle, newVehicle)
     if g_currentMission:getIsServer() and table.removeElement(self.vehicles, oldVehicle) then
         table.addElement(self.vehicles, newVehicle)
     end
 end
 
-function Scheme:removeAccess()
+function RTScheme:removeAccess()
     if g_currentMission:getIsServer() then
         for _, vehicle in pairs(self.vehicles) do
             if not vehicle:getIsBeingDeleted() then
@@ -393,14 +393,14 @@ function Scheme:removeAccess()
 end
 
 -- Must be called when the scheme ends
-function Scheme:endScheme()
+function RTScheme:endScheme()
     if g_currentMission:getIsServer() then
         self:removeAccess()
         g_messageCenter:unsubscribeAll(self)
     end
 end
 
-function Scheme:isSchemeVehicle(vehicle)
+function RTScheme:isSchemeVehicle(vehicle)
     for _, v in pairs(self.vehicles) do
         if v == vehicle then
             return true

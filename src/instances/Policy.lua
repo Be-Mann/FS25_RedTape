@@ -1,9 +1,9 @@
-Policy = {}
-Policy_mt = Class(Policy)
+RTPolicy = {}
+RTPolicy_mt = Class(RTPolicy)
 
-function Policy.new()
+function RTPolicy.new()
     local self = {}
-    setmetatable(self, Policy_mt)
+    setmetatable(self, RTPolicy_mt)
 
     self.policyIndex = -1
     self.nextEvaluationMonth = -1
@@ -14,7 +14,7 @@ function Policy.new()
     return self
 end
 
-function Policy:writeStream(streamId, connection)
+function RTPolicy:writeStream(streamId, connection)
     streamWriteInt32(streamId, self.policyIndex)
     streamWriteInt32(streamId, self.nextEvaluationMonth)
     streamWriteInt32(streamId, self.evaluationCount)
@@ -27,7 +27,7 @@ function Policy:writeStream(streamId, connection)
     end
 end
 
-function Policy:readStream(streamId, connection)
+function RTPolicy:readStream(streamId, connection)
     self.policyIndex = streamReadInt32(streamId)
     self.nextEvaluationMonth = streamReadInt32(streamId)
     self.evaluationCount = streamReadInt32(streamId)
@@ -43,7 +43,7 @@ function Policy:readStream(streamId, connection)
     end
 end
 
-function Policy:saveToXmlFile(xmlFile, key)
+function RTPolicy:saveToXmlFile(xmlFile, key)
     setXMLInt(xmlFile, key .. "#policyIndex", self.policyIndex)
     setXMLInt(xmlFile, key .. "#nextEvaluationMonth", self.nextEvaluationMonth)
     setXMLInt(xmlFile, key .. "#evaluationCount", self.evaluationCount)
@@ -58,7 +58,7 @@ function Policy:saveToXmlFile(xmlFile, key)
     end
 end
 
-function Policy:loadFromXMLFile(xmlFile, key)
+function RTPolicy:loadFromXMLFile(xmlFile, key)
     self.policyIndex = getXMLInt(xmlFile, key .. "#policyIndex")
     self.nextEvaluationMonth = getXMLInt(xmlFile, key .. "#nextEvaluationMonth")
     self.evaluationCount = getXMLInt(xmlFile, key .. "#evaluationCount")
@@ -79,38 +79,38 @@ function Policy:loadFromXMLFile(xmlFile, key)
     end
 end
 
-function Policy:getName()
+function RTPolicy:getName()
     if self.policyIndex == -1 then
         return nil
     end
 
-    local policyInfo = Policies[self.policyIndex]
+    local policyInfo = RTPolicies[self.policyIndex]
 
     return g_i18n:getText(policyInfo.name)
 end
 
-function Policy:getDescription()
+function RTPolicy:getDescription()
     if self.policyIndex == -1 then
         return nil
     end
 
-    local policyInfo = Policies[self.policyIndex]
+    local policyInfo = RTPolicies[self.policyIndex]
 
     return g_i18n:getText(policyInfo.description)
 end
 
-function Policy:getReportDescription()
+function RTPolicy:getReportDescription()
     if self.policyIndex == -1 then
         return nil
     end
 
-    local policyInfo = Policies[self.policyIndex]
+    local policyInfo = RTPolicies[self.policyIndex]
 
     return g_i18n:getText(policyInfo.report_description)
 end
 
-function Policy:activate()
-    local policyInfo = Policies[self.policyIndex]
+function RTPolicy:activate()
+    local policyInfo = RTPolicies[self.policyIndex]
 
     if policyInfo == nil then
         print("Error: Invalid policy index " .. tostring(self.policyIndex))
@@ -128,10 +128,10 @@ function Policy:activate()
     print("Policy activated: " .. policyInfo.name)
 end
 
-function Policy:evaluate()
+function RTPolicy:evaluate()
     local rt = g_currentMission.RedTape
 
-    local policyInfo = Policies[self.policyIndex]
+    local policyInfo = RTPolicies[self.policyIndex]
     local cumulativeMonth = RedTape.getCumulativeMonth()
     if cumulativeMonth ~= self.nextEvaluationMonth then
         return

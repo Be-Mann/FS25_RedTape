@@ -1,7 +1,7 @@
-I18NExtension = {}
+RTI18NExtension = {}
 local modName = g_currentModName
 
-function I18NExtension:getText(superFunc, text, modEnv)
+function RTI18NExtension:getText(superFunc, text, modEnv)
 
     if (text == "rt_ui_schemePayout" or text == "finance_schemePayout") and modEnv == nil then
         return superFunc(self, text, modName)
@@ -11,4 +11,4 @@ function I18NExtension:getText(superFunc, text, modEnv)
 
 end
 
-I18N.getText = Utils.overwrittenFunction(I18N.getText, I18NExtension.getText)
+I18N.getText = Utils.overwrittenFunction(I18N.getText, RTI18NExtension.getText)

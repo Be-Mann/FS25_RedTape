@@ -1,19 +1,19 @@
-SchemeSystem = {}
-SchemeSystem_mt = Class(SchemeSystem)
+RTSchemeSystem = {}
+RTSchemeSystem_mt = Class(RTSchemeSystem)
 
-SchemeSystem.OPEN_SCHEMES_PER_TIER = 10
+RTSchemeSystem.OPEN_SCHEMES_PER_TIER = 10
 
 table.insert(FinanceStats.statNames, "schemePayout")
 FinanceStats.statNameToIndex["schemePayout"] = #FinanceStats.statNames
 
-function SchemeSystem.new()
+function RTSchemeSystem.new()
     local self = {}
-    setmetatable(self, SchemeSystem_mt)
+    setmetatable(self, RTSchemeSystem_mt)
     self.availableSchemes = {
-        [PolicySystem.TIER.A] = {},
-        [PolicySystem.TIER.B] = {},
-        [PolicySystem.TIER.C] = {},
-        [PolicySystem.TIER.D] = {}
+        [RTPolicySystem.TIER.A] = {},
+        [RTPolicySystem.TIER.B] = {},
+        [RTPolicySystem.TIER.C] = {},
+        [RTPolicySystem.TIER.D] = {}
     }
     self.activeSchemesByFarm = {}
 
@@ -23,7 +23,7 @@ function SchemeSystem.new()
     return self
 end
 
-function SchemeSystem:loadFromXMLFile(xmlFile)
+function RTSchemeSystem:loadFromXMLFile(xmlFile)
     if (not g_currentMission:getIsServer()) then return end
 
     local key = RedTape.SaveKey .. ".schemeSystem"
@@ -35,7 +35,7 @@ function SchemeSystem:loadFromXMLFile(xmlFile)
             break
         end
 
-        local scheme = Scheme.new()
+        local scheme = RTScheme.new()
         scheme:loadFromXMLFile(xmlFile, schemeKey)
         local tier = getXMLInt(xmlFile, schemeKey .. "#tier")
         if self.availableSchemes[tier] == nil then
@@ -52,7 +52,7 @@ function SchemeSystem:loadFromXMLFile(xmlFile)
             break
         end
 
-        local scheme = Scheme.new()
+        local scheme = RTScheme.new()
         scheme:loadFromXMLFile(xmlFile, schemeKey)
         local farmId = scheme.farmId
         if self.activeSchemesByFarm[farmId] == nil then
@@ -63,7 +63,7 @@ function SchemeSystem:loadFromXMLFile(xmlFile)
     end
 end
 
-function SchemeSystem:saveToXmlFile(xmlFile)
+function RTSchemeSystem:saveToXmlFile(xmlFile)
     if (not g_currentMission:getIsServer()) then return end
 
     local key = RedTape.SaveKey .. ".schemeSystem"
@@ -88,10 +88,10 @@ function SchemeSystem:saveToXmlFile(xmlFile)
     end
 end
 
-function SchemeSystem:hourChanged()
+function RTSchemeSystem:hourChanged()
 end
 
-function SchemeSystem:periodChanged()
+function RTSchemeSystem:periodChanged()
     local rt = g_currentMission.RedTape
     local schemeSystem = rt.SchemeSystem
 
@@ -105,7 +105,7 @@ function SchemeSystem:periodChanged()
     local expired = {}
     for tier, schemes in pairs(self.availableSchemes) do
         for _, scheme in pairs(schemes) do
-            local schemeInfo = Schemes[scheme.schemeIndex]
+            local schemeInfo = RTSchemes[scheme.schemeIndex]
             if schemeInfo.offerMonths ~= nil and not rt.tableHasValue(schemeInfo.offerMonths, currentMonth) then
                 table.insert(expired, scheme)
             end
@@ -113,13 +113,13 @@ function SchemeSystem:periodChanged()
     end
 
     for _, scheme in pairs(expired) do
-        g_client:getServerConnection():sendEvent(SchemeNoLongerAvailableEvent.new(scheme.id))
+        g_client:getServerConnection():sendEvent(RTSchemeNoLongerAvailableEvent.new(scheme.id))
     end
 
     schemeSystem:generateSchemes()
 end
 
-function SchemeSystem:checkPendingVehicles()
+function RTSchemeSystem:checkPendingVehicles()
     for farm, schemes in pairs(self.activeSchemesByFarm) do
         for _, scheme in pairs(schemes) do
             scheme:checkPendingVehicles()
@@ -127,13 +127,13 @@ function SchemeSystem:checkPendingVehicles()
     end
 end
 
-function SchemeSystem:generateSchemes()
+function RTSchemeSystem:generateSchemes()
     for tier, schemes in pairs(self.availableSchemes) do
         local existingCount = RedTape.tableCount(schemes)
-        if existingCount < SchemeSystem.OPEN_SCHEMES_PER_TIER then
-            local toCreate = SchemeSystem.OPEN_SCHEMES_PER_TIER - existingCount
+        if existingCount < RTSchemeSystem.OPEN_SCHEMES_PER_TIER then
+            local toCreate = RTSchemeSystem.OPEN_SCHEMES_PER_TIER - existingCount
             for i = 1, toCreate do
-                local scheme = Scheme.new()
+                local scheme = RTScheme.new()
                 scheme.tier = tier
                 local nextIndex = self:getNextSchemeIndex(tier)
 
@@ -143,22 +143,22 @@ function SchemeSystem:generateSchemes()
 
                 scheme.schemeIndex = nextIndex
                 scheme:initialise()
-                g_client:getServerConnection():sendEvent(SchemeActivatedEvent.new(scheme))
+                g_client:getServerConnection():sendEvent(RTSchemeActivatedEvent.new(scheme))
             end
         end
     end
 end
 
-function SchemeSystem:getNextSchemeIndex(tier)
+function RTSchemeSystem:getNextSchemeIndex(tier)
     local rt = g_currentMission.RedTape
     local currentMonth = rt.periodToMonth(g_currentMission.environment.currentPeriod)
     local currentSchemeDupeKeys = {}
     for _, scheme in pairs(self.availableSchemes[tier]) do
-        table.insert(currentSchemeDupeKeys, Schemes[scheme.schemeIndex].duplicationKey)
+        table.insert(currentSchemeDupeKeys, RTSchemes[scheme.schemeIndex].duplicationKey)
     end
 
     local availableSchemes = {}
-    for _, schemeInfo in pairs(Schemes) do
+    for _, schemeInfo in pairs(RTSchemes) do
         if rt.tableHasKey(schemeInfo.tiers, tier) and not rt.tableHasValue(currentSchemeDupeKeys, schemeInfo.duplicationKey) then
             if schemeInfo.offerMonths == nil or rt.tableHasValue(schemeInfo.offerMonths, currentMonth) then
                 local availabilityProbability = schemeInfo.availabilityProbability or 1
@@ -191,16 +191,16 @@ function SchemeSystem:getNextSchemeIndex(tier)
 end
 
 -- Called by PolicyActivatedEvent, runs on Client and Server
-function SchemeSystem:registerActivatedScheme(scheme)
+function RTSchemeSystem:registerActivatedScheme(scheme)
     table.insert(self.availableSchemes[scheme.tier], scheme)
     local available = scheme:availableForCurrentFarm()
-    g_currentMission.RedTape.EventLog:addEvent(nil, EventLogItem.EVENT_TYPE.SCHEME_ACTIVATED,
+    g_currentMission.RedTape.EventLog:addEvent(nil, RTEventLogItem.EVENT_TYPE.SCHEME_ACTIVATED,
         string.format(g_i18n:getText("rt_notify_active_scheme"), scheme:getName()), available)
     g_messageCenter:publish(MessageType.SCHEMES_UPDATED)
 end
 
 -- Called by SchemeSelectedEvent, runs on Client and Server
-function SchemeSystem:registerSelectedScheme(scheme, farmId)
+function RTSchemeSystem:registerSelectedScheme(scheme, farmId)
     local activeSchemes = self:getActiveSchemesForFarm(farmId)
 
     local schemeForFarm = scheme:createFarmScheme(farmId)
@@ -214,7 +214,7 @@ function SchemeSystem:registerSelectedScheme(scheme, farmId)
 end
 
 -- Called by SchemeNoLongerAvailableEvent, runs on Client and Server
-function SchemeSystem:removeAvailableScheme(id)
+function RTSchemeSystem:removeAvailableScheme(id)
     for tier, schemes in pairs(self.availableSchemes) do
         for i, scheme in pairs(schemes) do
             if scheme.id == id then
@@ -226,7 +226,7 @@ function SchemeSystem:removeAvailableScheme(id)
     end
 end
 
-function SchemeSystem:endActiveScheme(id, farmId)
+function RTSchemeSystem:endActiveScheme(id, farmId)
     for i, scheme in pairs(self.activeSchemesByFarm[farmId]) do
         if scheme.id == id then
             scheme:endScheme()
@@ -236,7 +236,7 @@ function SchemeSystem:endActiveScheme(id, farmId)
     end
 end
 
-function SchemeSystem:getActiveSchemesForFarm(farmId)
+function RTSchemeSystem:getActiveSchemesForFarm(farmId)
     if self.activeSchemesByFarm[farmId] == nil then
         self.activeSchemesByFarm[farmId] = {}
     end
@@ -244,7 +244,7 @@ function SchemeSystem:getActiveSchemesForFarm(farmId)
     return self.activeSchemesByFarm[farmId]
 end
 
-function SchemeSystem:getAvailableSchemesForCurrentFarm()
+function RTSchemeSystem:getAvailableSchemesForCurrentFarm()
     local availableForFarm = {}
 
     local policySystem = g_currentMission.RedTape.PolicySystem
@@ -258,7 +258,7 @@ function SchemeSystem:getAvailableSchemesForCurrentFarm()
     return availableForFarm
 end
 
-function SchemeSystem:getIsSchemeVehicle(farmId, vehicle)
+function RTSchemeSystem:getIsSchemeVehicle(farmId, vehicle)
     local activeSchemes = self:getActiveSchemesForFarm(farmId)
     for _, scheme in pairs(activeSchemes) do
         if scheme:isSchemeVehicle(vehicle) then
@@ -268,7 +268,7 @@ function SchemeSystem:getIsSchemeVehicle(farmId, vehicle)
     return false
 end
 
-function SchemeSystem.isSpawnSpaceAvailable(storeItems)
+function RTSchemeSystem.isSpawnSpaceAvailable(storeItems)
     local usedStorePlaces = g_currentMission.usedStorePlaces
     local placesFilled = {}
     local result = true

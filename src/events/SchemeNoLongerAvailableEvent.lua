@@ -1,32 +1,32 @@
-SchemeNoLongerAvailableEvent = {}
-local SchemeNoLongerAvailableEvent_mt = Class(SchemeNoLongerAvailableEvent, Event)
+RTSchemeNoLongerAvailableEvent = {}
+local RTSchemeNoLongerAvailableEvent_mt = Class(RTSchemeNoLongerAvailableEvent, Event)
 
-InitEventClass(SchemeNoLongerAvailableEvent, "SchemeNoLongerAvailableEvent")
+InitEventClass(RTSchemeNoLongerAvailableEvent, "SchemeNoLongerAvailableEvent")
 
-function SchemeNoLongerAvailableEvent.emptyNew()
-    local self = Event.new(SchemeNoLongerAvailableEvent_mt)
+function RTSchemeNoLongerAvailableEvent.emptyNew()
+    local self = Event.new(RTSchemeNoLongerAvailableEvent_mt)
 
     return self
 end
 
-function SchemeNoLongerAvailableEvent.new(id)
-    local self = SchemeNoLongerAvailableEvent.emptyNew()
+function RTSchemeNoLongerAvailableEvent.new(id)
+    local self = RTSchemeNoLongerAvailableEvent.emptyNew()
     self.id = id
     return self
 end
 
-function SchemeNoLongerAvailableEvent:writeStream(streamId, connection)
+function RTSchemeNoLongerAvailableEvent:writeStream(streamId, connection)
     streamWriteString(streamId, self.id)
 end
 
-function SchemeNoLongerAvailableEvent:readStream(streamId, connection)
+function RTSchemeNoLongerAvailableEvent:readStream(streamId, connection)
     self.id = streamReadString(streamId)
     self:run(connection)
 end
 
-function SchemeNoLongerAvailableEvent:run(connection)
+function RTSchemeNoLongerAvailableEvent:run(connection)
     if not connection:getIsServer() then
-        g_server:broadcastEvent(SchemeNoLongerAvailableEvent.new(self.id))
+        g_server:broadcastEvent(RTSchemeNoLongerAvailableEvent.new(self.id))
     end
 
     local schemeSystem = g_currentMission.RedTape.SchemeSystem

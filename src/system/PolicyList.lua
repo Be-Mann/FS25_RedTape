@@ -1,4 +1,4 @@
-PolicyIds = {
+RTPolicyIds = {
     CROP_ROTATION = 1,
     SPRAY_VIOLATION = 2,
     EMPTY_STRAW = 3,
@@ -10,10 +10,10 @@ PolicyIds = {
     RESTRICTED_SLURRY = 9
 }
 
-Policies = {
+RTPolicies = {
 
-    [PolicyIds.CROP_ROTATION] = {
-        id = PolicyIds.CROP_ROTATION,
+    [RTPolicyIds.CROP_ROTATION] = {
+        id = RTPolicyIds.CROP_ROTATION,
         name = "rt_policy_croprotation",
         description = "rt_policy_description_croprotation",
         report_description = "rt_policy_report_description_croprotation",
@@ -100,14 +100,14 @@ Policies = {
                 })
 
             if reward ~= 0 then
-                g_client:getServerConnection():sendEvent(PolicyPointsEvent.new(farmId, reward, policy:getName()))
+                g_client:getServerConnection():sendEvent(RTPolicyPointsEvent.new(farmId, reward, policy:getName()))
             end
             return report
         end,
     },
 
-    [PolicyIds.SPRAY_VIOLATION] = {
-        id = PolicyIds.SPRAY_VIOLATION,
+    [RTPolicyIds.SPRAY_VIOLATION] = {
+        id = RTPolicyIds.SPRAY_VIOLATION,
         name = "rt_policy_sprayviolation",
         description = "rt_policy_description_sprayviolation",
         report_description = "rt_policy_report_description_sprayviolation",
@@ -136,15 +136,15 @@ Policies = {
                 { cell1 = g_i18n:getText("rt_report_name_spray_violations"), cell2 = monthlySprayViolations })
 
             if reward ~= 0 then
-                g_client:getServerConnection():sendEvent(PolicyPointsEvent.new(farmId, reward, policy:getName()))
+                g_client:getServerConnection():sendEvent(RTPolicyPointsEvent.new(farmId, reward, policy:getName()))
             end
 
             return report
         end,
     },
 
-    [PolicyIds.EMPTY_STRAW] = {
-        id = PolicyIds.EMPTY_STRAW,
+    [RTPolicyIds.EMPTY_STRAW] = {
+        id = RTPolicyIds.EMPTY_STRAW,
         name = "rt_policy_empty_straw",
         description = "rt_policy_description_empty_straw",
         report_description = "rt_policy_report_description_empty_straw",
@@ -170,15 +170,15 @@ Policies = {
             table.insert(report, { cell1 = g_i18n:getText("rt_report_name_empty_straw"), cell2 = monthlyEmptyStrawCount })
 
             if reward ~= 0 then
-                g_client:getServerConnection():sendEvent(PolicyPointsEvent.new(farmId, reward, policy:getName()))
+                g_client:getServerConnection():sendEvent(RTPolicyPointsEvent.new(farmId, reward, policy:getName()))
             end
 
             return report
         end,
     },
 
-    [PolicyIds.FULL_SLURRY] = {
-        id = PolicyIds.FULL_SLURRY,
+    [RTPolicyIds.FULL_SLURRY] = {
+        id = RTPolicyIds.FULL_SLURRY,
         name = "rt_policy_full_slurry",
         description = "rt_policy_description_full_slurry",
         report_description = "rt_policy_report_description_full_slurry",
@@ -205,15 +205,15 @@ Policies = {
             table.insert(report, { cell1 = g_i18n:getText("rt_report_name_full_slurry"), cell2 = monthlyFullSlurryCount })
 
             if reward ~= 0 then
-                g_client:getServerConnection():sendEvent(PolicyPointsEvent.new(farmId, reward, policy:getName()))
+                g_client:getServerConnection():sendEvent(RTPolicyPointsEvent.new(farmId, reward, policy:getName()))
             end
 
             return report
         end
     },
 
-    [PolicyIds.EMPTY_FOOD] = {
-        id = PolicyIds.EMPTY_FOOD,
+    [RTPolicyIds.EMPTY_FOOD] = {
+        id = RTPolicyIds.EMPTY_FOOD,
         name = "rt_policy_empty_food",
         description = "rt_policy_description_empty_food",
         report_description = "rt_policy_report_description_empty_food",
@@ -242,15 +242,15 @@ Policies = {
             table.insert(report, { cell1 = g_i18n:getText("rt_report_name_empty_food"), cell2 = monthlyEmptyFoodCount })
 
             if reward ~= 0 then
-                g_client:getServerConnection():sendEvent(PolicyPointsEvent.new(farmId, reward, policy:getName()))
+                g_client:getServerConnection():sendEvent(RTPolicyPointsEvent.new(farmId, reward, policy:getName()))
             end
 
             return report
         end,
     },
 
-    [PolicyIds.ANIMAL_SPACE] = {
-        id = PolicyIds.ANIMAL_SPACE,
+    [RTPolicyIds.ANIMAL_SPACE] = {
+        id = RTPolicyIds.ANIMAL_SPACE,
         name = "rt_policy_animal_space",
         description = "rt_policy_description_animal_space",
         report_description = "rt_policy_report_description_animal_space",
@@ -278,15 +278,15 @@ Policies = {
                 { cell1 = g_i18n:getText("rt_report_name_animal_space_violations"), cell2 = pendingViolations })
 
             if reward ~= 0 then
-                g_client:getServerConnection():sendEvent(PolicyPointsEvent.new(farmId, reward, policy:getName()))
+                g_client:getServerConnection():sendEvent(RTPolicyPointsEvent.new(farmId, reward, policy:getName()))
             end
 
             return report
         end,
     },
 
-    [PolicyIds.ANIMAL_PRODUCTIVITY] = {
-        id = PolicyIds.ANIMAL_PRODUCTIVITY,
+    [RTPolicyIds.ANIMAL_PRODUCTIVITY] = {
+        id = RTPolicyIds.ANIMAL_PRODUCTIVITY,
         name = "rt_policy_animal_productivity",
         description = "rt_policy_description_animal_productivity",
         report_description = "rt_policy_report_description_animal_productivity",
@@ -314,15 +314,15 @@ Policies = {
                 { cell1 = g_i18n:getText("rt_report_name_low_productivity_hours"), cell2 = pendingViolations })
 
             if reward ~= 0 then
-                g_client:getServerConnection():sendEvent(PolicyPointsEvent.new(farmId, reward, policy:getName()))
+                g_client:getServerConnection():sendEvent(RTPolicyPointsEvent.new(farmId, reward, policy:getName()))
             end
 
             return report
         end,
     },
 
-    [PolicyIds.MANURE_SPREADING] = {
-        id = PolicyIds.MANURE_SPREADING,
+    [RTPolicyIds.MANURE_SPREADING] = {
+        id = RTPolicyIds.MANURE_SPREADING,
         name = "rt_policy_manure_spreading",
         description = "rt_policy_description_manure_spreading",
         report_description = "rt_policy_report_description_manure_spreading",
@@ -379,15 +379,15 @@ Policies = {
                 })
 
             if reward ~= 0 then
-                g_client:getServerConnection():sendEvent(PolicyPointsEvent.new(farmId, reward, policy:getName()))
+                g_client:getServerConnection():sendEvent(RTPolicyPointsEvent.new(farmId, reward, policy:getName()))
             end
 
             return report
         end
     },
 
-    [PolicyIds.RESTRICTED_SLURRY] = {
-        id = PolicyIds.RESTRICTED_SLURRY,
+    [RTPolicyIds.RESTRICTED_SLURRY] = {
+        id = RTPolicyIds.RESTRICTED_SLURRY,
         name = "rt_policy_restricted_slurry",
         description = "rt_policy_description_restricted_slurry",
         report_description = "rt_policy_report_description_restricted_slurry",
@@ -415,7 +415,7 @@ Policies = {
                 { cell1 = g_i18n:getText("rt_report_name_restricted_slurry_violations"), cell2 = pendingViolations })
 
             if reward ~= 0 then
-                g_client:getServerConnection():sendEvent(PolicyPointsEvent.new(farmId, reward, policy:getName()))
+                g_client:getServerConnection():sendEvent(RTPolicyPointsEvent.new(farmId, reward, policy:getName()))
             end
 
             return report

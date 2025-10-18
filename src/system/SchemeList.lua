@@ -1,6 +1,6 @@
 -- Maybe an incentive to use a natural fertiliser. Like sea weed fert, its a real  thing.
 
-SchemeIds = {
+RTSchemeIds = {
     DELAYED_MOWING_WILDLIFE = 1,
     REDUCE_BALE_WRAPPING = 2,
     NATURAL_GRAZING = 3,
@@ -11,25 +11,25 @@ SchemeIds = {
 }
 
 
-Schemes = {
+RTSchemes = {
 
-    [SchemeIds.DELAYED_MOWING_WILDLIFE] = {
-        id = SchemeIds.DELAYED_MOWING_WILDLIFE,
+    [RTSchemeIds.DELAYED_MOWING_WILDLIFE] = {
+        id = RTSchemeIds.DELAYED_MOWING_WILDLIFE,
         name = "rt_scheme_delayed_mowing",
         description = "rt_scheme_desc_delayed_mowing",
         report_description = "rt_scheme_report_desc_delayed_mowing",
         duplicationKey = "DELAYED_HARVEST",
         tiers = {
-            [PolicySystem.TIER.A] = {
+            [RTPolicySystem.TIER.A] = {
                 bonusPerHa = 12500,
             },
-            [PolicySystem.TIER.B] = {
+            [RTPolicySystem.TIER.B] = {
                 bonusPerHa = 12300,
             },
-            [PolicySystem.TIER.C] = {
+            [RTPolicySystem.TIER.C] = {
                 bonusPerHa = 12200,
             },
-            [PolicySystem.TIER.D] = {
+            [RTPolicySystem.TIER.D] = {
                 bonusPerHa = 12000,
             },
         },
@@ -76,7 +76,7 @@ Schemes = {
                             cell1 = string.format(g_i18n:getText("rt_report_name_farmland"), farmland.id),
                             cell2 = g_i18n:formatMoney(payout, 0, true, true)
                         })
-                        g_client:getServerConnection():sendEvent(SchemePayoutEvent.new(scheme, farmId, payout))
+                        g_client:getServerConnection():sendEvent(RTSchemePayoutEvent.new(scheme, farmId, payout))
                     else
                         table.insert(report, {
                             cell1 = string.format(g_i18n:getText("rt_report_name_farmland"), farmland.id),
@@ -90,26 +90,26 @@ Schemes = {
         end
     },
 
-    [SchemeIds.REDUCE_BALE_WRAPPING] = {
-        id = SchemeIds.REDUCE_BALE_WRAPPING,
+    [RTSchemeIds.REDUCE_BALE_WRAPPING] = {
+        id = RTSchemeIds.REDUCE_BALE_WRAPPING,
         name = "rt_scheme_reduce_bale_wrapping",
         description = "rt_scheme_desc_reduce_bale_wrapping",
         report_description = "rt_scheme_report_desc_reduce_bale_wrapping",
         duplicationKey = "REDUCE_BALE_WRAPPING",
         tiers = {
-            [PolicySystem.TIER.A] = {
+            [RTPolicySystem.TIER.A] = {
                 deductionPerBaleRate = 0.068,
                 maxPayoutPerHa = 2000,
             },
-            [PolicySystem.TIER.B] = {
+            [RTPolicySystem.TIER.B] = {
                 deductionPerBaleRate = 0.068,
                 maxPayoutPerHa = 1750,
             },
-            [PolicySystem.TIER.C] = {
+            [RTPolicySystem.TIER.C] = {
                 deductionPerBaleRate = 0.068,
                 maxPayoutPerHa = 1500,
             },
-            [PolicySystem.TIER.D] = {
+            [RTPolicySystem.TIER.D] = {
                 deductionPerBaleRate = 0.068,
                 maxPayoutPerHa = 1250,
             },
@@ -162,7 +162,7 @@ Schemes = {
                     end
 
                     if payout ~= 0 then
-                        g_client:getServerConnection():sendEvent(SchemePayoutEvent.new(scheme, farmId,
+                        g_client:getServerConnection():sendEvent(RTSchemePayoutEvent.new(scheme, farmId,
                             payout * EconomyManager.getPriceMultiplier()))
                     end
                 end
@@ -174,23 +174,23 @@ Schemes = {
         end
     },
 
-    [SchemeIds.NATURAL_GRAZING] = {
-        id = SchemeIds.NATURAL_GRAZING,
+    [RTSchemeIds.NATURAL_GRAZING] = {
+        id = RTSchemeIds.NATURAL_GRAZING,
         name = "rt_scheme_natural_grazing",
         description = "rt_scheme_desc_natural_grazing",
         report_description = "rt_scheme_report_desc_natural_grazing",
         duplicationKey = "NATURAL_GRAZING",
         tiers = {
-            [PolicySystem.TIER.A] = {
+            [RTPolicySystem.TIER.A] = {
                 bonusPerAnimal = 500,
             },
-            [PolicySystem.TIER.B] = {
+            [RTPolicySystem.TIER.B] = {
                 bonusPerAnimal = 400,
             },
-            [PolicySystem.TIER.C] = {
+            [RTPolicySystem.TIER.C] = {
                 bonusPerAnimal = 300,
             },
-            [PolicySystem.TIER.D] = {
+            [RTPolicySystem.TIER.D] = {
                 bonusPerAnimal = 250,
             },
         },
@@ -220,30 +220,30 @@ Schemes = {
                 cell1 = g_i18n:getText("rt_report_name_total_payout"),
                 cell2 = g_i18n:formatMoney(payout, 0, true, true)
             })
-            g_client:getServerConnection():sendEvent(SchemePayoutEvent.new(scheme, scheme.farmId, payout))
+            g_client:getServerConnection():sendEvent(RTSchemePayoutEvent.new(scheme, scheme.farmId, payout))
 
             return report
         end
 
     },
 
-    [SchemeIds.NATURAL_FERTILISER] = {
-        id = SchemeIds.NATURAL_FERTILISER,
+    [RTSchemeIds.NATURAL_FERTILISER] = {
+        id = RTSchemeIds.NATURAL_FERTILISER,
         name = "rt_scheme_natural_fertiliser",
         description = "rt_scheme_desc_natural_fertiliser",
         report_description = "rt_scheme_report_desc_natural_fertiliser",
         duplicationKey = "NATURAL_FERTILISER",
         tiers = {
-            [PolicySystem.TIER.A] = {
+            [RTPolicySystem.TIER.A] = {
                 bonusPerUsageAmount = 10,
             },
-            [PolicySystem.TIER.B] = {
+            [RTPolicySystem.TIER.B] = {
                 bonusPerUsageAmount = 9,
             },
-            [PolicySystem.TIER.C] = {
+            [RTPolicySystem.TIER.C] = {
                 bonusPerUsageAmount = 8,
             },
-            [PolicySystem.TIER.D] = {
+            [RTPolicySystem.TIER.D] = {
                 bonusPerUsageAmount = 7,
             },
         },
@@ -301,29 +301,29 @@ Schemes = {
                 cell1 = g_i18n:getText("rt_report_name_other_usage"),
                 cell2 = tostring(totalOtherUsage)
             })
-            g_client:getServerConnection():sendEvent(SchemePayoutEvent.new(scheme, scheme.farmId, payout))
+            g_client:getServerConnection():sendEvent(RTSchemePayoutEvent.new(scheme, scheme.farmId, payout))
 
             return report
         end
     },
 
-    [SchemeIds.CROP_PROMOTION] = {
-        id = SchemeIds.CROP_PROMOTION,
+    [RTSchemeIds.CROP_PROMOTION] = {
+        id = RTSchemeIds.CROP_PROMOTION,
         name = "rt_scheme_crop_promotion",
         report_description = "rt_scheme_report_desc_crop_promotion",
         duplicationKey = "CROP_PROMOTION",
         offerMonths = { 1, 2 },
         tiers = {
-            [PolicySystem.TIER.A] = {
+            [RTPolicySystem.TIER.A] = {
                 bonusPerHa = 2200,
             },
-            [PolicySystem.TIER.B] = {
+            [RTPolicySystem.TIER.B] = {
                 bonusPerHa = 1800,
             },
-            [PolicySystem.TIER.C] = {
+            [RTPolicySystem.TIER.C] = {
                 bonusPerHa = 1500,
             },
-            [PolicySystem.TIER.D] = {
+            [RTPolicySystem.TIER.D] = {
                 bonusPerHa = 1200,
             },
         },
@@ -421,7 +421,7 @@ Schemes = {
                             cell1 = string.format(g_i18n:getText("rt_report_name_farmland"), farmland.id),
                             cell2 = g_i18n:formatMoney(payout, 0, true, true)
                         })
-                        g_client:getServerConnection():sendEvent(SchemePayoutEvent.new(scheme, farmId, payout))
+                        g_client:getServerConnection():sendEvent(RTSchemePayoutEvent.new(scheme, farmId, payout))
                     else
                         table.insert(report, {
                             cell1 = string.format(g_i18n:getText("rt_report_name_farmland"), farmland.id),
@@ -431,30 +431,30 @@ Schemes = {
                 end
             end
 
-            g_client:getServerConnection():sendEvent(SchemeEndedEvent.new(scheme.id, farmId))
+            g_client:getServerConnection():sendEvent(RTSchemeEndedEvent.new(scheme.id, farmId))
             return report
         end
     },
 
-    [SchemeIds.TRACTOR_DEMO] = {
-        id = SchemeIds.TRACTOR_DEMO,
+    [RTSchemeIds.TRACTOR_DEMO] = {
+        id = RTSchemeIds.TRACTOR_DEMO,
         name = "rt_scheme_tractor_demo",
         report_description = "rt_scheme_report_desc_tractor_demo",
         duplicationKey = "TRACTOR_DEMO",
         tiers = {
-            [PolicySystem.TIER.A] = {
+            [RTPolicySystem.TIER.A] = {
                 categories = { "TRACTORSS", "TRACTORSM", "TRACTORSM", "TRACTORSL", "TRACTORSL" },
                 durationMonths = { 2, 2, 3 },
             },
-            [PolicySystem.TIER.B] = {
+            [RTPolicySystem.TIER.B] = {
                 categories = { "TRACTORSS", "TRACTORSM", "TRACTORSM", "TRACTORSL" },
                 durationMonths = { 1, 2, 2 },
             },
-            [PolicySystem.TIER.C] = {
+            [RTPolicySystem.TIER.C] = {
                 categories = { "TRACTORSS", "TRACTORSS", "TRACTORSM" },
                 durationMonths = { 1, 1, 2 },
             },
-            [PolicySystem.TIER.D] = {
+            [RTPolicySystem.TIER.D] = {
                 categories = { "TRACTORSS" },
                 durationMonths = { 1 },
             },
@@ -520,7 +520,7 @@ Schemes = {
             local currentMonth = RedTape.periodToMonth(g_currentMission.environment.currentPeriod)
 
             if currentYear ~= evaluationYear or currentMonth ~= evaluationMonth then
-                g_client:getServerConnection():sendEvent(SchemeEndedEvent.new(scheme.id, scheme.farmId))
+                g_client:getServerConnection():sendEvent(RTSchemeEndedEvent.new(scheme.id, scheme.farmId))
             end
             return {}
         end

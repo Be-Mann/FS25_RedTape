@@ -1,7 +1,7 @@
-EventLog = {}
-EventLog_mt = Class(EventLog)
+RTEventLog = {}
+RTEventLog_mt = Class(RTEventLog)
 
-EventLog.sortAgeDescendingFunction = function(a, b)
+RTEventLog.sortAgeDescendingFunction = function(a, b)
     if a.year ~= b.year then
         return a.year > b.year
     else
@@ -9,9 +9,9 @@ EventLog.sortAgeDescendingFunction = function(a, b)
     end
 end
 
-function EventLog.new()
+function RTEventLog.new()
     local self = {}
-    setmetatable(self, EventLog_mt)
+    setmetatable(self, RTEventLog_mt)
 
     self.events = {}
 
@@ -19,8 +19,8 @@ function EventLog.new()
 end
 
 -- Should not be called directly, only via a broadcasted Event
-function EventLog:addEvent(farmId, eventType, detail, sendNotification)
-    local event = EventLogItem.new()
+function RTEventLog:addEvent(farmId, eventType, detail, sendNotification)
+    local event = RTEventLogItem.new()
     local rt = g_currentMission.RedTape
 
     event.farmId = farmId or -1
@@ -36,7 +36,7 @@ function EventLog:addEvent(farmId, eventType, detail, sendNotification)
     g_messageCenter:publish(MessageType.EVENT_LOG_UPDATED)
 end
 
-function EventLog:pruneOld()
+function RTEventLog:pruneOld()
     local newEvents = {}
     local rt = g_currentMission.RedTape
     local currentMonth = rt.periodToMonth(g_currentMission.environment.currentPeriod)
@@ -52,7 +52,7 @@ function EventLog:pruneOld()
     self.events = newEvents
 end
 
-function EventLog:getEventsForCurrentFarm()
+function RTEventLog:getEventsForCurrentFarm()
     local farmId = g_currentMission:getFarmId()
     local farmEvents = {}
 
@@ -61,12 +61,12 @@ function EventLog:getEventsForCurrentFarm()
             table.insert(farmEvents, event)
         end
     end
-    table.sort(farmEvents, EventLog.sortAgeDescendingFunction)
+    table.sort(farmEvents, RTEventLog.sortAgeDescendingFunction)
 
     return farmEvents
 end
 
-function EventLog:loadFromXMLFile(xmlFile)
+function RTEventLog:loadFromXMLFile(xmlFile)
     if (not g_currentMission:getIsServer()) then return end
 
     local key = RedTape.SaveKey .. ".eventLog"
@@ -76,14 +76,14 @@ function EventLog:loadFromXMLFile(xmlFile)
         if not hasXMLProperty(xmlFile, eventKey) then
             break
         end
-        local event = EventLogItem.new()
+        local event = RTEventLogItem.new()
         event:loadFromXMLFile(xmlFile, eventKey)
         table.insert(self.events, event)
         i = i + 1
     end
 end
 
-function EventLog:saveToXmlFile(xmlFile)
+function RTEventLog:saveToXmlFile(xmlFile)
     if (not g_currentMission:getIsServer()) then return end
 
     local key = RedTape.SaveKey .. ".eventLog"

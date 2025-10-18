@@ -108,7 +108,7 @@
 		<text name="rt_scheme_report_desc_crop_promotion" text="The report shows a list of farmlands and the amount paid out during the last evaluation."/>
 		<text name="rt_scheme_report_desc_reduce_bale_wrapping" text="The report shows a list of farmlands and the amount paid out during the last evaluation."/>
 		<text name="rt_scheme_report_desc_natural_grazing" text="The report shows the total amount paid out during the last evaluation."/>
-		<text name="rt_scheme_report_desc_natural_fertiliser" text="The report shows the total amount paid out during the last evaluation."/>
+		<text name="rt_scheme_report_desc_natural_fertiliser" text="The report shows the usage of natural and other fertilizers during the last month."/>
 
 		<text name="rt_btn_select_scheme" text="Select Scheme"/>
 

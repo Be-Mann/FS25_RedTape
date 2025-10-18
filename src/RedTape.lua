@@ -28,11 +28,11 @@ function RedTape:loadMap()
         RedTape:makeCheckEnabledPredicate(), "pageSettings")
     guiRedTape:initialize()
 
-    self.TaxSystem = TaxSystem.new()
-    self.SchemeSystem = SchemeSystem.new()
-    self.PolicySystem = PolicySystem.new()
-    self.InfoGatherer = InfoGatherer.new()
-    self.EventLog = EventLog.new()
+    self.TaxSystem = RTTaxSystem.new()
+    self.SchemeSystem = RTSchemeSystem.new()
+    self.PolicySystem = RTPolicySystem.new()
+    self.InfoGatherer = RTInfoGatherer.new()
+    self.EventLog = RTEventLog.new()
     self.RedTapeMenu = guiRedTape
     self.didLoadFromXML = false
 

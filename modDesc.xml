@@ -31,6 +31,7 @@ Un mod qui ajoute des programmes gouvernementaux, des subventions et des taxes.
         </fr>
     </description>
     <extraSourceFiles>
+        <sourceFile filename="src/events/NewTaxStatementEvent.lua"/>
         <sourceFile filename="src/events/PolicyActivatedEvent.lua"/>
         <sourceFile filename="src/events/PolicyPointsEvent.lua"/>
         <sourceFile filename="src/events/SchemeActivatedEvent.lua"/>
@@ -39,6 +40,7 @@ Un mod qui ajoute des programmes gouvernementaux, des subventions et des taxes.
         <sourceFile filename="src/events/SchemePayoutEvent.lua"/>
         <sourceFile filename="src/events/SchemeSelectedEvent.lua"/>
         <sourceFile filename="src/extensions/BaleWrapperExtension.lua"/>
+        <sourceFile filename="src/extensions/FarmExtension.lua"/>
         <sourceFile filename="src/extensions/I18NExtension.lua"/>
         <sourceFile filename="src/extensions/MissionManagerExtension.lua"/>
         <sourceFile filename="src/extensions/SprayerExtension.lua"/>
@@ -52,6 +54,7 @@ Un mod qui ajoute des programmes gouvernementaux, des subventions et des taxes.
         <sourceFile filename="src/instances/Policy.lua"/>
         <sourceFile filename="src/instances/Scheme.lua"/>
         <sourceFile filename="src/instances/TaxLineItem.lua"/>
+        <sourceFile filename="src/instances/TaxStatement.lua"/>
         <sourceFile filename="src/system/EventLog.lua"/>
         <sourceFile filename="src/system/InfoGatherer.lua"/>
         <sourceFile filename="src/system/PolicyList.lua"/>

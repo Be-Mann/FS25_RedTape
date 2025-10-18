@@ -1,39 +1,39 @@
-PolicySystem = {}
-PolicySystem_mt = Class(PolicySystem)
+RTPolicySystem = {}
+RTPolicySystem_mt = Class(RTPolicySystem)
 
-PolicySystem.TIER = {
+RTPolicySystem.TIER = {
     A = 1,
     B = 2,
     C = 3,
     D = 4
 }
 
-PolicySystem.TIER_NAMES = {
-    [PolicySystem.TIER.A] = "A",
-    [PolicySystem.TIER.B] = "B",
-    [PolicySystem.TIER.C] = "C",
-    [PolicySystem.TIER.D] = "D"
+RTPolicySystem.TIER_NAMES = {
+    [RTPolicySystem.TIER.A] = "A",
+    [RTPolicySystem.TIER.B] = "B",
+    [RTPolicySystem.TIER.C] = "C",
+    [RTPolicySystem.TIER.D] = "D"
 }
 
-PolicySystem.THRESHOLDS = {
-    [PolicySystem.TIER.A] = 1500,
-    [PolicySystem.TIER.B] = 750,
-    [PolicySystem.TIER.C] = 300,
-    [PolicySystem.TIER.D] = 0
+RTPolicySystem.THRESHOLDS = {
+    [RTPolicySystem.TIER.A] = 1500,
+    [RTPolicySystem.TIER.B] = 750,
+    [RTPolicySystem.TIER.C] = 300,
+    [RTPolicySystem.TIER.D] = 0
 }
 
-PolicySystem.DESIRED_POLICY_COUNT = 10
+RTPolicySystem.DESIRED_POLICY_COUNT = 10
 
-function PolicySystem.new()
+function RTPolicySystem.new()
     local self = {}
-    setmetatable(self, PolicySystem_mt)
+    setmetatable(self, RTPolicySystem_mt)
     self.policies = {}
     self.points = {}
 
     return self
 end
 
-function PolicySystem:loadFromXMLFile(xmlFile)
+function RTPolicySystem:loadFromXMLFile(xmlFile)
     if (not g_currentMission:getIsServer()) then return end
 
     local key = RedTape.SaveKey .. ".policySystem"
@@ -45,7 +45,7 @@ function PolicySystem:loadFromXMLFile(xmlFile)
             break
         end
 
-        local policy = Policy.new()
+        local policy = RTPolicy.new()
         policy:loadFromXMLFile(xmlFile, policyKey)
         self:registerActivatedPolicy(policy, true)
         i = i + 1
@@ -65,7 +65,7 @@ function PolicySystem:loadFromXMLFile(xmlFile)
     end
 end
 
-function PolicySystem:saveToXmlFile(xmlFile)
+function RTPolicySystem:saveToXmlFile(xmlFile)
     if (not g_currentMission:getIsServer()) then return end
 
     local key = RedTape.SaveKey .. ".policySystem"
@@ -86,11 +86,11 @@ function PolicySystem:saveToXmlFile(xmlFile)
     end
 end
 
-function PolicySystem:hourChanged()
+function RTPolicySystem:hourChanged()
     -- local self = g_currentMission.RedTape.PolicySystem
 end
 
-function PolicySystem:periodChanged()
+function RTPolicySystem:periodChanged()
     local policySystem = g_currentMission.RedTape.PolicySystem
 
     for _, policy in ipairs(policySystem.policies) do
@@ -100,25 +100,25 @@ function PolicySystem:periodChanged()
     policySystem:generatePolicies()
 end
 
-function PolicySystem:generatePolicies()
+function RTPolicySystem:generatePolicies()
     local rt = g_currentMission.RedTape
     local existingCount = rt.tableCount(self.policies)
-    if existingCount < PolicySystem.DESIRED_POLICY_COUNT then
-        local toCreate = PolicySystem.DESIRED_POLICY_COUNT - existingCount
+    if existingCount < RTPolicySystem.DESIRED_POLICY_COUNT then
+        local toCreate = RTPolicySystem.DESIRED_POLICY_COUNT - existingCount
         for i = 1, toCreate do
-            local policy = Policy.new()
+            local policy = RTPolicy.new()
             local nextIndex = self:getNextPolicyIndex()
             if nextIndex == nil then
                 break
             end
             policy.policyIndex = nextIndex
             policy:activate()
-            g_client:getServerConnection():sendEvent(PolicyActivatedEvent.new(policy))
+            g_client:getServerConnection():sendEvent(RTPolicyActivatedEvent.new(policy))
         end
     end
 end
 
-function PolicySystem:getNextPolicyIndex()
+function RTPolicySystem:getNextPolicyIndex()
     local inUse = {}
     for _, policy in pairs(self.policies) do
         if policy.policyIndex then
@@ -127,7 +127,7 @@ function PolicySystem:getNextPolicyIndex()
     end
 
     local availablePolicies = {}
-    for id, policy in pairs(Policies) do
+    for id, policy in pairs(RTPolicies) do
         if not inUse[id] then
             table.insert(availablePolicies, policy)
         end
@@ -167,27 +167,27 @@ function PolicySystem:getNextPolicyIndex()
 end
 
 -- Called from PolicyActivatedEvent or on loadFromXMLFile, runs on client and server
-function PolicySystem:registerActivatedPolicy(policy, isLoading)
+function RTPolicySystem:registerActivatedPolicy(policy, isLoading)
     table.insert(self.policies, policy)
 
     if not isLoading then
-        g_currentMission.RedTape.EventLog:addEvent(policy.farmId, EventLogItem.EVENT_TYPE.POLICY_ACTIVATED,
+        g_currentMission.RedTape.EventLog:addEvent(policy.farmId, RTEventLogItem.EVENT_TYPE.POLICY_ACTIVATED,
             string.format(g_i18n:getText("rt_notify_active_policy"), policy:getName()), true)
     end
 end
 
 -- Called from PolicyPointsEvent, runs on client and server
-function PolicySystem:applyPoints(farmId, points, reason)
+function RTPolicySystem:applyPoints(farmId, points, reason)
     if self.points[farmId] == nil then
         self.points[farmId] = 0
     end
 
     self.points[farmId] = math.max(0, self.points[farmId] + points)
-    g_currentMission.RedTape.EventLog:addEvent(farmId, EventLogItem.EVENT_TYPE.POLICY_POINTS, reason, false)
+    g_currentMission.RedTape.EventLog:addEvent(farmId, RTEventLogItem.EVENT_TYPE.POLICY_POINTS, reason, false)
 end
 
 -- Called from PolicyCompletedEvent, runs on client
-function PolicySystem:removePolicy(policyIndex)
+function RTPolicySystem:removePolicy(policyIndex)
     local removed = nil
     for i, p in ipairs(self.policies) do
         if p.policyIndex == policyIndex then
@@ -203,36 +203,36 @@ function PolicySystem:removePolicy(policyIndex)
         return
     end
 
-    g_currentMission.RedTape.EventLog:addEvent(nil, EventLogItem.EVENT_TYPE.POLICY_COMPLETED,
+    g_currentMission.RedTape.EventLog:addEvent(nil, RTEventLogItem.EVENT_TYPE.POLICY_COMPLETED,
         string.format(g_i18n:getText("rt_notify_completed_policy"), removed), true)
 end
 
-function PolicySystem:getProgressForCurrentFarm()
+function RTPolicySystem:getProgressForCurrentFarm()
     local farmId = g_currentMission:getFarmId()
     return self:getProgressForFarm(farmId)
 end
 
-function PolicySystem:getProgressForFarm(farmId)
+function RTPolicySystem:getProgressForFarm(farmId)
     local points = self.points[farmId] or 0
 
-    local currentTier = PolicySystem.TIER.D
-    for tier = PolicySystem.TIER.A, PolicySystem.TIER.D do
-        local threshold = PolicySystem.THRESHOLDS[tier]
+    local currentTier = RTPolicySystem.TIER.D
+    for tier = RTPolicySystem.TIER.A, RTPolicySystem.TIER.D do
+        local threshold = RTPolicySystem.THRESHOLDS[tier]
         if points >= threshold then
             currentTier = tier
             break
         end
     end
 
-    if currentTier == PolicySystem.TIER.A then
+    if currentTier == RTPolicySystem.TIER.A then
         return {
             points = points,
             tier = currentTier,
-            nextTierPoints = PolicySystem.THRESHOLDS[currentTier] -- maxed out
+            nextTierPoints = RTPolicySystem.THRESHOLDS[currentTier] -- maxed out
         }
     end
 
-    local nextTierPoints = PolicySystem.THRESHOLDS[currentTier - 1]
+    local nextTierPoints = RTPolicySystem.THRESHOLDS[currentTier - 1]
     return {
         points = points,
         tier = currentTier,

@@ -1,20 +1,20 @@
-SprayerExtension = {}
+RTSprayerExtension = {}
 
-function SprayerExtension:onTurnedOn()
+function RTSprayerExtension:onTurnedOn()
     print("Sprayer turned on: " .. self:getName())
     g_currentMission.RedTape.InfoGatherer.gatherers[INFO_KEYS.FARMS].turnedOnSprayers[self.uniqueId] = self
 end
 
-function SprayerExtension:onTurnedOff()
+function RTSprayerExtension:onTurnedOff()
     print("Sprayer turned off: " .. self:getName())
     g_currentMission.RedTape.InfoGatherer.gatherers[INFO_KEYS.FARMS].turnedOnSprayers[self.uniqueId] = nil
     g_currentMission.RedTape.InfoGatherer.gatherers[INFO_KEYS.FARMS].sprayCoords[self.uniqueId] = nil
 end
 
-Sprayer.onTurnedOn = Utils.appendedFunction(Sprayer.onTurnedOn, SprayerExtension.onTurnedOn)
-Sprayer.onTurnedOff = Utils.appendedFunction(Sprayer.onTurnedOff, SprayerExtension.onTurnedOff)
+Sprayer.onTurnedOn = Utils.appendedFunction(Sprayer.onTurnedOn, RTSprayerExtension.onTurnedOn)
+Sprayer.onTurnedOff = Utils.appendedFunction(Sprayer.onTurnedOff, RTSprayerExtension.onTurnedOff)
 
-function SprayerExtension:processSprayerArea(superFunc, workArea, dt)
+function RTSprayerExtension:processSprayerArea(superFunc, workArea, dt)
     if (not g_currentMission:getIsServer()) then return end
     local rt = g_currentMission.RedTape
 
@@ -54,9 +54,9 @@ function SprayerExtension:processSprayerArea(superFunc, workArea, dt)
     return superFunc(self, workArea, dt)
 end
 
-Sprayer.processSprayerArea = Utils.overwrittenFunction(Sprayer.processSprayerArea, SprayerExtension.processSprayerArea)
+Sprayer.processSprayerArea = Utils.overwrittenFunction(Sprayer.processSprayerArea, RTSprayerExtension.processSprayerArea)
 
-function SprayerExtension:onEndWorkAreaProcessing(dt, hasProcessed)
+function RTSprayerExtension:onEndWorkAreaProcessing(dt, hasProcessed)
     if (not g_currentMission:getIsServer()) then return end
 
     local rt = g_currentMission.RedTape
@@ -87,4 +87,4 @@ function SprayerExtension:onEndWorkAreaProcessing(dt, hasProcessed)
 end
 
 Sprayer.onEndWorkAreaProcessing = Utils.appendedFunction(Sprayer.onEndWorkAreaProcessing,
-    SprayerExtension.onEndWorkAreaProcessing)
+    RTSprayerExtension.onEndWorkAreaProcessing)

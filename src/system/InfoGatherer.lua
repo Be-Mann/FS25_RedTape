@@ -1,7 +1,7 @@
-InfoGatherer = {}
-InfoGatherer_mt = Class(InfoGatherer)
+RTInfoGatherer = {}
+RTInfoGatherer_mt = Class(RTInfoGatherer)
 
-InfoGatherer.RETENTION_YEARS = 5
+RTInfoGatherer.RETENTION_YEARS = 5
 
 INFO_KEYS = {
     FARMLANDS = "farmlands",
@@ -17,9 +17,9 @@ INFO_KEYS = {
 --     end
 -- }
 
-function InfoGatherer.new()
+function RTInfoGatherer.new()
     local self = {}
-    setmetatable(self, InfoGatherer_mt)
+    setmetatable(self, RTInfoGatherer_mt)
 
     self.gatherers = {
         [INFO_KEYS.FARMLANDS] = FarmlandGatherer.new(),
@@ -29,7 +29,7 @@ function InfoGatherer.new()
     return self
 end
 
-function InfoGatherer:loadFromXMLFile(xmlFile)
+function RTInfoGatherer:loadFromXMLFile(xmlFile)
     if not g_currentMission:getIsServer() then return end
 
     local key = RedTape.SaveKey .. ".infoGatherer"
@@ -42,7 +42,7 @@ function InfoGatherer:loadFromXMLFile(xmlFile)
     end
 end
 
-function InfoGatherer:saveToXmlFile(xmlFile)
+function RTInfoGatherer:saveToXmlFile(xmlFile)
     if (not g_currentMission:getIsServer()) then return end
 
     local key = RedTape.SaveKey .. ".infoGatherer"
@@ -52,27 +52,27 @@ function InfoGatherer:saveToXmlFile(xmlFile)
     end
 end
 
-function InfoGatherer:runConstantChecks()
+function RTInfoGatherer:runConstantChecks()
     self.gatherers[INFO_KEYS.FARMS]:checkSprayers()
 end
 
-function InfoGatherer:runInfrequentChecks()
+function RTInfoGatherer:runInfrequentChecks()
     self.gatherers[INFO_KEYS.FARMLANDS]:checkHarvestedState()
 end
 
-function InfoGatherer:hourChanged()
+function RTInfoGatherer:hourChanged()
     for _, gatherer in pairs(self.gatherers) do
         gatherer:hourChanged()
     end
 end
 
-function InfoGatherer:periodChanged()
+function RTInfoGatherer:periodChanged()
     for _, gatherer in pairs(self.gatherers) do
         gatherer:periodChanged()
     end
 end
 
-function InfoGatherer:resetMonthlyData()
+function RTInfoGatherer:resetMonthlyData()
     for _, gatherer in pairs(self.gatherers) do
         gatherer:resetMonthlyData()
     end

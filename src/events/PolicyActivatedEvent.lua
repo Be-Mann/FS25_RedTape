@@ -1,33 +1,33 @@
-PolicyActivatedEvent = {}
-local PolicyActivatedEvent_mt = Class(PolicyActivatedEvent, Event)
+RTPolicyActivatedEvent = {}
+local RTPolicyActivatedEvent_mt = Class(RTPolicyActivatedEvent, Event)
 
-InitEventClass(PolicyActivatedEvent, "PolicyActivatedEvent")
+InitEventClass(RTPolicyActivatedEvent, "PolicyActivatedEvent")
 
-function PolicyActivatedEvent.emptyNew()
-    local self = Event.new(PolicyActivatedEvent_mt)
+function RTPolicyActivatedEvent.emptyNew()
+    local self = Event.new(RTPolicyActivatedEvent_mt)
 
     return self
 end
 
-function PolicyActivatedEvent.new(policy)
-    local self = PolicyActivatedEvent.emptyNew()
+function RTPolicyActivatedEvent.new(policy)
+    local self = RTPolicyActivatedEvent.emptyNew()
     self.policy = policy
     return self
 end
 
-function PolicyActivatedEvent:writeStream(streamId, connection)
+function RTPolicyActivatedEvent:writeStream(streamId, connection)
     self.policy:writeStream(streamId, connection)
 end
 
-function PolicyActivatedEvent:readStream(streamId, connection)
-    self.policy = Policy.new()
+function RTPolicyActivatedEvent:readStream(streamId, connection)
+    self.policy = RTPolicy.new()
     self.policy:readStream(streamId, connection)
     self:run(connection)
 end
 
-function PolicyActivatedEvent:run(connection)
+function RTPolicyActivatedEvent:run(connection)
     if not connection:getIsServer() then
-        g_server:broadcastEvent(PolicyActivatedEvent.new(self.policy))
+        g_server:broadcastEvent(RTPolicyActivatedEvent.new(self.policy))
     end
 
     local policySystem = g_currentMission.RedTape.PolicySystem

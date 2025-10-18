@@ -1,34 +1,34 @@
 -- An activated scheme is when a scheme becomes available to farms for selection
-SchemeActivatedEvent = {}
-local SchemeActivatedEvent_mt = Class(SchemeActivatedEvent, Event)
+RTSchemeActivatedEvent = {}
+local RTSchemeActivatedEvent_mt = Class(RTSchemeActivatedEvent, Event)
 
-InitEventClass(SchemeActivatedEvent, "SchemeActivatedEvent")
+InitEventClass(RTSchemeActivatedEvent, "SchemeActivatedEvent")
 
-function SchemeActivatedEvent.emptyNew()
-    local self = Event.new(SchemeActivatedEvent_mt)
+function RTSchemeActivatedEvent.emptyNew()
+    local self = Event.new(RTSchemeActivatedEvent_mt)
 
     return self
 end
 
-function SchemeActivatedEvent.new(scheme)
-    local self = SchemeActivatedEvent.emptyNew()
+function RTSchemeActivatedEvent.new(scheme)
+    local self = RTSchemeActivatedEvent.emptyNew()
     self.scheme = scheme
     return self
 end
 
-function SchemeActivatedEvent:writeStream(streamId, connection)
+function RTSchemeActivatedEvent:writeStream(streamId, connection)
     self.scheme:writeStream(streamId, connection)
 end
 
-function SchemeActivatedEvent:readStream(streamId, connection)
-    self.scheme = Scheme.new()
+function RTSchemeActivatedEvent:readStream(streamId, connection)
+    self.scheme = RTScheme.new()
     self.scheme:readStream(streamId, connection)
     self:run(connection)
 end
 
-function SchemeActivatedEvent:run(connection)
+function RTSchemeActivatedEvent:run(connection)
     if not connection:getIsServer() then
-        g_server:broadcastEvent(SchemeActivatedEvent.new(self.scheme))
+        g_server:broadcastEvent(RTSchemeActivatedEvent.new(self.scheme))
     end
 
     local schemeSystem = g_currentMission.RedTape.SchemeSystem

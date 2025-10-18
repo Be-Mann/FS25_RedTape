@@ -1,6 +1,6 @@
-BaleWrapperExtension = {}
+RTBaleWrapperExtension = {}
 
-function BaleWrapperExtension:doStateChange(id, nearestBaleServerId)
+function RTBaleWrapperExtension:doStateChange(id, nearestBaleServerId)
     if self.isServer then
         local spec = self.spec_baleWrapper
         if id == BaleWrapper.CHANGE_WRAPPER_START_DROP_BALE then
@@ -22,4 +22,4 @@ function BaleWrapperExtension:doStateChange(id, nearestBaleServerId)
     end
 end
 
-BaleWrapper.doStateChange = Utils.appendedFunction(BaleWrapper.doStateChange, BaleWrapperExtension.doStateChange)
+BaleWrapper.doStateChange = Utils.appendedFunction(BaleWrapper.doStateChange, RTBaleWrapperExtension.doStateChange)

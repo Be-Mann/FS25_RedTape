@@ -1,9 +1,9 @@
-ActivePoliciesRenderer = {}
-ActivePoliciesRenderer_mt = Class(ActivePoliciesRenderer)
+RTActivePoliciesRenderer = {}
+RTActivePoliciesRenderer_mt = Class(RTActivePoliciesRenderer)
 
-function ActivePoliciesRenderer.new()
+function RTActivePoliciesRenderer.new()
     local self = {}
-    setmetatable(self, ActivePoliciesRenderer_mt)
+    setmetatable(self, RTActivePoliciesRenderer_mt)
     self.data = nil
     self.selectedRow = -1;
     self.indexChangedCallback = nil
@@ -11,29 +11,29 @@ function ActivePoliciesRenderer.new()
     return self
 end
 
-function ActivePoliciesRenderer:setData(data)
+function RTActivePoliciesRenderer:setData(data)
     self.data = data
 end
 
-function ActivePoliciesRenderer:getNumberOfSections()
+function RTActivePoliciesRenderer:getNumberOfSections()
     return 1
 end
 
-function ActivePoliciesRenderer:getNumberOfItemsInSection(list, section)
+function RTActivePoliciesRenderer:getNumberOfItemsInSection(list, section)
     return #self.data
 end
 
-function ActivePoliciesRenderer:getTitleForSectionHeader(list, section)
+function RTActivePoliciesRenderer:getTitleForSectionHeader(list, section)
     return ""
 end
 
-function ActivePoliciesRenderer:populateCellForItemInSection(list, section, index, cell)
+function RTActivePoliciesRenderer:populateCellForItemInSection(list, section, index, cell)
     local activePolicy = self.data[index]
 
     cell:getAttribute("name"):setText(activePolicy:getName())
 end
 
-function ActivePoliciesRenderer:onListSelectionChanged(list, section, index)
+function RTActivePoliciesRenderer:onListSelectionChanged(list, section, index)
     self.selectedRow = index
     if self.indexChangedCallback ~= nil then
         self.indexChangedCallback(index)

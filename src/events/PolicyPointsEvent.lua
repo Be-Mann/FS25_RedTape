@@ -1,29 +1,29 @@
-PolicyPointsEvent = {}
-local PolicyPointsEvent_mt = Class(PolicyPointsEvent, Event)
+RTPolicyPointsEvent = {}
+local RTPolicyPointsEvent_mt = Class(RTPolicyPointsEvent, Event)
 
-InitEventClass(PolicyPointsEvent, "PolicyPointsEvent")
+InitEventClass(RTPolicyPointsEvent, "PolicyPointsEvent")
 
-function PolicyPointsEvent.emptyNew()
-    local self = Event.new(PolicyPointsEvent_mt)
+function RTPolicyPointsEvent.emptyNew()
+    local self = Event.new(RTPolicyPointsEvent_mt)
 
     return self
 end
 
-function PolicyPointsEvent.new(farmId, pointChange, policyName)
-    local self = PolicyPointsEvent.emptyNew()
+function RTPolicyPointsEvent.new(farmId, pointChange, policyName)
+    local self = RTPolicyPointsEvent.emptyNew()
     self.farmId = farmId
     self.pointChange = pointChange
     self.policyName = policyName
     return self
 end
 
-function PolicyPointsEvent:writeStream(streamId, connection)
+function RTPolicyPointsEvent:writeStream(streamId, connection)
     streamWriteString(streamId, self.farmId)
     streamWriteInt32(streamId, self.pointChange)
     streamWriteString(streamId, self.policyName)
 end
 
-function PolicyPointsEvent:readStream(streamId, connection)
+function RTPolicyPointsEvent:readStream(streamId, connection)
     self.farmId = streamReadString(streamId)
     self.pointChange = streamReadInt32(streamId)
     self.policyName = streamReadString(streamId)
@@ -31,9 +31,9 @@ function PolicyPointsEvent:readStream(streamId, connection)
     self:run(connection)
 end
 
-function PolicyPointsEvent:run(connection)
+function RTPolicyPointsEvent:run(connection)
     if not connection:getIsServer() then
-        g_server:broadcastEvent(PolicyPointsEvent.new(self.farmId, self.pointChange, self.policyName))
+        g_server:broadcastEvent(RTPolicyPointsEvent.new(self.farmId, self.pointChange, self.policyName))
     end
 
     local reason = string.format(g_i18n:getText("rt_policy_reason_evaluation"), self.pointChange, self.policyName)

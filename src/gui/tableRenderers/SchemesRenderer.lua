@@ -1,9 +1,9 @@
-SchemesRenderer = {}
-SchemesRenderer_mt = Class(SchemesRenderer)
+RTSchemesRenderer = {}
+RTSchemesRenderer_mt = Class(RTSchemesRenderer)
 
-function SchemesRenderer.new()
+function RTSchemesRenderer.new()
     local self = {}
-    setmetatable(self, SchemesRenderer_mt)
+    setmetatable(self, RTSchemesRenderer_mt)
     self.data = nil
     self.selectedRow = -1;
     self.indexChangedCallback = nil
@@ -11,25 +11,25 @@ function SchemesRenderer.new()
     return self
 end
 
-function SchemesRenderer:setData(data)
+function RTSchemesRenderer:setData(data)
     self.data = data
 end
 
-function SchemesRenderer:getNumberOfSections()
+function RTSchemesRenderer:getNumberOfSections()
     return 1
 end
 
-function SchemesRenderer:getNumberOfItemsInSection(list, section)
+function RTSchemesRenderer:getNumberOfItemsInSection(list, section)
     local menu = g_currentMission.RedTape.RedTapeMenu
     local selection = menu.schemeDisplaySwitcher:getState()
     return #self.data[selection]
 end
 
-function SchemesRenderer:getTitleForSectionHeader(list, section)
+function RTSchemesRenderer:getTitleForSectionHeader(list, section)
     return ""
 end
 
-function SchemesRenderer:populateCellForItemInSection(list, section, index, cell)
+function RTSchemesRenderer:populateCellForItemInSection(list, section, index, cell)
     local menu = g_currentMission.RedTape.RedTapeMenu
     local selection = menu.schemeDisplaySwitcher:getState()
     local scheme = self.data[selection][index]
@@ -38,7 +38,7 @@ function SchemesRenderer:populateCellForItemInSection(list, section, index, cell
     cell:getAttribute("name"):setText(scheme:getName())
 end
 
-function SchemesRenderer:onListSelectionChanged(list, section, index)
+function RTSchemesRenderer:onListSelectionChanged(list, section, index)
     self.selectedRow = index
     if self.indexChangedCallback ~= nil then
         self.indexChangedCallback(index)

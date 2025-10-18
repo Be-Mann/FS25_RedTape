@@ -1,5 +1,5 @@
-MissionManagerExtension = {}
-function MissionManagerExtension:getIsMissionWorkAllowed(superFunc, farmId, x, z, workAreaType, vehicle)
+RTMissionManagerExtension = {}
+function RTMissionManagerExtension:getIsMissionWorkAllowed(superFunc, farmId, x, z, workAreaType, vehicle)
     if g_currentMission.RedTape.SchemeSystem:getIsSchemeVehicle(farmId, vehicle) then
         local farmland = g_farmlandManager:getFarmlandAtWorldPosition(x, z)
         if farmland ~= nil and farmland.farmId == farmId then
@@ -11,4 +11,4 @@ function MissionManagerExtension:getIsMissionWorkAllowed(superFunc, farmId, x, z
 end
 
 MissionManager.getIsMissionWorkAllowed = Utils.overwrittenFunction(MissionManager.getIsMissionWorkAllowed,
-    MissionManagerExtension.getIsMissionWorkAllowed)
+    RTMissionManagerExtension.getIsMissionWorkAllowed)
