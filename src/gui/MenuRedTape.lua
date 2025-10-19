@@ -40,6 +40,7 @@ function MenuRedTape.new(i18n, messageCenter)
     self.schemesRenderer = RTSchemesRenderer.new()
     self.schemeReportRenderer = RTReportRenderer.new()
     self.policyReportRenderer = RTReportRenderer.new()
+    self.taxNotesRenderer = RTTaxNotesRenderer.new()
 
     self.vehicleElements = {}
 
@@ -203,6 +204,9 @@ function MenuRedTape:onGuiSetupFinished()
 
     self.policyReportTable:setDataSource(self.policyReportRenderer)
     self.policyReportTable:setDelegate(self.policyReportRenderer)
+
+    self.taxNotesTable:setDataSource(self.taxNotesRenderer)
+    self.taxNotesTable:setDelegate(self.taxNotesRenderer)
 end
 
 function MenuRedTape:initialize()
@@ -396,6 +400,40 @@ function MenuRedTape:updateContent()
 
         self.eventLogRenderer:setData(farmEvents)
         self.farmEventsTable:reloadData()
+    elseif state == MenuRedTape.SUB_CATEGORY.TAX then
+        local taxSystem = g_currentMission.RedTape.TaxSystem
+        local farmId = g_currentMission:getFarmId()
+        local statement = taxSystem.taxStatements[farmId]
+
+        local currentYearStatement = taxSystem:getCurrentYearTaxToDate(farmId)
+        self.taxEstimate:setText(g_i18n:formatMoney(currentYearStatement.totalTax, 0, true, true))
+
+        if statement == nil then
+            self.taxStatementContainer:setVisible(false)
+            self.noTaxStatementContainer:setVisible(true)
+            return
+        end
+
+        self.taxStatementContainer:setVisible(true)
+        self.noTaxStatementContainer:setVisible(false)
+
+        self.taxTotalExpenses:setText(g_i18n:formatMoney(statement.totalExpenses, 0, true, true))
+        self.taxTotalTaxable:setText(g_i18n:formatMoney(statement.totalTaxableIncome, 0, true, true))
+        self.taxTotalTaxed:setText(g_i18n:formatMoney(statement.totalTaxedIncome, 0, true, true))
+        self.taxTaxRate:setText(string.format("%.2f%%", statement.taxRate * 100))
+        self.taxTotalTaxDue:setText(g_i18n:formatMoney(statement.totalTax, 0, true, true))
+        self.taxStatementStatus:setText(statement.paid and
+            g_i18n:getText("rt_tax_statement_status_paid") or g_i18n:getText("rt_tax_statement_status_unpaid"))
+
+        if #statement.notes == 0 then
+            self.taxNotesContainer:setVisible(false)
+            self.noTaxNotesContainer:setVisible(true)
+        else
+            self.taxNotesContainer:setVisible(true)
+            self.noTaxNotesContainer:setVisible(false)
+            self.taxNotesRenderer:setData(statement.notes)
+            self.taxNotesTable:reloadData()
+        end
     end
 
     self:updateMenuButtons()

@@ -4,17 +4,15 @@ RTTaxSystem_mt = Class(RTTaxSystem)
 RTTaxSystem.TAX_CALCULATION_MONTH = 4
 RTTaxSystem.TAX_PAYMENT_MONTH = 9
 
-RTTaxSystem.LINE_ITEM_CATEGORIES = {
-    INCOME = "income",
-    EXPENSES = "expenses",
-    NONE = "none"
-}
-
 function RTTaxSystem.new()
     local self = {}
     setmetatable(self, RTTaxSystem_mt)
     self.lineItems = {}
     self.taxStatements = {}
+    self.farms = {}
+
+    MoneyType.TAX_PAID = MoneyType.register("taxCost", "rt_ui_taxCost")
+    MoneyType.LAST_ID = MoneyType.LAST_ID + 1
 
     return self
 end
@@ -24,7 +22,6 @@ function RTTaxSystem:loadFromXMLFile(xmlFile)
 
     local key = RedTape.SaveKey .. ".taxSystem"
 
-    -- initialize as nested table: lineItems[farmId][month] = TaxLineItem
     self.lineItems = {}
 
     local i = 0
@@ -81,6 +78,10 @@ function RTTaxSystem:periodChanged()
         self:createAnnualTaxStatements()
     end
 
+    if month == RTTaxSystem.TAX_PAYMENT_MONTH then
+        self:processTaxStatements()
+    end
+
     local cumulativeMonth = RedTape.getCumulativeMonth()
     local oldestHistoryMonth = cumulativeMonth - 24
 
@@ -106,46 +107,99 @@ function RTTaxSystem:recordLineItem(farmId, amount, statistic)
     lineItem.amount = amount
     lineItem.statistic = statistic
 
+    if not RedTape.tableHasValue(self.farms, farmId) then
+        table.insert(self.farms, farmId)
+    end
+
     table.insert(self.lineItems[farmId][cumulativeMonth], lineItem)
 end
 
 function RTTaxSystem:getTaxRate(farmId)
-    -- For simplicity, return a flat tax rate of 20%
+    -- Example usage is to look up the farm and find tax rate modifiers
     return 0.2
 end
 
-function RTTaxSystem:categoriseLineItem(farmId, lineItem)
+function RTTaxSystem:getTaxedAmount(lineItem, taxStatement)
+    -- Example usage is to look up the farm and find earned tax breaks for the lineItem.statistic and reduce taxable amount accordingly
+    return lineItem.amount
+end
+
+function RTTaxSystem:categoriseLineItem(lineItem, taxStatement)
     local expenseStats = {
-        "test"
+        "newVehiclesCost",
+        "constructionCost",
+        "newHandtoolsCost",
+        "wagePayment",
+        "newAnimalsCost",
+        "animalUpkeep",
+        "purchaseSeeds",
+        "purchaseFertilizer",
+        "purchaseFuel",
+        "purchaseSaplings",
+        "purchaseWater",
+        "purchaseBales",
+        "purchasePallets",
+        "purchaseConsumable",
+        "fieldPurchase",
+        "vehicleLeasingCost",
+        "loanInterest",
+        "vehicleRunningCost",
+        "propertyMaintenance",
+        "productionCosts"
     }
 
     local incomeStats = {
-        "income"
+        "soldVehicles",
+        "soldBuildings",
+        "soldHandtools",
+        "soldMilk",
+        "soldAnimals",
+        "harvestIncome",
+        "missionIncome",
+        "fieldSelling",
+        "propertyIncome",
+        "soldProducts",
+        "incomeBga",
+        "soldWood",
+        "soldBales",
+        "expenses"
     }
 
     if RedTape.tableContains(expenseStats, lineItem.statistic) then
-        return RTTaxSystem.LINE_ITEM_CATEGORIES.EXPENSES
+        taxStatement.totalExpenses = taxStatement.totalExpenses + math.abs(lineItem.amount)
     elseif RedTape.tableContains(incomeStats, lineItem.statistic) then
-        return RTTaxSystem.LINE_ITEM_CATEGORIES.INCOME
+        taxStatement.totalTaxableIncome = taxStatement.totalTaxableIncome + math.abs(lineItem.amount)
+        taxStatement.totalTaxedIncome = taxStatement.totalTaxedIncome + self:getTaxedAmount(lineItem, taxStatement)
+    else
+        print("Warning: Uncategorised tax line item statistic '" .. tostring(lineItem.statistic) .. "'")
     end
-
-    return RTTaxSystem.LINE_ITEM_CATEGORIES.NONE
 end
 
 function RTTaxSystem:createAnnualTaxStatements()
-    for farmId, months in pairs(self.lineItems) do
+    local minMonth = RedTape.getCumulativeMonth() - 12
+    local maxMonth = RedTape.getCumulativeMonth() - 1
+    for _, farmId in ipairs(self.farms) do
         local taxStatement = RTTaxStatement.new()
         taxStatement.farmId = farmId
+        taxStatement.taxRate = self:getTaxRate(farmId)
 
-        for month, lineItems in pairs(months) do
-            for _, lineItem in ipairs(lineItems) do
-                local category = self:categoriseLineItem(farmId, lineItem)
-                if category == RTTaxSystem.LINE_ITEM_CATEGORIES.INCOME then
-                    taxStatement.totalIncome = taxStatement.totalIncome + math.abs(lineItem.amount)
-                elseif category == RTTaxSystem.LINE_ITEM_CATEGORIES.EXPENSES then
-                    taxStatement.totalExpenses = taxStatement.totalExpenses + math.abs(lineItem.amount)
-                end
+        local lineItems = self.lineItems[farmId] or {}
+
+        for month, lineItems in pairs(lineItems) do
+            if month < minMonth or month > maxMonth then
+                continue
             end
+
+            for _, lineItem in ipairs(lineItems) do
+                self:categoriseLineItem(lineItem, taxStatement)
+            end
+
+            local finalTaxAmount = taxStatement.totalTaxedIncome - taxStatement.totalExpenses
+            if finalTaxAmount < 0 then
+                finalTaxAmount = 0
+            end
+
+            taxStatement.totalTax = math.floor(finalTaxAmount * taxStatement.taxRate)
         end
 
         g_client:getServerConnection():sendEvent(RTNewTaxStatementEvent.new(taxStatement))
@@ -165,4 +219,64 @@ function RTTaxSystem:storeTaxStatement(taxStatement)
     end
 
     table.insert(self.taxStatements, taxStatement)
+end
+
+function RTTaxSystem:processTaxStatements()
+    if g_currentMission:getIsServer() then
+        for _, taxStatement in ipairs(self.taxStatements) do
+            if not taxStatement.paid then
+                if taxStatement.totalTax > 0 then
+                    g_currentMission:addMoneyChange(taxStatement.totalTax, taxStatement.farmId, MoneyType.TAX_PAID,
+                        true)
+                end
+                g_client:getServerConnection():sendEvent(RTTaxStatementPaidEvent.new(taxStatement.farmId))
+            end
+        end
+    end
+end
+
+-- Called via RTTaxStatementPaidEvent to mark as paid on client and server
+function RTTaxSystem:markTaxStatementAsPaid(farmId)
+    for _, taxStatement in ipairs(self.taxStatements) do
+        if taxStatement.farmId == farmId then
+            taxStatement.paid = true
+            return
+        end
+    end
+end
+
+function RTTaxSystem:getCurrentYearTaxToDate(farmId)
+    -- local minMonth = RedTape.getCumulativeMonth() - 12
+    -- local maxMonth = RedTape.getCumulativeMonth() - 1
+
+    local cumulativeMonth = RedTape.getCumulativeMonth()
+    local currentMonth = RedTape.periodToMonth(g_currentMission.environment.currentPeriod)
+
+    local monthsBack = (currentMonth - RTTaxSystem.TAX_CALCULATION_MONTH + 12) % 12
+    local minMonth = cumulativeMonth - monthsBack
+    local maxMonth = cumulativeMonth
+
+    local taxStatement = RTTaxStatement.new()
+    taxStatement.farmId = farmId
+    taxStatement.taxRate = self:getTaxRate(farmId)
+
+    local lineItems = self.lineItems[farmId] or {}
+
+    for month, lineItems in pairs(lineItems) do
+        if month < minMonth or month > maxMonth then
+            continue
+        end
+
+        for _, lineItem in ipairs(lineItems) do
+            self:categoriseLineItem(lineItem, taxStatement)
+        end
+
+        local finalTaxAmount = taxStatement.totalTaxedIncome - taxStatement.totalExpenses
+        if finalTaxAmount < 0 then
+            finalTaxAmount = 0
+        end
+
+        taxStatement.totalTax = math.floor(finalTaxAmount * taxStatement.taxRate)
+    end
+    return taxStatement
 end

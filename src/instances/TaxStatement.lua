@@ -7,9 +7,13 @@ function RTTaxStatement.new()
 
     self.farmId = -1
     self.month = RedTape.getCumulativeMonth()
-    self.totalIncome = 0
+    self.totalTaxableIncome = 0
+    self.totalTaxedIncome = 0
     self.totalExpenses = 0
+    self.totalTax = 0
+    self.taxRate = 0.2
     self.notes = {}
+    self.paid = false
 
     return self
 end
@@ -17,9 +21,12 @@ end
 function RTTaxStatement:saveToXmlFile(xmlFile, key)
     setXMLInt(xmlFile, key .. "#farmId", self.farmId)
     setXMLInt(xmlFile, key .. "#month", self.month)
-    setXMLInt(xmlFile, key .. "#totalIncome", self.totalIncome)
+    setXMLInt(xmlFile, key .. "#totalTaxableIncome", self.totalTaxableIncome)
+    setXMLInt(xmlFile, key .. "#totalTaxedIncome", self.totalTaxedIncome)
     setXMLInt(xmlFile, key .. "#totalExpenses", self.totalExpenses)
-
+    setXMLInt(xmlFile, key .. "#totalTax", self.totalTax)
+    setXMLBool(xmlFile, key .. "#paid", self.paid)
+    setXMLFloat(xmlFile, key .. "#taxRate", self.taxRate)
 
     local notesKey = key .. ".notes"
     for i, note in ipairs(self.notes) do
@@ -31,8 +38,12 @@ end
 function RTTaxStatement:loadFromXMLFile(xmlFile, key)
     self.farmId = getXMLInt(xmlFile, key .. "#farmId")
     self.month = getXMLInt(xmlFile, key .. "#month")
-    self.totalIncome = getXMLInt(xmlFile, key .. "#totalIncome")
+    self.totalTaxableIncome = getXMLInt(xmlFile, key .. "#totalTaxableIncome")
+    self.totalTaxedIncome = getXMLInt(xmlFile, key .. "#totalTaxedIncome")
     self.totalExpenses = getXMLInt(xmlFile, key .. "#totalExpenses")
+    self.totalTax = getXMLInt(xmlFile, key .. "#totalTax")
+    self.paid = getXMLBool(xmlFile, key .. "#paid")
+    self.taxRate = getXMLFloat(xmlFile, key .. "#taxRate")
 
     self.notes = {}
     local notesKey = key .. ".notes"
@@ -52,19 +63,27 @@ end
 
 function RTTaxStatement:writeStream(streamId, connection)
     streamWriteInt32(streamId, self.farmId)
-    streamWriteInt32(streamId, self.totalIncome)
+    streamWriteInt32(streamId, self.totalTaxableIncome)
+    streamWriteInt32(streamId, self.totalTaxedIncome)
     streamWriteInt32(streamId, self.totalExpenses)
+    streamWriteInt32(streamId, self.totalTax)
+    streamWriteBool(streamId, self.paid)
+    streamWriteFloat32(streamId, self.taxRate)
 
     streamWriteInt32(streamId, #self.notes)
-    for _, note in ipairs(self.notes) do
+    for _, note in pairs(self.notes) do
         streamWriteString(streamId, note)
     end
 end
 
 function RTTaxStatement:readStream(streamId, connection)
     self.farmId = streamReadInt32(streamId)
-    self.totalIncome = streamReadInt32(streamId)
+    self.totalTaxableIncome = streamReadInt32(streamId)
+    self.totalTaxedIncome = streamReadInt32(streamId)
     self.totalExpenses = streamReadInt32(streamId)
+    self.totalTax = streamReadInt32(streamId)
+    self.paid = streamReadBool(streamId)
+    self.taxRate = streamReadFloat32(streamId)
 
     local notesCount = streamReadInt32(streamId)
     self.notes = {}
