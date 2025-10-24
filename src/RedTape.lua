@@ -140,6 +140,10 @@ function RedTape:saveToXmlFile()
     delete(xmlFile);
 end
 
+function RedTape:sendInitialClientState(connection, user, farm)
+    connection:sendEvent(InitialClientStateEvent.new())
+end
+
 -- from Courseplay
 function RedTape.addIngameMenuPage(frame, pageName, uvs, predicateFunc, insertAfter)
     local targetPosition = 0

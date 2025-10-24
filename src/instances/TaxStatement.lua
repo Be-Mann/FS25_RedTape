@@ -70,7 +70,7 @@ function RTTaxStatement:writeStream(streamId, connection)
     streamWriteBool(streamId, self.paid)
     streamWriteFloat32(streamId, self.taxRate)
 
-    streamWriteInt32(streamId, #self.notes)
+    streamWriteInt32(streamId, RedTape.tableCount(self.notes))
     for _, note in pairs(self.notes) do
         streamWriteString(streamId, note)
     end

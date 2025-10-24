@@ -48,14 +48,14 @@ function RTScheme:writeStream(streamId, connection)
     streamWriteInt32(streamId, self.tier)
     streamWriteBool(streamId, self.spawnedVehicles)
 
-    streamWriteInt32(streamId, #self.lastEvaluationReport)
+    streamWriteInt32(streamId, RedTape.tableCount(self.lastEvaluationReport))
     for _, report in pairs(self.lastEvaluationReport) do
         streamWriteString(streamId, report.cell1)
         streamWriteString(streamId, report.cell2)
         streamWriteString(streamId, report.cell3)
     end
 
-    streamWriteInt32(streamId, #self.props)
+    streamWriteInt32(streamId, RedTape.tableCount(self.props))
     for key, value in pairs(self.props) do
         streamWriteString(streamId, key)
         streamWriteString(streamId, value)

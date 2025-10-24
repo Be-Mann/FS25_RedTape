@@ -46,7 +46,27 @@ function RTTaxSystem:loadFromXMLFile(xmlFile)
 
         table.insert(self.lineItems[farmId][month], lineItem)
 
+        if not RedTape.tableHasValue(self.farms, farmId) then
+            table.insert(self.farms, farmId)
+        end
+
         i = i + 1
+    end
+
+    self.taxStatements = {}
+    local j = 0
+    while true do
+        local taxStatementKey = string.format("%s.taxStatements.taxStatement(%d)", key, j)
+        if not hasXMLProperty(xmlFile, taxStatementKey) then
+            break
+        end
+
+        local taxStatement = RTTaxStatement.new()
+        taxStatement:loadFromXMLFile(xmlFile, taxStatementKey)
+
+        table.insert(self.taxStatements, taxStatement)
+
+        j = j + 1
     end
 end
 
@@ -65,6 +85,63 @@ function RTTaxSystem:saveToXmlFile(xmlFile)
                 lineItem:saveToXmlFile(xmlFile, lineItemKey)
                 i = i + 1
             end
+        end
+    end
+
+    local j = 0
+    for _, taxStatement in ipairs(self.taxStatements) do
+        local taxStatementKey = string.format("%s.taxStatements.taxStatement(%d)", key, j)
+        taxStatement:saveToXmlFile(xmlFile, taxStatementKey)
+        j = j + 1
+    end
+end
+
+function RTTaxSystem:writeInitialClientState(streamId, connection)
+    streamWriteInt32(streamId, RedTape.tableCount(self.taxStatements))
+    for _, taxStatement in ipairs(self.taxStatements) do
+        taxStatement:writeStream(streamId, connection)
+    end
+
+    streamWriteInt32(streamId, RedTape.tableCount(self.lineItems))
+    for farmId, months in pairs(self.lineItems) do
+        for month, lineItems in pairs(months) do
+            streamWriteInt32(streamId, farmId)
+            streamWriteInt32(streamId, month)
+            streamWriteInt32(streamId, RedTape.tableCount(lineItems))
+            for _, lineItem in ipairs(lineItems) do
+                lineItem:writeStream(streamId, connection)
+            end
+        end
+    end
+end
+
+function RTTaxSystem:readInitialClientState(streamId, connection)
+    local taxStatementCount = streamReadInt32(streamId)
+    self.taxStatements = {}
+    for i = 1, taxStatementCount do
+        local taxStatement = RTTaxStatement.new()
+        taxStatement:readStream(streamId, connection)
+        table.insert(self.taxStatements, taxStatement)
+    end
+
+    local lineItemCount = streamReadInt32(streamId)
+    self.lineItems = {}
+    for i = 1, lineItemCount do
+        local farmId = streamReadInt32(streamId)
+        local month = streamReadInt32(streamId)
+        local itemsCount = streamReadInt32(streamId)
+
+        if self.lineItems[farmId] == nil then
+            self.lineItems[farmId] = {}
+        end
+        if self.lineItems[farmId][month] == nil then
+            self.lineItems[farmId][month] = {}
+        end
+
+        for j = 1, itemsCount do
+            local lineItem = RTTaxLineItem.new()
+            lineItem:readStream(streamId, connection)
+            table.insert(self.lineItems[farmId][month], lineItem)
         end
     end
 end
@@ -95,17 +172,14 @@ function RTTaxSystem:periodChanged()
     end
 end
 
-function RTTaxSystem:recordLineItem(farmId, amount, statistic)
+-- Called via NewTaxLineItemEvent to store on server and client
+function RTTaxSystem:recordLineItem(farmId, lineItem)
     local cumulativeMonth = RedTape.getCumulativeMonth()
     self.lineItems[farmId] = self.lineItems[farmId] or {}
 
     if self.lineItems[farmId][cumulativeMonth] == nil then
         self.lineItems[farmId][cumulativeMonth] = {}
     end
-
-    local lineItem = RTTaxLineItem.new()
-    lineItem.amount = amount
-    lineItem.statistic = statistic
 
     if not RedTape.tableHasValue(self.farms, farmId) then
         table.insert(self.farms, farmId)

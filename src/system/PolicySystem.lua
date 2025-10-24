@@ -86,6 +86,44 @@ function RTPolicySystem:saveToXmlFile(xmlFile)
     end
 end
 
+function RTPolicySystem:writeInitialClientState(streamId, connection)
+    local policyCount = 0
+    for _, _ in pairs(self.policies) do
+        policyCount = policyCount + 1
+    end
+    streamWriteInt32(streamId, policyCount)
+
+    for _, policy in pairs(self.policies) do
+        policy:writeStream(streamId, connection)
+    end
+
+    local farmCount = 0
+    for _ in pairs(self.points) do
+        farmCount = farmCount + 1
+    end
+    streamWriteInt32(streamId, farmCount)
+    for farmId, points in pairs(self.points) do
+        streamWriteInt32(streamId, farmId)
+        streamWriteInt32(streamId, points)
+    end
+end
+
+function RTPolicySystem:readInitialClientState(streamId, connection)
+    local policyCount = streamReadInt32(streamId)
+    for i = 1, policyCount do
+        local policy = RTPolicy.new()
+        policy:readStream(streamId, connection)
+        self:registerActivatedPolicy(policy, false)
+    end
+
+    local farmCount = streamReadInt32(streamId)
+    for i = 1, farmCount do
+        local farmId = streamReadInt32(streamId)
+        local points = streamReadInt32(streamId)
+        self.points[farmId] = points
+    end
+end
+
 function RTPolicySystem:hourChanged()
     -- local self = g_currentMission.RedTape.PolicySystem
 end
@@ -167,6 +205,7 @@ function RTPolicySystem:getNextPolicyIndex()
 end
 
 -- Called from PolicyActivatedEvent or on loadFromXMLFile, runs on client and server
+-- Also called when loading InitialClientStateEvent
 function RTPolicySystem:registerActivatedPolicy(policy, isLoading)
     table.insert(self.policies, policy)
 

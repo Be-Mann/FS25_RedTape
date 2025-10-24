@@ -52,3 +52,19 @@ function RTEventLogItem:loadFromXMLFile(xmlFile, key)
     self.month = getXMLInt(xmlFile, key .. "#month")
     self.year = getXMLInt(xmlFile, key .. "#year")
 end
+
+function RTEventLogItem:writeStream(streamId, connection)
+    streamWriteInt32(streamId, self.farmId)
+    streamWriteInt32(streamId, self.eventType)
+    streamWriteString(streamId, self.detail)
+    streamWriteInt32(streamId, self.month)
+    streamWriteInt32(streamId, self.year)
+end
+
+function RTEventLogItem:readStream(streamId, connection)
+    self.farmId = streamReadInt32(streamId)
+    self.eventType = streamReadInt32(streamId)
+    self.detail = streamReadString(streamId)
+    self.month = streamReadInt32(streamId)
+    self.year = streamReadInt32(streamId)
+end

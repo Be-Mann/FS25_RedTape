@@ -96,25 +96,23 @@ function RTEventLog:saveToXmlFile(xmlFile)
     end
 end
 
--- function EventLog:saveToXmlFile(xmlFile, key)
---     local i = 0
---     for _, event in pairs(self.events) do
---         local eventKey = string.format("%s.events.event(%d)", key, i)
---         event:saveToXmlFile(xmlFile, eventKey)
---         i = i + 1
---     end
--- end
+function RTEventLog:writeInitialClientState(streamId, connection)
+    local eventCount = 0
+    for _, _ in pairs(self.events) do
+        eventCount = eventCount + 1
+    end
+    streamWriteInt32(streamId, eventCount)
 
--- function EventLog:loadFromXMLFile(xmlFile, key)
---     local i = 0
---     while true do
---         local eventKey = string.format("%s.events.event(%d)", key, i)
---         if not hasXMLProperty(xmlFile, eventKey) then
---             break
---         end
---         local event = Event.new()
---         event:loadFromXMLFile(xmlFile, eventKey)
---         table.insert(self.events, event)
---         i = i + 1
---     end
--- end
+    for _, event in pairs(self.events) do
+        event:writeStream(streamId, connection)
+    end
+end
+
+function RTEventLog:readInitialClientState(streamId, connection)
+    local eventCount = streamReadInt32(streamId)
+    for i = 1, eventCount do
+        local event = RTEventLogItem.new()
+        event:readStream(streamId, connection)
+        table.insert(self.events, event)
+    end
+end

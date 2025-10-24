@@ -88,6 +88,55 @@ function RTSchemeSystem:saveToXmlFile(xmlFile)
     end
 end
 
+function RTSchemeSystem:writeInitialClientState(streamId, connection)
+    for tier, schemes in pairs(self.availableSchemes) do
+        streamWriteInt32(streamId, tier)
+        streamWriteInt32(streamId, RedTape.tableCount(schemes))
+        for _, scheme in pairs(schemes) do
+            scheme:writeStream(streamId, connection)
+        end
+    end
+
+    local farmCount = 0
+    for _ in pairs(self.activeSchemesByFarm) do
+        farmCount = farmCount + 1
+    end
+    streamWriteInt32(streamId, farmCount)
+
+    for farmId, schemes in pairs(self.activeSchemesByFarm) do
+        streamWriteInt32(streamId, farmId)
+        streamWriteInt32(streamId, RedTape.tableCount(schemes))
+        for _, scheme in pairs(schemes) do
+            scheme:writeStream(streamId, connection)
+        end
+    end
+end
+
+function RTSchemeSystem:readInitialClientState(streamId, connection)
+    for tier = RTPolicySystem.TIER.A, RTPolicySystem.TIER.D do
+        local readTier = streamReadInt32(streamId)
+        local schemeCount = streamReadInt32(streamId)
+        self.availableSchemes[readTier] = self.availableSchemes[readTier] or {}
+        for i = 1, schemeCount do
+            local scheme = RTScheme.new()
+            scheme:readStream(streamId, connection)
+            table.insert(self.availableSchemes[readTier], scheme)
+        end
+    end
+
+    local farmCount = streamReadInt32(streamId)
+    for i = 1, farmCount do
+        local farmId = streamReadInt32(streamId)
+        local schemeCount = streamReadInt32(streamId)
+        self.activeSchemesByFarm[farmId] = self.activeSchemesByFarm[farmId] or {}
+        for j = 1, schemeCount do
+            local scheme = RTScheme.new()
+            scheme:readStream(streamId, connection)
+            table.insert(self.activeSchemesByFarm[farmId], scheme)
+        end
+    end
+end
+
 function RTSchemeSystem:hourChanged()
 end
 
@@ -277,7 +326,7 @@ function RTSchemeSystem.isSpawnSpaceAvailable(storeItems)
     local result = true
     for _, storeItem in ipairs(storeItems) do
         local size = StoreItemUtil.getSizeValues(storeItem.xmlFilename, "vehicle", storeItem.rotation,
-        storeItem.configurations)
+            storeItem.configurations)
         local x = size.width
         size.width = math.max(x, VehicleLoadingData.MIN_SPAWN_PLACE_WIDTH)
         size.length = math.max(size.length, VehicleLoadingData.MIN_SPAWN_PLACE_LENGTH)

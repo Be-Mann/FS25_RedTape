@@ -21,3 +21,13 @@ function RTTaxLineItem:saveToXmlFile(xmlFile, key)
     setXMLInt(xmlFile, key .. "#amount", self.amount)
     setXMLString(xmlFile, key .. "#statistic", self.statistic)
 end
+
+function RTTaxLineItem:writeStream(streamId, connection)
+    streamWriteInt32(streamId, self.amount)
+    streamWriteString(streamId, self.statistic)
+end
+
+function RTTaxLineItem:readStream(streamId, connection)
+    self.amount = streamReadInt32(streamId)
+    self.statistic = streamReadString(streamId)
+end
