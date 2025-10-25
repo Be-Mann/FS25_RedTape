@@ -184,7 +184,7 @@ function FarmGatherer:storeSprayAreaCoords(uniqueId, coords)
 end
 
 function FarmGatherer:checkSprayers()
-    local checkFillTypes = { FillType.FERTILIZER, FillType.LIQUIDMANURE, FillType.LIME, FillType.MANURE }
+    local checkFillTypes = { FillType.FERTILIZER, FillType.LIQUIDMANURE, FillType.LIME, FillType.MANURE, FillType.HERBICIDE }
     local restrictedSlurryMonths = { 9, 10, 11, 12 } -- September to December
 
     for uniqueId, sprayer in pairs(self.turnedOnSprayers) do
