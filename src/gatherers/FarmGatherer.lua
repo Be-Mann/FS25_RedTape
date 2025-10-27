@@ -34,7 +34,7 @@ function FarmGatherer:hourChanged()
                 farmData.monthlyEmptyFoodCount = farmData.monthlyEmptyFoodCount + 1
             end
 
-            if stats.productivity and stats.productivity < 40 then
+            if stats.productivity and stats.productivity < 0.40 then
                 farmData.monthlyLowProductivityHusbandry = farmData.monthlyLowProductivityHusbandry + 1
             end
 
