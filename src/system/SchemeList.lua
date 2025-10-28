@@ -181,7 +181,7 @@ RTSchemes = {
                 end
             end
 
-            if cumulativeMonth == endMonth then
+            if cumulativeMonth >= endMonth then
                 g_client:getServerConnection():sendEvent(RTSchemeEndedEvent.new(scheme.id, scheme.farmId))
             end
             return report
@@ -239,7 +239,7 @@ RTSchemes = {
             })
             g_client:getServerConnection():sendEvent(RTSchemePayoutEvent.new(scheme, scheme.farmId, payout))
 
-            if cumulativeMonth == endMonth then
+            if cumulativeMonth >= endMonth then
                 g_client:getServerConnection():sendEvent(RTSchemeEndedEvent.new(scheme.id, scheme.farmId))
             end
             return report
@@ -325,7 +325,7 @@ RTSchemes = {
             })
             g_client:getServerConnection():sendEvent(RTSchemePayoutEvent.new(scheme, scheme.farmId, payout))
 
-            if cumulativeMonth == endMonth then
+            if cumulativeMonth >= endMonth then
                 g_client:getServerConnection():sendEvent(RTSchemeEndedEvent.new(scheme.id, scheme.farmId))
             end
             return report
@@ -539,7 +539,7 @@ RTSchemes = {
             local endMonth = tonumber(scheme.props['endMonth'])
             local cumulativeMonth = RedTape.getCumulativeMonth()
 
-            if cumulativeMonth == endMonth then
+            if cumulativeMonth >= endMonth then
                 g_client:getServerConnection():sendEvent(RTSchemeEndedEvent.new(scheme.id, scheme.farmId))
             end
             return {}
@@ -626,7 +626,7 @@ RTSchemes = {
                 g_client:getServerConnection():sendEvent(RTSchemePayoutEvent.new(scheme, farmId, totalReward))
             end
 
-            if endYear == currentYear and endMonth == currentMonth then
+            if endYear >= currentYear and endMonth >= currentMonth then
                 g_client:getServerConnection():sendEvent(RTSchemeEndedEvent.new(scheme.id, scheme.farmId))
             end
 
