@@ -62,8 +62,7 @@ RTPolicies = {
 
                     -- Try to find a different fruit in the 12 months prior to the most recent fruit. Don't match the mostRecentFruit
                     local previousFruit, _ = gatherer:getPreviousFruit(farmland.id, mostRecentFruitMonth,
-                        mostRecentFruitMonth - 12,
-                        mostRecentFruit)
+                        mostRecentFruitMonth - 12, mostRecentFruit)
 
                     totalHa = totalHa + farmLandData.areaHa
                     if previousFruit == nil then
@@ -158,7 +157,8 @@ RTPolicies = {
             local monthlyEmptyStrawCount = farmData.monthlyEmptyStrawCount or 0
             local reward = 0
             if monthlyEmptyStrawCount > 0 then
-                reward = policyInfo.periodicPenaltyPerViolation * monthlyEmptyStrawCount
+                reward = (policyInfo.periodicPenaltyPerViolation / g_currentMission.environment.daysPerPeriod) *
+                    monthlyEmptyStrawCount
             else
                 reward = policyInfo.periodicReward
             end
@@ -192,7 +192,7 @@ RTPolicies = {
             local monthlyFullSlurryCount = farmData.monthlyFullSlurryCount or 0
             local reward = 0
             if monthlyFullSlurryCount > 0 then
-                reward = policyInfo.periodicPenaltyPerViolation * monthlyFullSlurryCount
+                reward = (policyInfo.periodicPenaltyPerViolation / g_currentMission.environment.daysPerPeriod) * monthlyFullSlurryCount
             else
                 reward = policyInfo.periodicReward
             end
@@ -229,7 +229,7 @@ RTPolicies = {
             local monthlyEmptyFoodCount = farmData.monthlyEmptyFoodCount or 0
             local reward = 0
             if monthlyEmptyFoodCount > 0 then
-                reward = policyInfo.periodicPenaltyPerViolation * monthlyEmptyFoodCount
+                reward = (policyInfo.periodicPenaltyPerViolation / g_currentMission.environment.daysPerPeriod) * monthlyEmptyFoodCount
             else
                 reward = policyInfo.periodicReward
             end
@@ -264,7 +264,7 @@ RTPolicies = {
             local pendingViolations = farmData.monthlyAnimalSpaceViolations or 0
             local reward = 0
             if pendingViolations > 0 then
-                reward = policyInfo.periodicPenaltyPerViolation * pendingViolations
+                reward = (policyInfo.periodicPenaltyPerViolation / g_currentMission.environment.daysPerPeriod) * pendingViolations
             else
                 reward = policyInfo.periodicReward
             end
@@ -300,7 +300,7 @@ RTPolicies = {
             local pendingViolations = farmData.monthlyLowProductivityHusbandry or 0
             local reward = 0
             if pendingViolations > 0 then
-                reward = policyInfo.periodicPenaltyPerViolation * pendingViolations
+                reward = (policyInfo.periodicPenaltyPerViolation / g_currentMission.environment.daysPerPeriod) * pendingViolations
             else
                 reward = policyInfo.periodicReward
             end
