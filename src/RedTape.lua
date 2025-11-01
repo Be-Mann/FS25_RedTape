@@ -281,7 +281,23 @@ end
 function RedTape.getCumulativeMonth()
     local month = RedTape.periodToMonth(g_currentMission.environment.currentPeriod)
     local year = g_currentMission.environment.currentYear - 1
+
+    if month < 3 then
+        year = year + 1
+    end
+
     return (year * 12) + month
+end
+
+function RedTape.getActualYear()
+    local month = RedTape.periodToMonth(g_currentMission.environment.currentPeriod)
+    local year = g_currentMission.environment.currentYear
+
+    if month < 3 then
+        year = year + 1
+    end
+
+    return year
 end
 
 function RedTape:onStartMission()

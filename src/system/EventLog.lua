@@ -27,7 +27,7 @@ function RTEventLog:addEvent(farmId, eventType, detail, sendNotification)
     event.eventType = eventType
     event.detail = detail
     event.month = rt.periodToMonth(g_currentMission.environment.currentPeriod)
-    event.year = g_currentMission.environment.currentYear
+    event.year = RedTape.getActualYear()
     table.insert(self.events, event)
 
     if sendNotification then
@@ -40,7 +40,7 @@ function RTEventLog:pruneOld()
     local newEvents = {}
     local rt = g_currentMission.RedTape
     local currentMonth = rt.periodToMonth(g_currentMission.environment.currentPeriod)
-    local currentYear = g_currentMission.environment.currentYear
+    local currentYear = RedTape.getActualYear()
 
     for _, event in pairs(self.events) do
         local eventAge = (currentYear - event.year) * 12 + (currentMonth - event.month)

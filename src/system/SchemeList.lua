@@ -413,21 +413,19 @@ RTSchemes = {
         end,
         selected = function(schemeInfo, scheme, tier)
             -- Any action when applying the scheme to a farm, e.g. initial payout or equipment
+            scheme:setProp('evaluationYear', RedTape.getActualYear())
             scheme:spawnVehicles()
-            scheme:setProp('evaluationYear', g_currentMission.environment.currentYear)
-            scheme:setProp('evaluationMonth', 12)
         end,
         evaluate = function(schemeInfo, scheme, tier)
             local evaluationYear = tonumber(scheme.props['evaluationYear'])
-            local evaluationMonth = tonumber(scheme.props['evaluationMonth'])
-            local currentYear = g_currentMission.environment.currentYear
+            local currentYear = RedTape.getActualYear()
             local currentMonth = RedTape.periodToMonth(g_currentMission.environment.currentPeriod)
             local cumulativeMonth = RedTape.getCumulativeMonth()
             local ig = g_currentMission.RedTape.InfoGatherer
             local gatherer = ig.gatherers[INFO_KEYS.FARMLANDS]
             local farmId = scheme.farmId
 
-            if currentYear ~= evaluationYear or currentMonth ~= evaluationMonth then
+            if currentMonth ~= 12 then
                 return
             end
 
@@ -579,12 +577,12 @@ RTSchemes = {
         initialise = function(schemeInfo, scheme)
         end,
         selected = function(schemeInfo, scheme, tier)
-            scheme:setProp('endYear', g_currentMission.environment.currentYear + 1)
+            scheme:setProp('endYear', RedTape.getActualYear() + 1)
             scheme:setProp('endMonth', 4)
         end,
         evaluate = function(schemeInfo, scheme, tier)
             local currentMonth = RedTape.periodToMonth(g_currentMission.environment.currentPeriod)
-            local currentYear = g_currentMission.environment.currentYear
+            local currentYear = RedTape.getActualYear()
             local endYear = tonumber(scheme.props['endYear'])
             local endMonth = tonumber(scheme.props['endMonth'])
             local ig = g_currentMission.RedTape.InfoGatherer
