@@ -9,6 +9,3 @@ function RTMissionManagerExtension:getIsMissionWorkAllowed(superFunc, farmId, x,
 
     return superFunc(self, farmId, x, z, workAreaType, vehicle)
 end
-
-MissionManager.getIsMissionWorkAllowed = Utils.overwrittenFunction(MissionManager.getIsMissionWorkAllowed,
-    RTMissionManagerExtension.getIsMissionWorkAllowed)

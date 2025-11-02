@@ -301,6 +301,9 @@ function RedTape.getActualYear()
 end
 
 function RedTape:onStartMission()
+    MissionManager.getIsMissionWorkAllowed = Utils.overwrittenFunction(MissionManager.getIsMissionWorkAllowed,
+        RTMissionManagerExtension.getIsMissionWorkAllowed)
+
     if g_currentMission:getIsServer() then
         -- Initialize RedTape on new game
         local rt = g_currentMission.RedTape
