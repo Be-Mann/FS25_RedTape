@@ -1,17 +1,17 @@
-InitialClientStateEvent = {}
-local InitialClientStateEvent_mt = Class(InitialClientStateEvent, Event)
+RTInitialClientStateEvent = {}
+local RTInitialClientStateEvent_mt = Class(RTInitialClientStateEvent, Event)
 
-InitEventClass(InitialClientStateEvent, "InitialClientStateEvent")
+InitEventClass(RTInitialClientStateEvent, "RTInitialClientStateEvent")
 
-function InitialClientStateEvent.emptyNew()
-    return Event.new(InitialClientStateEvent_mt)
+function RTInitialClientStateEvent.emptyNew()
+    return Event.new(RTInitialClientStateEvent_mt)
 end
 
-function InitialClientStateEvent.new()
-    return InitialClientStateEvent.emptyNew()
+function RTInitialClientStateEvent.new()
+    return RTInitialClientStateEvent.emptyNew()
 end
 
-function InitialClientStateEvent:writeStream(streamId, connection)
+function RTInitialClientStateEvent:writeStream(streamId, connection)
     local rt = g_currentMission.RedTape
 
     rt.EventLog:writeInitialClientState(streamId, connection)
@@ -20,7 +20,7 @@ function InitialClientStateEvent:writeStream(streamId, connection)
     rt.TaxSystem:writeInitialClientState(streamId, connection)
 end
 
-function InitialClientStateEvent:readStream(streamId, connection)
+function RTInitialClientStateEvent:readStream(streamId, connection)
     local rt = g_currentMission.RedTape
 
     rt.EventLog:readInitialClientState(streamId, connection)
@@ -31,7 +31,7 @@ function InitialClientStateEvent:readStream(streamId, connection)
     self:run(connection)
 end
 
-function InitialClientStateEvent:run(connection)
+function RTInitialClientStateEvent:run(connection)
     g_messageCenter:publish(MessageType.EVENT_LOG_UPDATED)
     g_messageCenter:publish(MessageType.SCHEMES_UPDATED)
 end

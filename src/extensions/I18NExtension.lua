@@ -11,6 +11,10 @@ function RTI18NExtension:getText(superFunc, text, modEnv)
         return superFunc(self, text, modName)
     end
 
+    if (text == "rt_ui_policyFine" or text == "finance_policyFine") and modEnv == nil then
+        return superFunc(self, text, modName)
+    end
+
     return superFunc(self, text, modEnv)
 
 end

@@ -1,7 +1,7 @@
 RTSchemeNoLongerAvailableEvent = {}
 local RTSchemeNoLongerAvailableEvent_mt = Class(RTSchemeNoLongerAvailableEvent, Event)
 
-InitEventClass(RTSchemeNoLongerAvailableEvent, "SchemeNoLongerAvailableEvent")
+InitEventClass(RTSchemeNoLongerAvailableEvent, "RTSchemeNoLongerAvailableEvent")
 
 function RTSchemeNoLongerAvailableEvent.emptyNew()
     local self = Event.new(RTSchemeNoLongerAvailableEvent_mt)

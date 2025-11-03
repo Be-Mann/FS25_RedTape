@@ -5,16 +5,17 @@ function RTPolicy.new()
     local self = {}
     setmetatable(self, RTPolicy_mt)
 
+    self.id = RedTape.generateId()
     self.policyIndex = -1
     self.nextEvaluationMonth = -1
     self.evaluationCount = 0
-    self.policySystem = g_currentMission.RedTape.PolicySystem
     self.lastEvaluationReport = {}
 
     return self
 end
 
 function RTPolicy:writeStream(streamId, connection)
+    streamWriteString(streamId, self.id)
     streamWriteInt32(streamId, self.policyIndex)
     streamWriteInt32(streamId, self.nextEvaluationMonth)
     streamWriteInt32(streamId, self.evaluationCount)
@@ -28,6 +29,7 @@ function RTPolicy:writeStream(streamId, connection)
 end
 
 function RTPolicy:readStream(streamId, connection)
+    self.id = streamReadString(streamId)
     self.policyIndex = streamReadInt32(streamId)
     self.nextEvaluationMonth = streamReadInt32(streamId)
     self.evaluationCount = streamReadInt32(streamId)
@@ -44,6 +46,7 @@ function RTPolicy:readStream(streamId, connection)
 end
 
 function RTPolicy:saveToXmlFile(xmlFile, key)
+    setXMLString(xmlFile, key .. "#id", self.id)
     setXMLInt(xmlFile, key .. "#policyIndex", self.policyIndex)
     setXMLInt(xmlFile, key .. "#nextEvaluationMonth", self.nextEvaluationMonth)
     setXMLInt(xmlFile, key .. "#evaluationCount", self.evaluationCount)
@@ -59,9 +62,10 @@ function RTPolicy:saveToXmlFile(xmlFile, key)
 end
 
 function RTPolicy:loadFromXMLFile(xmlFile, key)
+    self.id = getXMLString(xmlFile, key .. "#id") or RedTape.generateId()
     self.policyIndex = getXMLInt(xmlFile, key .. "#policyIndex")
     self.nextEvaluationMonth = getXMLInt(xmlFile, key .. "#nextEvaluationMonth")
-    self.evaluationCount = getXMLInt(xmlFile, key .. "#evaluationCount")
+    self.evaluationCount = getXMLInt(xmlFile, key .. "#evaluationCount") or 0
 
     local i = 0
     while true do
@@ -97,6 +101,10 @@ function RTPolicy:getDescription()
     local policyInfo = RTPolicies[self.policyIndex]
 
     return g_i18n:getText(policyInfo.description)
+end
+
+function RTPolicy:getWarningCount(farmId)
+    return g_currentMission.RedTape.PolicySystem:getWarningCountForFarmPolicy(farmId, self.policyIndex)
 end
 
 function RTPolicy:getReportDescription()

@@ -1,7 +1,7 @@
 RTSchemeEndedEvent = {}
 local RTSchemeEndedEvent_mt = Class(RTSchemeEndedEvent, Event)
 
-InitEventClass(RTSchemeEndedEvent, "SchemeEndedEvent")
+InitEventClass(RTSchemeEndedEvent, "RTSchemeEndedEvent")
 
 function RTSchemeEndedEvent.emptyNew()
     local self = Event.new(RTSchemeEndedEvent_mt)

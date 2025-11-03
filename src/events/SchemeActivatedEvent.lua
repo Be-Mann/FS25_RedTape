@@ -2,7 +2,7 @@
 RTSchemeActivatedEvent = {}
 local RTSchemeActivatedEvent_mt = Class(RTSchemeActivatedEvent, Event)
 
-InitEventClass(RTSchemeActivatedEvent, "SchemeActivatedEvent")
+InitEventClass(RTSchemeActivatedEvent, "RTSchemeActivatedEvent")
 
 function RTSchemeActivatedEvent.emptyNew()
     local self = Event.new(RTSchemeActivatedEvent_mt)

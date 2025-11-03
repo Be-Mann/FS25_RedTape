@@ -29,6 +29,10 @@ function RTPolicySystem.new()
     setmetatable(self, RTPolicySystem_mt)
     self.policies = {}
     self.points = {}
+    self.warnings = {}
+
+    MoneyType.POLICY_FINE = MoneyType.register("policyFine", "rt_ui_policyFine")
+    MoneyType.LAST_ID = MoneyType.LAST_ID + 1
 
     return self
 end
@@ -63,6 +67,24 @@ function RTPolicySystem:loadFromXMLFile(xmlFile)
         self.points[farmId] = points
         j = j + 1
     end
+
+    local k = 0
+    while true do
+        local warningsKey = string.format(key .. ".warnings.farm(%d)", k)
+        if not hasXMLProperty(xmlFile, warningsKey) then
+            break
+        end
+
+        local farmId = getXMLInt(xmlFile, warningsKey .. "#farmId")
+        local policyIndex = getXMLInt(xmlFile, warningsKey .. "#policyIndex")
+        local warningCount = getXMLInt(xmlFile, warningsKey .. "#warningCount")
+        table.insert(self.warnings, {
+            farmId = farmId,
+            policyIndex = policyIndex,
+            warningCount = warningCount
+        })
+        k = k + 1
+    end
 end
 
 function RTPolicySystem:saveToXmlFile(xmlFile)
@@ -83,6 +105,15 @@ function RTPolicySystem:saveToXmlFile(xmlFile)
         setXMLInt(xmlFile, pointsKey .. "#farmId", farmId)
         setXMLInt(xmlFile, pointsKey .. "#points", points)
         j = j + 1
+    end
+
+    local k = 0
+    for _, warning in pairs(self.warnings) do
+        local warningsKey = string.format("%s.warnings.farm(%d)", key, k)
+        setXMLInt(xmlFile, warningsKey .. "#farmId", warning.farmId)
+        setXMLInt(xmlFile, warningsKey .. "#policyIndex", warning.policyIndex)
+        setXMLInt(xmlFile, warningsKey .. "#warningCount", warning.warningCount)
+        k = k + 1
     end
 end
 
@@ -106,6 +137,14 @@ function RTPolicySystem:writeInitialClientState(streamId, connection)
         streamWriteInt32(streamId, farmId)
         streamWriteInt32(streamId, points)
     end
+
+    local warningCount = RedTape.tableCount(self.warnings)
+    streamWriteInt32(streamId, warningCount)
+    for _, warning in pairs(self.warnings) do
+        streamWriteInt32(streamId, warning.farmId)
+        streamWriteInt32(streamId, warning.policyIndex)
+        streamWriteInt32(streamId, warning.warningCount)
+    end
 end
 
 function RTPolicySystem:readInitialClientState(streamId, connection)
@@ -121,6 +160,18 @@ function RTPolicySystem:readInitialClientState(streamId, connection)
         local farmId = streamReadInt32(streamId)
         local points = streamReadInt32(streamId)
         self.points[farmId] = points
+    end
+
+    local warningCount = streamReadInt32(streamId)
+    for i = 1, warningCount do
+        local farmId = streamReadInt32(streamId)
+        local policyIndex = streamReadInt32(streamId)
+        local warningCount = streamReadInt32(streamId)
+        table.insert(self.warnings, {
+            farmId = farmId,
+            policyIndex = policyIndex,
+            warningCount = warningCount
+        })
     end
 end
 
@@ -205,7 +256,7 @@ function RTPolicySystem:getNextPolicyIndex()
 end
 
 -- Called from PolicyActivatedEvent or on loadFromXMLFile, runs on client and server
--- Also called when loading InitialClientStateEvent
+-- Also called when loading RTInitialClientStateEvent
 function RTPolicySystem:registerActivatedPolicy(policy, isLoading)
     table.insert(self.policies, policy)
     g_messageCenter:publish(MessageType.POLICIES_UPDATED)
@@ -249,6 +300,78 @@ function RTPolicySystem:removePolicy(policyIndex)
         string.format(g_i18n:getText("rt_notify_completed_policy"), removed), true)
 end
 
+-- Called by RTPolicyWarningEvent
+function RTPolicySystem:recordWarning(farmId, policyIndex)
+    for _, warning in pairs(self.warnings) do
+        if warning.farmId == farmId and warning.policyIndex == policyIndex then
+            warning.warningCount = warning.warningCount + 1
+            return
+        end
+    end
+
+    table.insert(self.warnings, {
+        farmId = farmId,
+        policyIndex = policyIndex,
+        warningCount = 1
+    })
+
+    for _, p in pairs(self.policies) do
+        if p.policyIndex == policyIndex then
+            g_currentMission.RedTape.EventLog:addEvent(farmId, RTEventLogItem.EVENT_TYPE.POLICY_WARNING,
+                string.format(g_i18n:getText("rt_notify_policy_warning"), p:getName()), true)
+            break
+        end
+    end
+end
+
+-- Called by RTPolicyFineEvent, runs on client and server
+function RTPolicySystem:recordFine(farmId, policyIndex, amount)
+    if g_currentMission:getIsServer() then
+        g_currentMission:addMoneyChange(-amount, farmId, MoneyType.POLICY_FINE, true)
+    end
+    g_farmManager:getFarmById(farmId):changeBalance(-amount, MoneyType.POLICY_FINE)
+
+    for _, p in pairs(self.policies) do
+        if p.policyIndex == policyIndex then
+            g_currentMission.RedTape.EventLog:addEvent(farmId, RTEventLogItem.EVENT_TYPE.POLICY_FINE,
+                string.format(g_i18n:getText("rt_notify_policy_fine"), g_i18n:formatMoney(amount), p:getName()), true)
+            break
+        end
+    end
+
+    -- reset warnings to 0 for this policy after fine
+    for _, warning in pairs(self.warnings) do
+        if warning.farmId == farmId and warning.policyIndex == policyIndex then
+            warning.warningCount = 0
+            break
+        end
+    end
+end
+
+-- Called on the server during evaluation to warn and fine farms if warnings exceed the allowed amount
+function RTPolicySystem:WarnAndFine(policyInfo, policy, farmId, fineIfDue)
+    local futureWarningCount = policy:getWarningCount(farmId) + 1
+    local allowedWarnings = policyInfo.maxWarnings or 1
+    local sendFine = false
+    if futureWarningCount >= allowedWarnings then
+        sendFine = true
+    end
+    g_client:getServerConnection():sendEvent(RTPolicyWarningEvent.new(farmId, policy.policyIndex))
+    if sendFine and fineIfDue > 0 then
+        g_client:getServerConnection():sendEvent(RTPolicyFineEvent.new(farmId, policy.policyIndex, fineIfDue))
+    end
+end
+
+function RTPolicySystem:getWarningCountForFarmPolicy(farmId, policyIndex)
+    for _, warning in pairs(self.warnings) do
+        if warning.farmId == farmId and warning.policyIndex == policyIndex then
+            return warning.warningCount
+        end
+    end
+
+    return 0
+end
+
 function RTPolicySystem:getProgressForCurrentFarm()
     local farmId = g_currentMission:getFarmId()
     if farmId == nil or farmId == 0 then
@@ -259,10 +382,10 @@ function RTPolicySystem:getProgressForCurrentFarm()
 end
 
 function RTPolicySystem:getProgressForFarm(farmId)
-     if farmId == nil or farmId == 0 then
+    if farmId == nil or farmId == 0 then
         return nil
     end
-    
+
     local points = self.points[farmId] or 0
 
     local currentTier = RTPolicySystem.TIER.D

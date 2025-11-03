@@ -286,9 +286,7 @@ function FarmGatherer:checkWaterByRaycast(sprayer, workingWidth)
 end
 
 function FarmGatherer:checkCreekByOverlap(sprayer, workingWidth)
-    local widthExcess = 3
     local ig = self
-    local coords = self.sprayCoords[sprayer.uniqueId]
     local overlapResult = {
         overlapCallback = function(self, hitObjectId, x, y, z, distance)
             local originalHitObjectId = hitObjectId
@@ -325,21 +323,18 @@ function FarmGatherer:checkCreekByOverlap(sprayer, workingWidth)
             end
 
             if isCreek then
-                if ig:sprayerDistanceCheck(coords, x, z) then
-                    self.foundWater = true
-                end
+                self.foundWater = true
             end
         end
     }
 
-    local sizeX, sizeY, sizeZ = (workingWidth * 0.5) + widthExcess, 10, 6
-    local x, y, z = localToWorld(sprayer.rootNode, 0, sprayer.size.height * 0.5, -sizeZ - (sprayer.size.length * 0.5))
-    local rx, ry, rz = getWorldRotation(sprayer.rootNode)
-    local dx, dy, dz = localDirectionToWorld(sprayer.rootNode, 0, 0, 0)
-    overlapBox(x + dx, y + dy, z + dz, rx, ry, rz, sizeX, sizeY, sizeZ, "overlapCallback",
-        overlapResult, CollisionFlag.STATIC_OBJECT, true, true, true, true)
-
-    -- DebugUtil.drawOverlapBox(x + dx, y + dy, z + dz, rx, ry, rz, sizeX, sizeY, sizeZ)
+    local coords = self.sprayCoords[sprayer.uniqueId]
+    local sizeX, sizeY, sizeZ = 2, 2, 2
+    for _, coord in ipairs(coords) do
+        overlapBox(coord.x, coord.y, coord.z, 0, 0, 0, sizeX, sizeY, sizeZ, "overlapCallback",
+            overlapResult, CollisionFlag.STATIC_OBJECT, true, true, true, true)
+        -- DebugUtil.drawOverlapBox(coord.x, coord.y, coord.z, 0, 0, 0, sizeX, sizeY, sizeZ)
+    end
 
     if overlapResult.foundWater then
         return true

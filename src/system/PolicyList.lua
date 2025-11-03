@@ -108,9 +108,10 @@ RTPolicies = {
         report_description = "rt_policy_report_description_sprayviolation",
         probability = 0.5,
         periodicReward = 5,
-        periodicPenaltyPerViolation = -1,
+        pointsPenaltyPerViolation = -1,
         evaluationInterval = 1,
         minEvaluationCount = 12,
+        finePerViolation = 100,
         activate = function(policyInfo, policy, farmId)
         end,
         evaluate = function(policyInfo, policy, farmId)
@@ -121,7 +122,9 @@ RTPolicies = {
 
             local reward = 0
             if monthlySprayViolations > 0 then
-                reward = policyInfo.periodicPenaltyPerViolation * monthlySprayViolations
+                reward = policyInfo.pointsPenaltyPerViolation * monthlySprayViolations
+                g_currentMission.RedTape.PolicySystem:WarnAndFine(policyInfo, policy, farmId,
+                    policyInfo.finePerViolation * monthlySprayViolations)
             else
                 reward = policyInfo.periodicReward
             end
@@ -192,7 +195,8 @@ RTPolicies = {
             local monthlyFullSlurryCount = farmData.monthlyFullSlurryCount or 0
             local reward = 0
             if monthlyFullSlurryCount > 0 then
-                reward = (policyInfo.periodicPenaltyPerViolation / g_currentMission.environment.daysPerPeriod) * monthlyFullSlurryCount
+                reward = (policyInfo.periodicPenaltyPerViolation / g_currentMission.environment.daysPerPeriod) *
+                    monthlyFullSlurryCount
             else
                 reward = policyInfo.periodicReward
             end
@@ -229,7 +233,8 @@ RTPolicies = {
             local monthlyEmptyFoodCount = farmData.monthlyEmptyFoodCount or 0
             local reward = 0
             if monthlyEmptyFoodCount > 0 then
-                reward = (policyInfo.periodicPenaltyPerViolation / g_currentMission.environment.daysPerPeriod) * monthlyEmptyFoodCount
+                reward = (policyInfo.periodicPenaltyPerViolation / g_currentMission.environment.daysPerPeriod) *
+                    monthlyEmptyFoodCount
             else
                 reward = policyInfo.periodicReward
             end
@@ -264,7 +269,8 @@ RTPolicies = {
             local pendingViolations = farmData.monthlyAnimalSpaceViolations or 0
             local reward = 0
             if pendingViolations > 0 then
-                reward = (policyInfo.periodicPenaltyPerViolation / g_currentMission.environment.daysPerPeriod) * pendingViolations
+                reward = (policyInfo.periodicPenaltyPerViolation / g_currentMission.environment.daysPerPeriod) *
+                    pendingViolations
             else
                 reward = policyInfo.periodicReward
             end
@@ -300,7 +306,8 @@ RTPolicies = {
             local pendingViolations = farmData.monthlyLowProductivityHusbandry or 0
             local reward = 0
             if pendingViolations > 0 then
-                reward = (policyInfo.periodicPenaltyPerViolation / g_currentMission.environment.daysPerPeriod) * pendingViolations
+                reward = (policyInfo.periodicPenaltyPerViolation / g_currentMission.environment.daysPerPeriod) *
+                    pendingViolations
             else
                 reward = policyInfo.periodicReward
             end

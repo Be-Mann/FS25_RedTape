@@ -144,7 +144,7 @@ function RedTape:saveToXmlFile()
 end
 
 function RedTape:sendInitialClientState(connection, user, farm)
-    connection:sendEvent(InitialClientStateEvent.new())
+    connection:sendEvent(RTInitialClientStateEvent.new())
 end
 
 -- from Courseplay

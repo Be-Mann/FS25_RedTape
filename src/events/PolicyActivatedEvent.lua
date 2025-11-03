@@ -1,7 +1,7 @@
 RTPolicyActivatedEvent = {}
 local RTPolicyActivatedEvent_mt = Class(RTPolicyActivatedEvent, Event)
 
-InitEventClass(RTPolicyActivatedEvent, "PolicyActivatedEvent")
+InitEventClass(RTPolicyActivatedEvent, "RTPolicyActivatedEvent")
 
 function RTPolicyActivatedEvent.emptyNew()
     local self = Event.new(RTPolicyActivatedEvent_mt)

@@ -9,6 +9,8 @@
 		<text name="rt_notify_expired_scheme" text="A scheme is no longer available: %s"/>
 		<text name="rt_policy_reason_evaluation" text="%s points awarded during evaluation of policy %s"/>
 		<text name="rt_notify_scheme_payout" text="The %s scheme paid you: %s"/>
+		<text name="rt_notify_policy_warning" text="You received a warning for violating the %s policy"/>
+		<text name="rt_notify_policy_fine" text="You received a %s fine for violating the %s policy"/>
 
 		<text name="rt_label_active_policies" text="Active Policies"/>
 		<text name="rt_label_tax_statement" text="Tax Statement"/>
@@ -48,6 +50,8 @@
 		<text name="rt_event_type_schemeactivated" text="Scheme Activated"/>
 		<text name="rt_event_type_schemepayout" text="Scheme Payout"/>
 		<text name="rt_event_type_schemeexpired" text="Scheme Expired"/>
+		<text name="rt_event_type_policywarning" text="Policy Warning"/>
+		<text name="rt_event_type_policyfine" text="Policy Fine"/>
 
 		<text name="rt_tableheader_timestamp" text="Timestamp"/>
 		<text name="rt_tableheader_eventtype" text="Event Type"/>
@@ -135,6 +139,8 @@
 		<text name="rt_btn_select_scheme" text="Select Scheme"/>
 		<text name="rt_ui_schemePayout" text="Scheme Payout"/>
 		<text name="finance_schemePayout" text="Scheme Payout"/>
+		<text name="rt_ui_policyFine" text="Policy Fine"/>
+		<text name="finance_policyFine" text="Policy Fine"/>
 		<text name="rt_ui_taxCost" text="Tax"/>
 		<text name="finance_taxCost" text="Tax"/>
 		<text name="rt_no_vehicle_room" text="Not enough space for deliver vehicles for the scheme. Make some room and try again."/>

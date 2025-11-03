@@ -2,7 +2,7 @@
 RTSchemePayoutEvent = {}
 local RTSchemePayoutEvent_mt = Class(RTSchemePayoutEvent, Event)
 
-InitEventClass(RTSchemePayoutEvent, "SchemePayoutEvent")
+InitEventClass(RTSchemePayoutEvent, "RTSchemePayoutEvent")
 
 function RTSchemePayoutEvent.emptyNew()
     local self = Event.new(RTSchemePayoutEvent_mt)

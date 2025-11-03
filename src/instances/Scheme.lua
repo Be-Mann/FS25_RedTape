@@ -120,7 +120,7 @@ function RTScheme:saveToXmlFile(xmlFile, key)
 end
 
 function RTScheme:loadFromXMLFile(xmlFile, key)
-    self.id = getXMLString(xmlFile, key .. "#id")
+    self.id = getXMLString(xmlFile, key .. "#id") or RedTape.generateId()
     self.schemeIndex = getXMLInt(xmlFile, key .. "#schemeIndex")
     self.farmId = getXMLInt(xmlFile, key .. "#farmId")
     self.tier = getXMLInt(xmlFile, key .. "#tier")
