@@ -257,9 +257,9 @@ function RTTaxSystem:createAnnualTaxStatements()
         taxStatement.farmId = farmId
         taxStatement.taxRate = self:getTaxRate(farmId)
 
-        local lineItems = self.lineItems[farmId] or {}
+        local allLineItems = self.lineItems[farmId] or {}
 
-        for month, lineItems in pairs(lineItems) do
+        for month, lineItems in pairs(allLineItems) do
             if month < minMonth or month > maxMonth then
                 continue
             end
@@ -333,9 +333,9 @@ function RTTaxSystem:getCurrentYearTaxToDate(farmId)
     taxStatement.farmId = farmId
     taxStatement.taxRate = self:getTaxRate(farmId)
 
-    local lineItems = self.lineItems[farmId] or {}
+    local allLineItems = self.lineItems[farmId] or {}
 
-    for month, lineItems in pairs(lineItems) do
+    for month, lineItems in pairs(allLineItems) do
         if month < minMonth or month > maxMonth then
             continue
         end
