@@ -196,16 +196,16 @@ RTSchemes = {
         duplicationKey = "NATURAL_GRAZING",
         tiers = {
             [RTPolicySystem.TIER.A] = {
-                bonusPerAnimal = 500,
+                bonusPerAnimal = 30,
             },
             [RTPolicySystem.TIER.B] = {
-                bonusPerAnimal = 400,
+                bonusPerAnimal = 26,
             },
             [RTPolicySystem.TIER.C] = {
-                bonusPerAnimal = 300,
+                bonusPerAnimal = 23,
             },
             [RTPolicySystem.TIER.D] = {
-                bonusPerAnimal = 250,
+                bonusPerAnimal = 21,
             },
         },
         selectionProbability = 1,
@@ -225,7 +225,8 @@ RTSchemes = {
             local farmData = gatherer:getFarmData(scheme.farmId)
             local tierInfo = schemeInfo.tiers[tier]
             local eligibleAnimalCount = farmData.monthlyAnimalGrazingHours / 24 / daysPerPeriod
-            local payout = eligibleAnimalCount * tierInfo.bonusPerAnimal * EconomyManager.getPriceMultiplier()
+            local eligibleScaledAnimalCount = farmData.monthlyScaledAnimalGrazingHours / 24 / daysPerPeriod
+            local payout = eligibleScaledAnimalCount * tierInfo.bonusPerAnimal * EconomyManager.getPriceMultiplier()
             local cumulativeMonth = RedTape.getCumulativeMonth()
             local endMonth = tonumber(scheme.props['endMonth'])
 
@@ -367,13 +368,13 @@ RTSchemes = {
             -- Init of an available scheme, prior to selection by a farm
 
             local fruitTypes = {
-                -- [FruitType.SUGARBEET] = "BEETHARVESTERS",
-                -- [FruitType.POTATO] = "POTATOHARVESTING",
-                -- [FruitType.PARSNIP] = "VEGETABLEHARVESTERS",
-                -- [FruitType.GREENBEAN] = "GREENBEANHARVESTERS",
-                -- [FruitType.PEA] = "PEAHARVESTERS",
+                [FruitType.SUGARBEET] = "BEETHARVESTERS",
+                [FruitType.POTATO] = "POTATOHARVESTING",
+                [FruitType.PARSNIP] = "VEGETABLEHARVESTERS",
+                [FruitType.GREENBEAN] = "GREENBEANHARVESTERS",
+                [FruitType.PEA] = "PEAHARVESTERS",
                 [FruitType.SPINACH] = "SPINACHHARVESTERS",
-                -- [FruitType.CARROT] = "VEGETABLEHARVESTERS",
+                [FruitType.CARROT] = "VEGETABLEHARVESTERS",
             }
             local chosenIndex = math.random(1, RedTape.tableCount(fruitTypes))
             local chosenCategory = nil

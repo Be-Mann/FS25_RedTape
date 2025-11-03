@@ -45,6 +45,8 @@ function FarmGatherer:hourChanged()
 
             if stats.meadowFood > 0 and stats.totalFood == stats.meadowFood then
                 farmData.monthlyAnimalGrazingHours = farmData.monthlyAnimalGrazingHours + stats.numAnimals
+                farmData.monthlyScaledAnimalGrazingHours = farmData.monthlyScaledAnimalGrazingHours +
+                    (stats.numAnimals * self:getAnimalGrazingScaleFactor(stats.animalType))
             end
 
             local desiredSpacePerAnimal = self:getDesirableSpace(stats.animalType)
@@ -71,7 +73,6 @@ function FarmGatherer:periodChanged()
             end
         end
     end
-    
 end
 
 function FarmGatherer:resetMonthlyData()
@@ -84,6 +85,7 @@ function FarmGatherer:resetMonthlyData()
         farmData.monthlyAnimalSpaceViolations = 0
         farmData.monthlyRestrictedSlurryViolations = 0
         farmData.monthlyAnimalGrazingHours = 0
+        farmData.monthlyScaledAnimalGrazingHours = 0
     end
 end
 
@@ -100,6 +102,7 @@ function FarmGatherer:getFarmData(farmId)
             currentManureLevel = 0,
             rollingAverageManureLevel = 0,
             monthlyAnimalGrazingHours = 0,
+            monthlyScaledAnimalGrazingHours = 0,
             sprayHistory = {}
         }
     end
@@ -121,16 +124,16 @@ function FarmGatherer:saveToXmlFile(xmlFile, key)
         setXMLInt(xmlFile, farmKey .. "#rollingAverageManureLevel", farmData.rollingAverageManureLevel)
         setXMLInt(xmlFile, farmKey .. "#monthlyRestrictedSlurryViolations", farmData.monthlyRestrictedSlurryViolations)
         setXMLInt(xmlFile, farmKey .. "#monthlyAnimalGrazingHours", farmData.monthlyAnimalGrazingHours)
-
+        setXMLInt(xmlFile, farmKey .. "#monthlyScaledAnimalGrazingHours", farmData.monthlyScaledAnimalGrazingHours)
 
         local j = 0
         for month, nameTable in pairs(farmData.sprayHistory) do
             for name, amount in pairs(nameTable) do
-            local sprayKey = string.format("%s.sprayHistory.spray(%d)", farmKey, j)
-            setXMLInt(xmlFile, sprayKey .. "#month", month)
-            setXMLString(xmlFile, sprayKey .. "#name", name)
-            setXMLInt(xmlFile, sprayKey .. "#amount", amount)
-            j = j + 1
+                local sprayKey = string.format("%s.sprayHistory.spray(%d)", farmKey, j)
+                setXMLInt(xmlFile, sprayKey .. "#month", month)
+                setXMLString(xmlFile, sprayKey .. "#name", name)
+                setXMLInt(xmlFile, sprayKey .. "#amount", amount)
+                j = j + 1
             end
         end
 
@@ -157,7 +160,8 @@ function FarmGatherer:loadFromXMLFile(xmlFile, key)
             currentManureLevel = getXMLInt(xmlFile, farmKey .. "#currentManureLevel") or 0,
             rollingAverageManureLevel = getXMLInt(xmlFile, farmKey .. "#rollingAverageManureLevel") or 0,
             monthlyRestrictedSlurryViolations = getXMLInt(xmlFile, farmKey .. "#monthlyRestrictedSlurryViolations") or 0,
-            monthlyAnimalGrazingHours = getXMLInt(xmlFile, farmKey .. "#monthlyAnimalGrazingHours") or 0
+            monthlyAnimalGrazingHours = getXMLInt(xmlFile, farmKey .. "#monthlyAnimalGrazingHours") or 0,
+            monthlyScaledAnimalGrazingHours = getXMLInt(xmlFile, farmKey .. "#monthlyScaledAnimalGrazingHours") or 0
         }
 
         local j = 0
@@ -189,7 +193,8 @@ function FarmGatherer:storeSprayAreaCoords(uniqueId, coords)
 end
 
 function FarmGatherer:checkSprayers()
-    local checkFillTypes = { FillType.FERTILIZER, FillType.LIQUIDMANURE, FillType.LIME, FillType.MANURE, FillType.HERBICIDE }
+    local checkFillTypes = { FillType.FERTILIZER, FillType.LIQUIDMANURE, FillType.LIME, FillType.MANURE, FillType
+        .HERBICIDE }
     local restrictedSlurryMonths = { 9, 10, 11, 12 } -- September to December
 
     for uniqueId, sprayer in pairs(self.turnedOnSprayers) do
@@ -416,6 +421,21 @@ function FarmGatherer:getDesirableSpace(animalType)
     elseif animalType == AnimalType.SHEEP then
         return 9
     end
+end
+
+function FarmGatherer:getAnimalGrazingScaleFactor(animalType)
+    if animalType == AnimalType.CHICKEN then
+        return 0.2
+    elseif animalType == AnimalType.COW then
+        return 1.0
+    elseif animalType == AnimalType.HORSE then
+        return 0.3
+    elseif animalType == AnimalType.PIG then
+        return 0.5
+    elseif animalType == AnimalType.SHEEP then
+        return 0.6
+    end
+    return 1.0
 end
 
 function FarmGatherer:updateManureLevels()
