@@ -24,6 +24,9 @@ RTPolicySystem.THRESHOLDS = {
 
 RTPolicySystem.DESIRED_POLICY_COUNT = 10
 
+table.insert(FinanceStats.statNames, "policyFine")
+FinanceStats.statNameToIndex["policyFine"] = #FinanceStats.statNames
+
 function RTPolicySystem.new()
     local self = {}
     setmetatable(self, RTPolicySystem_mt)
@@ -360,6 +363,7 @@ end
 
 -- Called on the server during evaluation to warn and fine farms if warnings exceed the allowed amount
 function RTPolicySystem:WarnAndFine(policyInfo, policy, farmId, fineIfDue, skipWarning)
+    fineIfDue = math.abs(fineIfDue)
     local maxWarningsReached = false
     if not skipWarning then
         local futureWarningCount = policy:getWarningCount(farmId) + 1

@@ -18,13 +18,13 @@ function RTPolicyFineEvent.new(farmId, policyIndex, amount)
 end
 
 function RTPolicyFineEvent:writeStream(streamId, connection)
-    streamWriteString(streamId, self.farmId)
+    streamWriteInt32(streamId, self.farmId)
     streamWriteInt32(streamId, self.policyIndex)
     streamWriteInt32(streamId, self.amount)
 end
 
 function RTPolicyFineEvent:readStream(streamId, connection)
-    self.farmId = streamReadString(streamId)
+    self.farmId = streamReadInt32(streamId)
     self.policyIndex = streamReadInt32(streamId)
     self.amount = streamReadInt32(streamId)
 

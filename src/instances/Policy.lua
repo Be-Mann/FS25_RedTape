@@ -56,12 +56,17 @@ function RTPolicy:saveToXmlFile(xmlFile, key)
     setXMLInt(xmlFile, key .. "#evaluationCount", self.evaluationCount)
 
     local i = 0
-    for farmId, report in pairs(self.evaluationReports) do
+    for farmId, reportLines in pairs(self.evaluationReports) do
         local reportKey = string.format("%s.evaluationReports.item(%d)", key, i)
-        setXMLString(xmlFile, reportKey .. "#farmId", farmId)
-        setXMLString(xmlFile, reportKey .. "#cell1", report.cell1)
-        setXMLString(xmlFile, reportKey .. "#cell2", report.cell2)
-        setXMLString(xmlFile, reportKey .. "#cell3", report.cell3)
+        setXMLInt(xmlFile, reportKey .. "#farmId", farmId)
+        local j = 0
+        for _, line in pairs(reportLines) do
+            local lineKey = string.format("%s.line(%d)", reportKey, j)
+            setXMLString(xmlFile, lineKey .. "#cell1", line.cell1)
+            setXMLString(xmlFile, lineKey .. "#cell2", line.cell2)
+            setXMLString(xmlFile, lineKey .. "#cell3", line.cell3)
+            j = j + 1
+        end
         i = i + 1
     end
 end
@@ -80,12 +85,24 @@ function RTPolicy:loadFromXMLFile(xmlFile, key)
             break
         end
 
-        local farmId = getXMLString(xmlFile, reportKey .. "#farmId")
-        local report = {
-            cell1 = getXMLString(xmlFile, reportKey .. "#cell1") or "",
-            cell2 = getXMLString(xmlFile, reportKey .. "#cell2") or "",
-            cell3 = getXMLString(xmlFile, reportKey .. "#cell3") or ""
-        }
+        local farmId = getXMLInt(xmlFile, reportKey .. "#farmId")
+        local report = {}
+        local j = 0
+        while true do
+            local lineKey = string.format("%s.line(%d)", reportKey, j)
+            if not hasXMLProperty(xmlFile, lineKey) then
+                break
+            end
+
+            table.insert(report, {
+                cell1 = getXMLString(xmlFile, lineKey .. "#cell1") or "",
+                cell2 = getXMLString(xmlFile, lineKey .. "#cell2") or "",
+                cell3 = getXMLString(xmlFile, lineKey .. "#cell3") or ""
+            })
+
+            j = j + 1
+        end
+
         self.evaluationReports[farmId] = report
 
         i = i + 1
@@ -141,8 +158,6 @@ function RTPolicy:activate()
     for _, farm in pairs(g_farmManager.farmIdToFarm) do
         policyInfo.activate(policyInfo, self, farm.farmId)
     end
-
-    print("Policy activated: " .. policyInfo.name)
 end
 
 function RTPolicy:evaluate()

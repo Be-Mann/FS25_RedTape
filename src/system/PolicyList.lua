@@ -7,7 +7,8 @@ RTPolicyIds = {
     ANIMAL_SPACE = 6,
     ANIMAL_PRODUCTIVITY = 7,
     MANURE_SPREADING = 8,
-    RESTRICTED_SLURRY = 9
+    RESTRICTED_SLURRY = 9,
+    SUSTAINABLE_FORESTRY = 10,
 }
 
 RTPolicies = {
@@ -484,6 +485,58 @@ RTPolicies = {
             end
 
             table.insert(report, { cell1 = g_i18n:getText("rt_report_name_points"), cell2 = reward })
+            return report
+        end,
+    },
+
+    [RTPolicyIds.SUSTAINABLE_FORESTRY] = {
+        id = RTPolicyIds.SUSTAINABLE_FORESTRY,
+        name = "rt_policy_sustainable_forestry",
+        description = "rt_policy_description_sustainable_forestry",
+        report_description = "rt_policy_report_description_sustainable_forestry",
+        probability = 0.5,
+        excessCutPenaltyPerTree = 500,
+        pointsPerNetTree = 25,
+        penaltyPointsPerTree = -5,
+        evaluationInterval = 1,
+        maxWarnings = 0,
+        activate = function(policyInfo, policy, farmId)
+        end,
+        evaluate = function(policyInfo, policy, farmId)
+            local ig = g_currentMission.RedTape.InfoGatherer
+            local gatherer = ig.gatherers[INFO_KEYS.FARMS]
+            local farmData = gatherer:getFarmData(farmId)
+            local currentMonth = RedTape.periodToMonth(g_currentMission.environment.currentPeriod)
+
+            local cutTrees = farmData.biAnnualCutTrees or 0
+            local plantedTrees = farmData.biAnnualPlantedTrees or 0
+            local netTrees = plantedTrees - cutTrees
+
+            local report = {}
+
+            local reward = 0
+            if currentMonth == 6 or currentMonth == 12 then
+                if netTrees < 0 then
+                    reward = policyInfo.penaltyPointsPerTree * math.abs(netTrees)
+                    local fine = policyInfo.excessCutPenaltyPerTree * math.abs(netTrees)
+                    local skipWarning = true
+                    g_currentMission.RedTape.PolicySystem:WarnAndFine(policyInfo, policy, farmId, fine, skipWarning)
+                elseif netTrees > 0 then
+                    reward = policyInfo.pointsPerNetTree * netTrees
+                end
+            end
+
+            table.insert(report,
+                { cell1 = g_i18n:getText("rt_report_name_trees_planted"), cell2 = plantedTrees })
+            table.insert(report,
+                { cell1 = g_i18n:getText("rt_report_name_trees_cut"), cell2 = cutTrees })
+            table.insert(report,
+                { cell1 = g_i18n:getText("rt_report_name_points"), cell2 = reward })
+
+            if reward ~= 0 then
+                g_client:getServerConnection():sendEvent(RTPolicyPointsEvent.new(farmId, reward, policy:getName()))
+            end
+
             return report
         end,
     },

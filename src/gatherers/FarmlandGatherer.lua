@@ -52,6 +52,9 @@ function FarmlandGatherer:resetMonthlyData()
     end
 end
 
+function FarmlandGatherer:resetBiAnnualData()
+end
+
 function FarmlandGatherer:getFarmlandData(farmlandId)
     if self.data[farmlandId] == nil then
         self.data[farmlandId] = {

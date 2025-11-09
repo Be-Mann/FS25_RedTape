@@ -69,6 +69,7 @@
 		<text name="rt_policy_animal_space" text="Animal Spacing"/>
 		<text name="rt_policy_manure_spreading" text="Manure Management"/>
 		<text name="rt_policy_restricted_slurry" text="Restricted Slurry Application"/>
+		<text name="rt_policy_sustainable_forestry" text="Sustainable Forestry"/>
 
 		<text name="rt_policy_description_croprotation" text="Requires rotating crops between fields and seasons to maintain soil fertility, break pest and disease cycles, improve nutrient balance, and protect long term yields."/>
 		<text name="rt_policy_description_sprayviolation" text="Prohibits spraying chemicals within buffer zones of water bodies to prevent runoff and contamination that can harm aquatic life, degrade water quality, and endanger human health. Violations are penalized."/>
@@ -79,6 +80,7 @@
 		<text name="rt_policy_description_animal_space" text="Requires animals to have enough space to move, rest and access food/water; preventing overcrowding reduces stress, injuries and disease spread, and supports better health and productivity."/>
 		<text name="rt_policy_description_manure_spreading" text="You should not let manure sit idle indefinitely. Ensure you spread at least 50% of the manure you produce on a rolling basis. If you do not produce manure you will not be affected by this policy."/>
 		<text name="rt_policy_description_restricted_slurry" text="You are not allowed to apply slurry during the months of September to December. You will be penalized for each violation."/>
+		<text name="rt_policy_description_sustainable_forestry" text="Encourages sustainable forestry practices, rewarding net positive tree planting and fining for overall deforestation. The report will update monthly with bi-annual totals, however full evaluation and payout or fines will occur in June and December."/>
 
 		<text name="rt_policy_report_description_croprotation" text="The report shows totals for compliant and non-compliant land."/>
 		<text name="rt_policy_report_description_sprayviolation" text="The report shows how many spraying violations occurred in the last month."/>
@@ -89,6 +91,7 @@
 		<text name="rt_policy_report_description_animal_space" text="The report shows how many times insufficient space for animals was recorded."/>
 		<text name="rt_policy_report_description_manure_spreading" text="The report shows how actual vs expected manure spreading compliance rates."/>
 		<text name="rt_policy_report_description_restricted_slurry" text="The report shows how many times slurry was applied during the restricted months."/>
+		<text name="rt_policy_report_description_sustainable_forestry" text="The report shows how many trees were planted and cut down in the current bi-annual period."/>
 
 		<text name="rt_report_name_farmland" text="Farmland %s"/>
 		<text name="rt_report_name_total_area" text="Total Area"/>
@@ -110,6 +113,8 @@
 		<text name="rt_report_name_natural_usage" text="Natural fertilizer usage"/>
 		<text name="rt_report_name_other_usage" text="Other fertilizer usage"/>
 		<text name="rt_report_name_points" text="Points"/>
+		<text name="rt_report_name_trees_planted" text="Trees Planted"/>
+		<text name="rt_report_name_trees_cut" text="Trees Cut"/>
 				
 		<text name="rt_report_value_true" text="True"/>
 		<text name="rt_report_value_false" text="False"/>

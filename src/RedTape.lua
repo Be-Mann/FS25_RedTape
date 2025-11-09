@@ -37,6 +37,7 @@ function RedTape:loadMap()
     self.EventLog = RTEventLog.new()
     self.RedTapeMenu = guiRedTape
     self.didLoadFromXML = false
+    self.missionStarted = false
 
     g_messageCenter:subscribe(MessageType.HOUR_CHANGED, RedTape.hourChanged)
     g_messageCenter:subscribe(MessageType.PERIOD_CHANGED, RedTape.periodChanged)
@@ -84,6 +85,11 @@ function RedTape:periodChanged()
     rt.SchemeSystem:periodChanged()
     rt.TaxSystem:periodChanged()
     rt.InfoGatherer:resetMonthlyData()
+
+    local month = RedTape.periodToMonth(g_currentMission.environment.currentPeriod)
+    if month == 6 or month == 12 then
+        rt.InfoGatherer:resetBiAnnualData()
+    end
 end
 
 function RedTape:populateFillTypeCache()
@@ -303,10 +309,11 @@ end
 function RedTape:onStartMission()
     MissionManager.getIsMissionWorkAllowed = Utils.overwrittenFunction(MissionManager.getIsMissionWorkAllowed,
         RTMissionManagerExtension.getIsMissionWorkAllowed)
+    local rt = g_currentMission.RedTape
+    rt.missionStarted = true
 
     if g_currentMission:getIsServer() then
         -- Initialize RedTape on new game
-        local rt = g_currentMission.RedTape
         if not rt.didLoadFromXML then
             rt:periodChanged()
         end

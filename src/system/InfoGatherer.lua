@@ -8,15 +8,6 @@ INFO_KEYS = {
     FARMS = "farms",
 }
 
--- SAVE_FUNCTIONS = {
---     [INFO_KEYS.FARMLANDS] = function(self, xmlFile, key)
---         setXMLString(xmlFile, key, table.concat(self.data.farmlands, ","))
---     end,
---     [INFO_KEYS.FARMS] = function(self, xmlFile, key)
---         setXMLString(xmlFile, key, table.concat(self.data.farms, ","))
---     end
--- }
-
 function RTInfoGatherer.new()
     local self = {}
     setmetatable(self, RTInfoGatherer_mt)
@@ -75,5 +66,14 @@ end
 function RTInfoGatherer:resetMonthlyData()
     for _, gatherer in pairs(self.gatherers) do
         gatherer:resetMonthlyData()
+    end
+end
+
+-- Reset bi annual stats for all gatherers in june and december, after an evalautions
+function RTInfoGatherer:resetBiAnnualData()
+    for _, gatherer in pairs(self.gatherers) do
+        if gatherer.resetBiAnnualData ~= nil then
+            gatherer:resetBiAnnualData()
+        end
     end
 end

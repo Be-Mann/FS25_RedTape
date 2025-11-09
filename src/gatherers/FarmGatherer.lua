@@ -89,6 +89,13 @@ function FarmGatherer:resetMonthlyData()
     end
 end
 
+function FarmGatherer:resetBiAnnualData()
+    for _, farmData in pairs(self.data) do
+        farmData.biAnnualCutTrees = 0
+        farmData.biAnnualPlantedTrees = 0
+    end
+end
+
 function FarmGatherer:getFarmData(farmId)
     if self.data[farmId] == nil then
         self.data[farmId] = {
@@ -103,6 +110,8 @@ function FarmGatherer:getFarmData(farmId)
             rollingAverageManureLevel = 0,
             monthlyAnimalGrazingHours = 0,
             monthlyScaledAnimalGrazingHours = 0,
+            biAnnualCutTrees = 0,
+            biAnnualPlantedTrees = 0,
             sprayHistory = {}
         }
     end
@@ -125,6 +134,8 @@ function FarmGatherer:saveToXmlFile(xmlFile, key)
         setXMLInt(xmlFile, farmKey .. "#monthlyRestrictedSlurryViolations", farmData.monthlyRestrictedSlurryViolations)
         setXMLInt(xmlFile, farmKey .. "#monthlyAnimalGrazingHours", farmData.monthlyAnimalGrazingHours)
         setXMLInt(xmlFile, farmKey .. "#monthlyScaledAnimalGrazingHours", farmData.monthlyScaledAnimalGrazingHours)
+        setXMLInt(xmlFile, farmKey .. "#biAnnualCutTrees", farmData.biAnnualCutTrees)
+        setXMLInt(xmlFile, farmKey .. "#biAnnualPlantedTrees", farmData.biAnnualPlantedTrees)
 
         local j = 0
         for month, nameTable in pairs(farmData.sprayHistory) do
@@ -161,7 +172,9 @@ function FarmGatherer:loadFromXMLFile(xmlFile, key)
             rollingAverageManureLevel = getXMLInt(xmlFile, farmKey .. "#rollingAverageManureLevel") or 0,
             monthlyRestrictedSlurryViolations = getXMLInt(xmlFile, farmKey .. "#monthlyRestrictedSlurryViolations") or 0,
             monthlyAnimalGrazingHours = getXMLInt(xmlFile, farmKey .. "#monthlyAnimalGrazingHours") or 0,
-            monthlyScaledAnimalGrazingHours = getXMLInt(xmlFile, farmKey .. "#monthlyScaledAnimalGrazingHours") or 0
+            monthlyScaledAnimalGrazingHours = getXMLInt(xmlFile, farmKey .. "#monthlyScaledAnimalGrazingHours") or 0,
+            biAnnualCutTrees = getXMLInt(xmlFile, farmKey .. "#biAnnualCutTrees") or 0,
+            biAnnualPlantedTrees = getXMLInt(xmlFile, farmKey .. "#biAnnualPlantedTrees") or 0,
         }
 
         local j = 0

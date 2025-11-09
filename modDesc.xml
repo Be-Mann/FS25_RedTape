@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="no" ?>
 <modDesc descVersion="100">
     <author>Ozz</author>
-    <version>0.0.0.6</version>
+    <version>0.0.0.7</version>
     <iconFilename>icon_RedTape.dds</iconFilename>
     <title>
         <en>Red Tape</en>
@@ -49,9 +49,11 @@ Un mod qui ajoute des programmes gouvernementaux, des subventions et des taxes.
         <sourceFile filename="src/events/TaxStatementPaidEvent.lua"/>
         <sourceFile filename="src/extensions/BaleWrapperExtension.lua"/>
         <sourceFile filename="src/extensions/FarmExtension.lua"/>
+        <sourceFile filename="src/extensions/FarmStatsExtension.lua"/>
         <sourceFile filename="src/extensions/I18NExtension.lua"/>
         <sourceFile filename="src/extensions/MissionManagerExtension.lua"/>
         <sourceFile filename="src/extensions/SprayerExtension.lua"/>
+        <sourceFile filename="src/extensions/TreePlantManagerExtension.lua"/>
         <sourceFile filename="src/gatherers/FarmGatherer.lua"/>
         <sourceFile filename="src/gatherers/FarmlandGatherer.lua"/>
         <sourceFile filename="src/gui/tableRenderers/ActivePoliciesRenderer.lua"/>

@@ -18,13 +18,13 @@ function RTPolicyPointsEvent.new(farmId, pointChange, policyName)
 end
 
 function RTPolicyPointsEvent:writeStream(streamId, connection)
-    streamWriteString(streamId, self.farmId)
+    streamWriteInt32(streamId, self.farmId)
     streamWriteInt32(streamId, self.pointChange)
     streamWriteString(streamId, self.policyName)
 end
 
 function RTPolicyPointsEvent:readStream(streamId, connection)
-    self.farmId = streamReadString(streamId)
+    self.farmId = streamReadInt32(streamId)
     self.pointChange = streamReadInt32(streamId)
     self.policyName = streamReadString(streamId)
 

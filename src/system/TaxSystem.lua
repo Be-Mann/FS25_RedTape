@@ -4,6 +4,9 @@ RTTaxSystem_mt = Class(RTTaxSystem)
 RTTaxSystem.TAX_CALCULATION_MONTH = 4
 RTTaxSystem.TAX_PAYMENT_MONTH = 9
 
+table.insert(FinanceStats.statNames, "taxCost")
+FinanceStats.statNameToIndex["taxCost"] = #FinanceStats.statNames
+
 function RTTaxSystem.new()
     local self = {}
     setmetatable(self, RTTaxSystem_mt)
