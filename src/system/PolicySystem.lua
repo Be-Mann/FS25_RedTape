@@ -179,7 +179,6 @@ function RTPolicySystem:readInitialClientState(streamId, connection)
 end
 
 function RTPolicySystem:hourChanged()
-    -- local self = g_currentMission.RedTape.PolicySystem
 end
 
 function RTPolicySystem:periodChanged()

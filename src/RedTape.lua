@@ -34,6 +34,7 @@ function RedTape:loadMap()
     self.SchemeSystem = RTSchemeSystem.new()
     self.PolicySystem = RTPolicySystem.new()
     self.InfoGatherer = RTInfoGatherer.new()
+    self.RandomEventsSystem = RTRandomEventsSystem.new()
     self.EventLog = RTEventLog.new()
     self.RedTapeMenu = guiRedTape
     self.didLoadFromXML = false
@@ -73,6 +74,7 @@ function RedTape:hourChanged()
     local rt = g_currentMission.RedTape
 
     rt.InfoGatherer:hourChanged()
+    rt.RandomEventsSystem:hourChanged()
 end
 
 function RedTape:periodChanged()
@@ -84,6 +86,7 @@ function RedTape:periodChanged()
     rt.PolicySystem:periodChanged()
     rt.SchemeSystem:periodChanged()
     rt.TaxSystem:periodChanged()
+    rt.RandomEventsSystem:periodChanged()
     rt.InfoGatherer:resetMonthlyData()
 
     local month = RedTape.periodToMonth(g_currentMission.environment.currentPeriod)
