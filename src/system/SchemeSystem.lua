@@ -83,8 +83,8 @@ function RTSchemeSystem:saveToXmlFile(xmlFile)
         for _, scheme in pairs(schemes) do
             local schemeKey = string.format("%s.activeSchemes.scheme(%d)", key, j)
             scheme:saveToXmlFile(xmlFile, schemeKey)
+            j = j + 1
         end
-        j = j + 1
     end
 end
 
