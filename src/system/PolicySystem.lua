@@ -229,15 +229,11 @@ function RTPolicySystem:getNextPolicyIndex()
         return nil
     end
 
-    print("Available policies: " .. #availablePolicies)
-
     -- sum the probabilities of available policies
     local totalProbability = 0
     for _, policy in pairs(availablePolicies) do
         totalProbability = totalProbability + policy.probability
     end
-
-    print("Total probability: " .. totalProbability)
 
     if totalProbability == 0 then
         return nil -- No available policies to choose from
@@ -249,11 +245,9 @@ function RTPolicySystem:getNextPolicyIndex()
     for _, policy in pairs(availablePolicies) do
         cumulativeProbability = cumulativeProbability + policy.probability
         if randomValue <= cumulativeProbability then
-            print("Selected policy: " .. g_i18n:getText(policy.name))
             return policy.id -- Return the ID of the selected policy
         end
     end
-    print("No policy selected, returning nil")
 
     return nil
 end
@@ -287,7 +281,6 @@ function RTPolicySystem:removePolicy(policyIndex)
     for i, p in ipairs(self.policies) do
         if p.policyIndex == policyIndex then
             removed = p:getName()
-            print("Removing policy: " .. removed)
             table.remove(self.policies, i)
             break
         end

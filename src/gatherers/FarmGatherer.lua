@@ -10,6 +10,7 @@ function FarmGatherer.new()
     self.knownCreeks = {}
     self.turnedOnSprayers = {}
     self.sprayCoords = {}
+    self.productivityExceptions = {}
 
     return self
 end
@@ -39,8 +40,10 @@ function FarmGatherer:hourChanged()
                 farmData.monthlyEmptyFoodCount = farmData.monthlyEmptyFoodCount + 1
             end
 
-            if stats.productivity and stats.productivity < 0.40 then
-                farmData.monthlyLowProductivityHusbandry = farmData.monthlyLowProductivityHusbandry + 1
+            if not self:isExemptFromProductivityCheck(husbandry) then
+                if stats.productivity and stats.productivity < 0.40 then
+                    farmData.monthlyLowProductivityHusbandry = farmData.monthlyLowProductivityHusbandry + 1
+                end
             end
 
             if stats.meadowFood and stats.meadowFood > 0 and stats.totalFood == stats.meadowFood then
@@ -56,6 +59,15 @@ function FarmGatherer:hourChanged()
             if actualSpacePerAnimal < desiredSpacePerAnimal then
                 farmData.monthlyAnimalSpaceViolations = farmData.monthlyAnimalSpaceViolations + 1
             end
+        end
+    end
+
+    for husbandry, exceptionHours in pairs(self.productivityExceptions) do
+        exceptionHours = exceptionHours - 1
+        if exceptionHours <= 0 then
+            self.productivityExceptions[husbandry] = nil
+        else
+            self.productivityExceptions[husbandry] = exceptionHours
         end
     end
 end
@@ -122,6 +134,15 @@ function FarmGatherer:getFarmData(farmId)
 end
 
 function FarmGatherer:saveToXmlFile(xmlFile, key)
+
+    local y = 0
+    for uniqueId, hours in pairs(self.productivityExceptions) do
+        local exceptionKey = string.format("%s.productivityExceptions.exception(%d)", key, y)
+        setXMLString(xmlFile, exceptionKey .. "#uniqueId", uniqueId)
+        setXMLInt(xmlFile, exceptionKey .. "#hours", hours)
+        y = y + 1
+    end
+
     local i = 0
     for farmId, farmData in pairs(self.data) do
         local farmKey = string.format("%s.farms.farm(%d)", key, i)
@@ -174,6 +195,20 @@ function FarmGatherer:saveToXmlFile(xmlFile, key)
 end
 
 function FarmGatherer:loadFromXMLFile(xmlFile, key)
+    local x = 0
+    while true do
+        local exceptionKey = string.format("%s.productivityExceptions.exception(%d)", key, x)
+        if not hasXMLProperty(xmlFile, exceptionKey) then
+            break
+        end
+
+        local uniqueId = getXMLString(xmlFile, exceptionKey .. "#uniqueId")
+        local hours = getXMLInt(xmlFile, exceptionKey .. "#hours")
+        self.productivityExceptions[uniqueId] = hours
+
+        x = x + 1
+    end
+
     local i = 0
     while true do
         local farmKey = string.format("%s.farms.farm(%d)", key, i)
@@ -294,8 +329,8 @@ function FarmGatherer:checkSprayers()
             if raycastHit or overlapHit then
                 print("Water found for sprayer " .. sprayer:getName())
                 farmData.monthlySprayViolations = farmData.monthlySprayViolations + 1
-            -- else
-            --     print("No water found for sprayer " .. sprayer:getName())
+                -- else
+                --     print("No water found for sprayer " .. sprayer:getName())
             end
         end
     end
@@ -563,4 +598,12 @@ function FarmGatherer:updateMinAnimalSpacing(husbandry, actual, desired)
         value2 = tostring(desired),
         updated = cumulativeMonth
     })
+end
+
+function FarmGatherer:addProductivityException(husbandry, hours)
+    self.productivityExceptions[husbandry.uniqueId] = hours
+end
+
+function FarmGatherer:isExemptFromProductivityCheck(husbandry)
+    return self.productivityExceptions[husbandry.uniqueId] ~= nil
 end

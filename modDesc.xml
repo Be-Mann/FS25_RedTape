@@ -54,6 +54,7 @@ Un mod qui ajoute des programmes gouvernementaux, des subventions et des taxes.
         <sourceFile filename="src/extensions/FarmStatsExtension.lua"/>
         <sourceFile filename="src/extensions/I18NExtension.lua"/>
         <sourceFile filename="src/extensions/MissionManagerExtension.lua"/>
+        <sourceFile filename="src/extensions/PlaceableHusbandryAnimalsExtension.lua"/>
         <sourceFile filename="src/extensions/SprayerExtension.lua"/>
         <sourceFile filename="src/extensions/TreePlantManagerExtension.lua"/>
         <sourceFile filename="src/gatherers/FarmGatherer.lua"/>

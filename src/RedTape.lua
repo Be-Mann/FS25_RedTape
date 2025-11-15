@@ -315,6 +315,13 @@ function RedTape:onStartMission()
     if g_currentMission:getIsServer() then
         -- Initialize RedTape on new game
         if not rt.didLoadFromXML then
+            local husbandries = g_currentMission.husbandrySystem.placeables
+            local ig = rt.InfoGatherer
+            local gatherer = ig.gatherers[INFO_KEYS.FARMS]
+            for _, husbandry in pairs(husbandries) do
+                gatherer:addProductivityException(husbandry, 24)
+            end
+
             rt:periodChanged()
         end
     end
