@@ -62,12 +62,12 @@ function FarmGatherer:hourChanged()
         end
     end
 
-    for husbandry, exceptionHours in pairs(self.productivityExceptions) do
+    for uniqueId, exceptionHours in pairs(self.productivityExceptions) do
         exceptionHours = exceptionHours - 1
         if exceptionHours <= 0 then
-            self.productivityExceptions[husbandry] = nil
+            self.productivityExceptions[uniqueId] = nil
         else
-            self.productivityExceptions[husbandry] = exceptionHours
+            self.productivityExceptions[uniqueId] = exceptionHours
         end
     end
 end
