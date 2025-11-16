@@ -155,5 +155,25 @@
 		<text name="rt_info_scheme_selected" text="You have signed up for the scheme. Collect any vehicles from the shop."/>
 		<text name="rt_misc_year" text="Year"/>
 		<text name="rt_misc_confirm_scheme_selection" text="Are you sure you want to sign up to this scheme?"/>
+		
+		<text name="rt_help_title_red_tape" text="Red Tape"/>
+		<text name="rt_help_title_intro" text="Introduction"/>
+		<text name="rt_help_title_policies" text="Policies"/>
+		<text name="rt_help_title_schemes" text="Schemes"/>
+		<text name="rt_help_title_tax" text="Tax"/>
+
+		<text name="rt_help_intro_intro" text="Red Tape is a mod that introduces Policies, Schemes, and Taxation to Farming Simulator. These systems are designed to add depth and challenge to your farming experience, encouraging sustainable practices and strategic planning."/>
+		<text name="rt_help_intro_intro_2" text="All information relating to Red Tape is contained in the new menu added to the main menu. Look for the government building icon."/>
+
+		<text name="rt_help_policies_intro" text="Policies are essentially laws that you must comply with when farming. They govern things such as how you treat animals and appropriate use of land."/>
+		<text name="rt_help_policies_intro_2" text="In the Policies tab you will see a list of policies. Select each to see the description of how to comply. Further down you will see a report on how you have performed. Some policies check every month, while others check less frequently. Most of the time, a policy will produce a report every month so you can track your progress."/>
+		<text name="rt_help_policies_intro_3" text="If you comply with a policy, you will earn points which contribute to your compliance tier. Higher compliance tiers lead to benefits such as improved Schemes and possibly tax breaks. If you violate a policy, you may receive warnings or fines depending on the severity of the violation."/>
+		
+		<text name="rt_help_schemes_intro" text="Schemes are optional and become available throughout the year. Typically Schemes require you to do certain things to qualify and receive proportionate benefits. Like Policies, reports are generate to explain your performance."/>
+		<text name="rt_help_schemes_intro_2" text="Schemes might also be situational, such as a brand running a demo where you can use equipment for a time at no cost. In all cases, your compliance tier for Policies directly affects the Scheme rewards available to you."/>
+		<text name="rt_help_schemes_intro_3" text="Schemes typically run for a set period of time, often a year or a number of evaluations. Schemes will become available again in time. Some Schemes have a limited window in which they are available."/>
+		
+		<text name="rt_help_tax_intro" text="Tax is a system that gives a portion of your profits to the government. A tax statement is finalised in April each year, and you will automatically pay the tax due in September."/>
+		<text name="rt_help_tax_intro_2" text="In the Tax tab, you can see a finalised statement in the left side of the view. On the right hand side you can see running totals for your current financial year. You can use this to plan ahead and reduce your tax bill. For example if you see your profits are high for the year, you might choose to purchase new equipment to reduce profit, and therefore your tax."/>
 	</texts>
 </l10n>

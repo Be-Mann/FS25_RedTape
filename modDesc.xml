@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="no" ?>
 <modDesc descVersion="100">
     <author>Ozz</author>
-    <version>0.0.0.9</version>
+    <version>0.0.0.10</version>
     <iconFilename>icon_RedTape.dds</iconFilename>
     <title>
         <en>Red Tape</en>
@@ -13,6 +13,8 @@
 
 A mod that adds government schemes, grants and taxes.
 
+See the help menu in game for more information.
+
 
 ]]>
         </en>
@@ -20,12 +22,16 @@ A mod that adds government schemes, grants and taxes.
 
 Ein Mod, der staatliche Programme, Zuschüsse und Steuern hinzufügt.
 
+Siehe das Hilfemenü im Spiel für weitere Informationen.
+
 
 ]]>
         </de>
         <fr><![CDATA[Paperasserie
 
 Un mod qui ajoute des programmes gouvernementaux, des subventions et des taxes.
+
+Voir le menu d'aide dans le jeu pour plus d'informations.
 
 ]]>
         </fr>
@@ -80,4 +86,46 @@ Un mod qui ajoute des programmes gouvernementaux, des subventions et des taxes.
     </extraSourceFiles>
     <multiplayer supported="true"/>
     <l10n filenamePrefix="languages/l10n" />
+    <helpLines>
+        <category title="$l10n_rt_help_title_red_tape">
+            <page title="$l10n_rt_help_title_intro">
+                <paragraph>
+                    <text text="$l10n_rt_help_intro_intro"/>
+                </paragraph>
+                <paragraph>
+                    <text text="$l10n_rt_help_intro_intro_2"/>
+                </paragraph>
+            </page>
+            <page title="$l10n_rt_help_title_policies">
+                <paragraph>
+                    <text text="$l10n_rt_help_policies_intro"/>
+                </paragraph>
+                <paragraph>
+                    <text text="$l10n_rt_help_policies_intro_2"/>
+                </paragraph>
+                <paragraph>
+                    <text text="$l10n_rt_help_policies_intro_3"/>
+                </paragraph>
+            </page>
+            <page title="$l10n_rt_help_title_schemes">
+                <paragraph>
+                    <text text="$l10n_rt_help_schemes_intro"/>
+                </paragraph>
+                <paragraph>
+                    <text text="$l10n_rt_help_schemes_intro_2"/>
+                </paragraph>
+                <paragraph>
+                    <text text="$l10n_rt_help_schemes_intro_3"/>
+                </paragraph>
+            </page>
+            <page title="$l10n_rt_help_title_tax">
+                <paragraph>
+                    <text text="$l10n_rt_help_tax_intro"/>
+                </paragraph>
+                <paragraph>
+                    <text text="$l10n_rt_help_tax_intro_2"/>
+                </paragraph>
+            </page>
+        </category>
+    </helpLines>
 </modDesc>
