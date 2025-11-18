@@ -306,20 +306,30 @@ function RedTape.getActualYear()
     return year
 end
 
+function RedTape.getGridPosition(x, y, z, gridSize)
+    gridSize = gridSize or 10
+
+    local gridX = math.floor(x / gridSize) * gridSize + gridSize / 2
+    local gridY = math.floor(y / gridSize) * gridSize + gridSize / 2
+    local gridZ = math.floor(z / gridSize) * gridSize + gridSize / 2
+
+    return gridX, gridY, gridZ
+end
+
 function RedTape:onStartMission()
     MissionManager.getIsMissionWorkAllowed = Utils.overwrittenFunction(MissionManager.getIsMissionWorkAllowed,
         RTMissionManagerExtension.getIsMissionWorkAllowed)
     local rt = g_currentMission.RedTape
     rt.missionStarted = true
+    local ig = rt.InfoGatherer
+    local farmGatherer = ig.gatherers[INFO_KEYS.FARMS]
 
     if g_currentMission:getIsServer() then
         -- Initialize RedTape on new game
         if not rt.didLoadFromXML then
             local husbandries = g_currentMission.husbandrySystem.placeables
-            local ig = rt.InfoGatherer
-            local gatherer = ig.gatherers[INFO_KEYS.FARMS]
             for _, husbandry in pairs(husbandries) do
-                gatherer:addProductivityException(husbandry, 24)
+                farmGatherer:addProductivityException(husbandry, 24)
             end
 
             rt:periodChanged()

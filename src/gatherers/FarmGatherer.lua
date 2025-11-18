@@ -11,6 +11,8 @@ function FarmGatherer.new()
     self.turnedOnSprayers = {}
     self.sprayCoords = {}
     self.productivityExceptions = {}
+    self.snowOnGround = false
+    self.saltData = {}
 
     return self
 end
@@ -127,13 +129,15 @@ function FarmGatherer:getFarmData(farmId)
             biAnnualCutTrees = 0,
             biAnnualPlantedTrees = 0,
             sprayHistory = {},
-            monthlyDetail = {}
+            monthlyDetail = {},
+            saltCount = 0
         }
     end
     return self.data[farmId]
 end
 
 function FarmGatherer:saveToXmlFile(xmlFile, key)
+    setXMLBool(xmlFile, key .. "#snowOnGround", self.snowOnGround)
 
     local y = 0
     for uniqueId, hours in pairs(self.productivityExceptions) do
@@ -141,6 +145,16 @@ function FarmGatherer:saveToXmlFile(xmlFile, key)
         setXMLString(xmlFile, exceptionKey .. "#uniqueId", uniqueId)
         setXMLInt(xmlFile, exceptionKey .. "#hours", hours)
         y = y + 1
+    end
+
+    local x = 0
+    for spline, keys in pairs(self.saltData) do
+        for key, _ in pairs(keys) do
+            local saltKey = string.format("%s.saltData.spline(%d).entry(%d)", key, x, 0)
+            setXMLInt(xmlFile, saltKey .. "#spline", spline)
+            setXMLString(xmlFile, saltKey .. "#key", key)
+            x = x + 1
+        end
     end
 
     local i = 0
@@ -160,6 +174,7 @@ function FarmGatherer:saveToXmlFile(xmlFile, key)
         setXMLInt(xmlFile, farmKey .. "#monthlyScaledAnimalGrazingHours", farmData.monthlyScaledAnimalGrazingHours)
         setXMLInt(xmlFile, farmKey .. "#biAnnualCutTrees", farmData.biAnnualCutTrees)
         setXMLInt(xmlFile, farmKey .. "#biAnnualPlantedTrees", farmData.biAnnualPlantedTrees)
+        setXMLInt(xmlFile, farmKey .. "#saltCount", farmData.saltCount)
 
         local j = 0
         for month, nameTable in pairs(farmData.sprayHistory) do
@@ -195,6 +210,8 @@ function FarmGatherer:saveToXmlFile(xmlFile, key)
 end
 
 function FarmGatherer:loadFromXMLFile(xmlFile, key)
+    self.snowOnGround = getXMLBool(xmlFile, key .. "#snowOnGround") or false
+
     local x = 0
     while true do
         local exceptionKey = string.format("%s.productivityExceptions.exception(%d)", key, x)
@@ -207,6 +224,23 @@ function FarmGatherer:loadFromXMLFile(xmlFile, key)
         self.productivityExceptions[uniqueId] = hours
 
         x = x + 1
+    end
+
+    local y = 0
+    while true do
+        local saltKey = string.format("%s.saltData.spline(%d).entry(%d)", key, y, 0)
+        if not hasXMLProperty(xmlFile, saltKey) then
+            break
+        end
+
+        local spline = getXMLInt(xmlFile, saltKey .. "#spline")
+        local entryKey = getXMLString(xmlFile, saltKey .. "#key")
+        if self.saltData[spline] == nil then
+            self.saltData[spline] = {}
+        end
+        self.saltData[spline][entryKey] = true
+
+        y = y + 1
     end
 
     local i = 0
@@ -231,6 +265,7 @@ function FarmGatherer:loadFromXMLFile(xmlFile, key)
             monthlyScaledAnimalGrazingHours = getXMLInt(xmlFile, farmKey .. "#monthlyScaledAnimalGrazingHours") or 0,
             biAnnualCutTrees = getXMLInt(xmlFile, farmKey .. "#biAnnualCutTrees") or 0,
             biAnnualPlantedTrees = getXMLInt(xmlFile, farmKey .. "#biAnnualPlantedTrees") or 0,
+            saltCount = getXMLInt(xmlFile, farmKey .. "#saltCount") or 0,
         }
 
         local j = 0
@@ -606,4 +641,39 @@ end
 
 function FarmGatherer:isExemptFromProductivityCheck(husbandry)
     return self.productivityExceptions[husbandry.uniqueId] ~= nil
+end
+
+function FarmGatherer:recordSaltSpread(x, y, z, spline, farmId)
+    if not self.snowOnGround then
+        return
+    end
+
+    if self.saltData[spline] == nil then
+        self.saltData[spline] = {}
+    end
+
+    local key = string.format("%d_%d_%d", math.floor(x), math.floor(y), math.floor(z))
+    if not self.saltData[spline][key] then
+        local farmData = self:getFarmData(farmId)
+        farmData.saltCount = (farmData.saltCount or 0) + 1
+        self.saltData[spline][key] = true
+    else
+        print("Salt already recorded at " .. key .. " for spline " .. tostring(spline))
+    end
+end
+
+function FarmGatherer:onSnowApplied()
+    self.snowOnGround = true
+    for _, farmData in pairs(self.data) do
+        farmData.saltCount = 0
+    end
+    self.saltData = {}
+end
+
+function FarmGatherer:onSnowEnded()
+    self.snowOnGround = false
+    for _, farmData in pairs(self.data) do
+        farmData.saltCount = 0
+    end
+    self.saltData = {}
 end

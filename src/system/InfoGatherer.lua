@@ -49,6 +49,7 @@ end
 
 function RTInfoGatherer:runInfrequentChecks()
     self.gatherers[INFO_KEYS.FARMLANDS]:checkHarvestedState()
+    -- self.gatherers[INFO_KEYS.FARMS]:getSnowData()
 end
 
 function RTInfoGatherer:hourChanged()

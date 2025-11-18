@@ -276,6 +276,15 @@ function RTScheme:evaluate()
     end
 end
 
+function  RTScheme:snowSchemeEnded()
+    if self.schemeIndex ~= RTSchemeIds.ROAD_SNOW_CLEARING then
+        return
+    end
+
+    local schemeInfo = RTSchemes[self.schemeIndex]
+    schemeInfo.onSnowEnded(schemeInfo, self, self.tier)
+end
+
 -- Called by SchemeSelectedEvent, runs on client and server
 -- Creates a new farm specific scheme from
 function RTScheme:createFarmScheme(farmId)
