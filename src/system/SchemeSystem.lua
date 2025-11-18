@@ -248,8 +248,10 @@ end
 function RTSchemeSystem:registerActivatedScheme(scheme)
     table.insert(self.availableSchemes[scheme.tier], scheme)
     local available = scheme:availableForCurrentFarm()
+
+    local tierName = RTPolicySystem.TIER_NAMES[scheme.tier]
     g_currentMission.RedTape.EventLog:addEvent(nil, RTEventLogItem.EVENT_TYPE.SCHEME_ACTIVATED,
-        string.format(g_i18n:getText("rt_notify_active_scheme"), scheme:getName()), available)
+        string.format(g_i18n:getText("rt_notify_active_scheme"), scheme:getName(), tierName), available)
     g_messageCenter:publish(MessageType.SCHEMES_UPDATED)
 end
 
@@ -278,8 +280,9 @@ function RTSchemeSystem:removeAvailableScheme(id)
             if scheme.id == id then
                 table.remove(schemes, i)
                 g_messageCenter:publish(MessageType.SCHEMES_UPDATED)
+                local tierName = RTPolicySystem.TIER_NAMES[scheme.tier]
                 g_currentMission.RedTape.EventLog:addEvent(nil, RTEventLogItem.EVENT_TYPE.SCHEME_EXPIRED,
-                    string.format(g_i18n:getText("rt_notify_expired_scheme"), scheme:getName()),
+                    string.format(g_i18n:getText("rt_notify_expired_scheme"), scheme:getName(), tierName),
                     scheme:availableForCurrentFarm())
                 return
             end

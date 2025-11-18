@@ -669,8 +669,23 @@ RTSchemes = {
         selectionProbability = 1,
         availabilityProbability = 0,
         initialise = function(schemeInfo, scheme)
+            local chosenCategory = "WINTEREQUIPMENT"
+            local options = {}
+            for _, item in pairs(g_storeManager:getItems()) do
+                for i = 1, #item.categoryNames do
+                    if chosenCategory == item.categoryNames[i] then
+                        StoreItemUtil.loadSpecsFromXML(item)
+                        if item.specs and item.specs.fillTypes and item.specs.fillTypes.fillTypeNames == "roadsalt" then
+                            table.insert(options, item)
+                        end
+                    end
+                end
+            end
+            local chosenItem = options[math.random(1, #options)]
+            scheme:setProp('vehicleToSpawn1', chosenItem.xmlFilename)
         end,
         selected = function(schemeInfo, scheme, tier)
+            scheme:spawnVehicles()
         end,
         evaluate = function(schemeInfo, scheme, tier)
         end,

@@ -657,8 +657,6 @@ function FarmGatherer:recordSaltSpread(x, y, z, spline, farmId)
         local farmData = self:getFarmData(farmId)
         farmData.saltCount = (farmData.saltCount or 0) + 1
         self.saltData[spline][key] = true
-    else
-        print("Salt already recorded at " .. key .. " for spline " .. tostring(spline))
     end
 end
 

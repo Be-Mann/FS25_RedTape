@@ -415,10 +415,13 @@ function RTScheme:onVehicleReset(oldVehicle, newVehicle)
     end
 end
 
-function RTScheme:removeAccess()
+function RTScheme:removeVehicles()
     if g_currentMission:getIsServer() then
         for _, vehicle in pairs(self.vehicles) do
             if not vehicle:getIsBeingDeleted() then
+                if vehicle.spec_fillUnit ~= nil then
+                    vehicle.spec_fillUnit:unloadFillUnits(true)
+                end
                 vehicle:delete()
             end
         end
@@ -429,7 +432,7 @@ end
 -- Must be called when the scheme ends
 function RTScheme:endScheme()
     if g_currentMission:getIsServer() then
-        self:removeAccess()
+        self:removeVehicles()
         g_messageCenter:unsubscribeAll(self)
     end
 end

@@ -4,9 +4,9 @@
 	<texts>
 		
 		<text name="rt_notify_active_policy" text="A new policy has been activated: %s"/>
-		<text name="rt_notify_active_scheme" text="A new scheme has become available: %s"/>
+		<text name="rt_notify_active_scheme" text="A new scheme has become available: %s (Tier %s)"/>
 		<text name="rt_notify_ended_scheme" text="A scheme has ended: %s"/>
-		<text name="rt_notify_expired_scheme" text="A scheme is no longer available: %s"/>
+		<text name="rt_notify_expired_scheme" text="A scheme is no longer available: %s (Tier %s)"/>
 		<text name="rt_policy_reason_evaluation" text="%s points awarded during evaluation of policy %s"/>
 		<text name="rt_notify_scheme_payout" text="The %s scheme paid you: %s"/>
 		<text name="rt_notify_policy_warning" text="You received a warning for violating the %s policy"/>
