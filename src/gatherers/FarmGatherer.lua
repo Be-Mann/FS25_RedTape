@@ -137,11 +137,12 @@ function FarmGatherer:getFarmData(farmId)
 end
 
 function FarmGatherer:saveToXmlFile(xmlFile, key)
-    setXMLBool(xmlFile, key .. "#snowOnGround", self.snowOnGround)
+    local farmGathererKey = string.format("%s.farmGatherer", key)
+    setXMLBool(xmlFile, farmGathererKey .. "#snowOnGround", self.snowOnGround)
 
     local y = 0
     for uniqueId, hours in pairs(self.productivityExceptions) do
-        local exceptionKey = string.format("%s.productivityExceptions.exception(%d)", key, y)
+        local exceptionKey = string.format("%s.productivityExceptions.exception(%d)", farmGathererKey, y)
         setXMLString(xmlFile, exceptionKey .. "#uniqueId", uniqueId)
         setXMLInt(xmlFile, exceptionKey .. "#hours", hours)
         y = y + 1
@@ -149,17 +150,17 @@ function FarmGatherer:saveToXmlFile(xmlFile, key)
 
     local x = 0
     for spline, keys in pairs(self.saltData) do
-        for key, _ in pairs(keys) do
-            local saltKey = string.format("%s.saltData.spline(%d).entry(%d)", key, x, 0)
-            setXMLInt(xmlFile, saltKey .. "#spline", spline)
-            setXMLString(xmlFile, saltKey .. "#key", key)
+        for storeKey, _ in pairs(keys) do
+            local saltKey = string.format("%s.saltData.spline(%d)", farmGathererKey, x)
+            setXMLInt(xmlFile, saltKey .. "#id", spline)
+            setXMLString(xmlFile, saltKey .. "#key", storeKey)
             x = x + 1
         end
     end
 
     local i = 0
     for farmId, farmData in pairs(self.data) do
-        local farmKey = string.format("%s.farms.farm(%d)", key, i)
+        local farmKey = string.format("%s.farms.farm(%d)", farmGathererKey, i)
         setXMLInt(xmlFile, farmKey .. "#id", farmId)
         setXMLInt(xmlFile, farmKey .. "#monthlySprayViolations", farmData.monthlySprayViolations)
         setXMLInt(xmlFile, farmKey .. "#monthlyEmptyStrawCount", farmData.monthlyEmptyStrawCount)
@@ -209,9 +210,8 @@ function FarmGatherer:saveToXmlFile(xmlFile, key)
     end
 end
 
-function FarmGatherer:loadFromXMLFile(xmlFile, key)
-    self.snowOnGround = getXMLBool(xmlFile, key .. "#snowOnGround") or false
-
+-- TODO remove this function before release
+function FarmGatherer:tmpLoadOldXMLFile(xmlFile, key)
     local x = 0
     while true do
         local exceptionKey = string.format("%s.productivityExceptions.exception(%d)", key, x)
@@ -226,14 +226,114 @@ function FarmGatherer:loadFromXMLFile(xmlFile, key)
         x = x + 1
     end
 
+    local i = 0
+    while true do
+        local farmKey = string.format("%s.farms.farm(%d)", key, i)
+        if not hasXMLProperty(xmlFile, farmKey) then
+            break
+        end
+
+        local farmId = getXMLInt(xmlFile, farmKey .. "#id")
+        self.data[farmId] = {
+            monthlySprayViolations = getXMLInt(xmlFile, farmKey .. "#monthlySprayViolations") or 0,
+            monthlyEmptyStrawCount = getXMLInt(xmlFile, farmKey .. "#monthlyEmptyStrawCount") or 0,
+            monthlyFullSlurryCount = getXMLInt(xmlFile, farmKey .. "#monthlyFullSlurryCount") or 0,
+            monthlyEmptyFoodCount = getXMLInt(xmlFile, farmKey .. "#monthlyEmptyFoodCount") or 0,
+            monthlyLowProductivityHusbandry = getXMLInt(xmlFile, farmKey .. "#monthlyLowProductivityHusbandry") or 0,
+            monthlyAnimalSpaceViolations = getXMLInt(xmlFile, farmKey .. "#monthlyAnimalSpaceViolations") or 0,
+            currentManureLevel = getXMLInt(xmlFile, farmKey .. "#currentManureLevel") or 0,
+            rollingAverageManureLevel = getXMLInt(xmlFile, farmKey .. "#rollingAverageManureLevel") or 0,
+            monthlyRestrictedSlurryViolations = getXMLInt(xmlFile, farmKey .. "#monthlyRestrictedSlurryViolations") or 0,
+            monthlyAnimalGrazingHours = getXMLInt(xmlFile, farmKey .. "#monthlyAnimalGrazingHours") or 0,
+            monthlyScaledAnimalGrazingHours = getXMLInt(xmlFile, farmKey .. "#monthlyScaledAnimalGrazingHours") or 0,
+            biAnnualCutTrees = getXMLInt(xmlFile, farmKey .. "#biAnnualCutTrees") or 0,
+            biAnnualPlantedTrees = getXMLInt(xmlFile, farmKey .. "#biAnnualPlantedTrees") or 0,
+            saltCount = getXMLInt(xmlFile, farmKey .. "#saltCount") or 0,
+        }
+
+        local j = 0
+        self.data[farmId].sprayHistory = {}
+        while true do
+            local sprayKey = string.format("%s.sprayHistory.spray(%d)", farmKey, j)
+            if not hasXMLProperty(xmlFile, sprayKey) then
+                break
+            end
+
+            local month = getXMLInt(xmlFile, sprayKey .. "#month")
+            local name = getXMLString(xmlFile, sprayKey .. "#name")
+            local amount = getXMLInt(xmlFile, sprayKey .. "#amount")
+
+            if self.data[farmId].sprayHistory[month] == nil then
+                self.data[farmId].sprayHistory[month] = {}
+            end
+            self.data[farmId].sprayHistory[month][name] = amount
+
+            j = j + 1
+        end
+
+        local k = 0
+        self.data[farmId].monthlyDetail = {}
+        while true do
+            local detailXmlKey = string.format("%s.monthlyDetail.detail(%d)", farmKey, k)
+            if not hasXMLProperty(xmlFile, detailXmlKey) then
+                break
+            end
+
+            local detailKey = getXMLString(xmlFile, detailXmlKey .. "#key")
+            self.data[farmId].monthlyDetail[detailKey] = {}
+
+            local l = 0
+            while true do
+                local lineKey = string.format("%s.line(%d)", detailXmlKey, l)
+                if not hasXMLProperty(xmlFile, lineKey) then
+                    break
+                end
+
+                table.insert(self.data[farmId].monthlyDetail[detailKey], {
+                    key = getXMLString(xmlFile, lineKey .. "#k"),
+                    value1 = getXMLString(xmlFile, lineKey .. "#v1"),
+                    value2 = getXMLString(xmlFile, lineKey .. "#v2"),
+                    updated = getXMLInt(xmlFile, lineKey .. "#updated") or -1
+                })
+
+                l = l + 1
+            end
+
+            k = k + 1
+        end
+
+        i = i + 1
+    end
+end
+
+function FarmGatherer:loadFromXMLFile(xmlFile, key)
+    -- TODO: remove function call before release
+    self:tmpLoadOldXMLFile(xmlFile, key)
+    local farmGathererKey = string.format("%s.farmGatherer", key)
+    self.snowOnGround = getXMLBool(xmlFile, farmGathererKey .. "#snowOnGround") or false
+
+    local x = 0
+    while true do
+        local exceptionKey = string.format("%s.productivityExceptions.exception(%d)", farmGathererKey, x)
+        if not hasXMLProperty(xmlFile, exceptionKey) then
+            break
+        end
+
+        local uniqueId = getXMLString(xmlFile, exceptionKey .. "#uniqueId")
+        local hours = getXMLInt(xmlFile, exceptionKey .. "#hours")
+        self.productivityExceptions[uniqueId] = hours
+
+        x = x + 1
+    end
+
     local y = 0
     while true do
-        local saltKey = string.format("%s.saltData.spline(%d).entry(%d)", key, y, 0)
+        local saltKey = string.format("%s.saltData.spline(%d)", farmGathererKey, y)
         if not hasXMLProperty(xmlFile, saltKey) then
             break
         end
 
-        local spline = getXMLInt(xmlFile, saltKey .. "#spline")
+        local spline = getXMLInt(xmlFile, saltKey .. "#id")
         local entryKey = getXMLString(xmlFile, saltKey .. "#key")
         if self.saltData[spline] == nil then
             self.saltData[spline] = {}
@@ -245,7 +345,7 @@ function FarmGatherer:loadFromXMLFile(xmlFile, key)
 
     local i = 0
     while true do
-        local farmKey = string.format("%s.farms.farm(%d)", key, i)
+        local farmKey = string.format("%s.farms.farm(%d)", farmGathererKey, i)
         if not hasXMLProperty(xmlFile, farmKey) then
             break
         end
