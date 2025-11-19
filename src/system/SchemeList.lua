@@ -7,7 +7,8 @@ RTSchemeIds = {
     NATURAL_FERTILISER = 4,
     CROP_PROMOTION = 5,
     TRACTOR_DEMO = 6,
-    WINTER_COVER_CROPS = 7, -- look at crop calendar to work out what makes sense. SAM2
+    WINTER_COVER_CROPS = 7,
+    ROAD_SNOW_CLEARING = 8,
 }
 
 
@@ -643,6 +644,64 @@ RTSchemes = {
             return report
         end
 
-    }
+    },
+
+    [RTSchemeIds.ROAD_SNOW_CLEARING] = {
+        id = RTSchemeIds.ROAD_SNOW_CLEARING,
+        name = "rt_scheme_road_snow_clearing",
+        description = "rt_scheme_desc_road_snow_clearing",
+        report_description = "rt_scheme_report_desc_road_snow_clearing",
+        duplicationKey = "ROAD_SNOW_CLEARING",
+        tiers = {
+            [RTPolicySystem.TIER.A] = {
+                bonusPerBlock = 14,
+            },
+            [RTPolicySystem.TIER.B] = {
+                bonusPerBlock = 12,
+            },
+            [RTPolicySystem.TIER.C] = {
+                bonusPerBlock = 10,
+            },
+            [RTPolicySystem.TIER.D] = {
+                bonusPerBlock = 8,
+            },
+        },
+        selectionProbability = 1,
+        availabilityProbability = 0,
+        initialise = function(schemeInfo, scheme)
+            local chosenCategory = "WINTEREQUIPMENT"
+            local options = {}
+            for _, item in pairs(g_storeManager:getItems()) do
+                for i = 1, #item.categoryNames do
+                    if chosenCategory == item.categoryNames[i] then
+                        StoreItemUtil.loadSpecsFromXML(item)
+                        if item.specs and item.specs.fillTypes and item.specs.fillTypes.fillTypeNames == "roadsalt" then
+                            table.insert(options, item)
+                        end
+                    end
+                end
+            end
+            local chosenItem = options[math.random(1, #options)]
+            scheme:setProp('vehicleToSpawn1', chosenItem.xmlFilename)
+        end,
+        selected = function(schemeInfo, scheme, tier)
+            scheme:spawnVehicles()
+        end,
+        evaluate = function(schemeInfo, scheme, tier)
+        end,
+        onSnowEnded = function(schemeInfo, scheme, tier)
+            local tierInfo = schemeInfo.tiers[tier]
+            local ig = g_currentMission.RedTape.InfoGatherer
+            local gatherer = ig.gatherers[INFO_KEYS.FARMS]
+            local farmData = gatherer:getFarmData(scheme.farmId)
+            local clearedBlocks = farmData.saltCount or 0
+            local payout = clearedBlocks * tierInfo.bonusPerBlock * EconomyManager.getPriceMultiplier()
+
+            if payout ~= 0 then
+                g_client:getServerConnection():sendEvent(RTSchemePayoutEvent.new(scheme, scheme.farmId, payout))
+            end
+            g_client:getServerConnection():sendEvent(RTSchemeEndedEvent.new(scheme.id, scheme.farmId))
+        end
+    },
 
 }
