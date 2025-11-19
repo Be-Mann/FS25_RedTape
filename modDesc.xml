@@ -57,7 +57,7 @@ Voir le menu d'aide dans le jeu pour plus d'informations.
         <sourceFile filename="src/events/TaxStatementPaidEvent.lua"/>
         <sourceFile filename="src/extensions/BaleWrapperExtension.lua"/>
         <sourceFile filename="src/extensions/FarmExtension.lua"/>
-        <sourceFile filename="src/extensions/FarmStatsExtension.lua"/>
+        <sourceFile filename="src/extensions/FSBaseMissionExtension.lua"/>
         <sourceFile filename="src/extensions/I18NExtension.lua"/>
         <sourceFile filename="src/extensions/MissionManagerExtension.lua"/>
         <sourceFile filename="src/extensions/PlaceableHusbandryAnimalsExtension.lua"/>

@@ -654,16 +654,16 @@ RTSchemes = {
         duplicationKey = "ROAD_SNOW_CLEARING",
         tiers = {
             [RTPolicySystem.TIER.A] = {
-                bonusPerBlock = 14,
+                bonusPerBlock = 2.3,
             },
             [RTPolicySystem.TIER.B] = {
-                bonusPerBlock = 12,
+                bonusPerBlock = 2.1,
             },
             [RTPolicySystem.TIER.C] = {
-                bonusPerBlock = 10,
+                bonusPerBlock = 1.9,
             },
             [RTPolicySystem.TIER.D] = {
-                bonusPerBlock = 8,
+                bonusPerBlock = 1.7,
             },
         },
         selectionProbability = 1,
