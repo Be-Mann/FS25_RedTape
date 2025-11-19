@@ -102,7 +102,7 @@ function RTPolicy:loadFromXMLFile(xmlFile, key)
         self.nextEvaluationMonth = cumulativeMonth + 1
     end
 
-    self.evaluationCount = getXMLInt(xmlFile, key .. "#evaluationCount") or 0 
+    self.evaluationCount = getXMLInt(xmlFile, key .. "#evaluationCount") or 0
 
     local i = 0
     self.evaluationReports = {}

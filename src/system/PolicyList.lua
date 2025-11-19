@@ -321,7 +321,7 @@ RTPolicies = {
                 { cell1 = g_i18n:getText("rt_report_name_animal_space_violations"), cell2 = pendingViolations })
 
             for _, entry in pairs(animalSpaceDetail) do
-                if entry.updated >= cumulativeMonth -1 then
+                if entry.updated >= cumulativeMonth - 1 then
                     table.insert(report, {
                         cell1 = entry.key,
                         cell2 = string.format("%s%s", entry.value1, g_i18n:getText("rt_unit_meter_square")),
@@ -405,6 +405,7 @@ RTPolicies = {
             local farmData = gatherer:getFarmData(farmId)
             local manureName = g_fillTypeManager:getFillTypeNameByIndex(FillType.MANURE)
             local currentMonth = RedTape.periodToMonth(g_currentMission.environment.currentPeriod)
+            local elapsedMonths = RedTape.getElapsedMonths()
 
             local actualSpread = 0
             local monthsToSearch = 6
@@ -417,26 +418,34 @@ RTPolicies = {
                 end
             end
 
+            local report = {}
             local expectedSpread = 0
             local reward = 0
             if farmData.rollingAverageManureLevel > 0 then
                 expectedSpread = farmData.rollingAverageManureLevel * 0.5
 
                 if currentMonth == 5 or currentMonth == 11 then
-                    if actualSpread < expectedSpread then
-                        reward = policyInfo.periodicPenalty
-
-                        local fineAmount = policyInfo.finePerViolation
-                        local skipWarning = true
-                        g_currentMission.RedTape.PolicySystem:WarnAndFine(policyInfo, policy, farmId, fineAmount,
-                            skipWarning)
+                    if elapsedMonths < 3 then
+                        table.insert(report,
+                            {
+                                cell1 = g_i18n:getText("rt_report_name_note"),
+                                cell2 = g_i18n:getText("rt_report_value_not_enough_months_elapsed")
+                            })
                     else
-                        reward = policyInfo.periodicReward
+                        if actualSpread < expectedSpread then
+                            reward = policyInfo.periodicPenalty
+
+                            local fineAmount = policyInfo.finePerViolation
+                            local skipWarning = true
+                            g_currentMission.RedTape.PolicySystem:WarnAndFine(policyInfo, policy, farmId, fineAmount,
+                                skipWarning)
+                        else
+                            reward = policyInfo.periodicReward
+                        end
                     end
                 end
             end
 
-            local report = {}
             table.insert(report,
                 {
                     cell1 = g_i18n:getText("rt_report_name_manure_spread"),
@@ -512,7 +521,7 @@ RTPolicies = {
         description = "rt_policy_description_sustainable_forestry",
         report_description = "rt_policy_report_description_sustainable_forestry",
         probability = 0.5,
-        excessCutPenaltyPerTree = 500,
+        excessCutPenaltyPerTree = 250,
         pointsPerNetTree = 25,
         penaltyPointsPerTree = -5,
         evaluationInterval = 1,
@@ -524,6 +533,7 @@ RTPolicies = {
             local gatherer = ig.gatherers[INFO_KEYS.FARMS]
             local farmData = gatherer:getFarmData(farmId)
             local currentMonth = RedTape.periodToMonth(g_currentMission.environment.currentPeriod)
+            local elapsedMonths = RedTape.getElapsedMonths()
 
             local cutTrees = farmData.biAnnualCutTrees or 0
             local plantedTrees = farmData.biAnnualPlantedTrees or 0
@@ -533,13 +543,22 @@ RTPolicies = {
 
             local reward = 0
             if currentMonth == 6 or currentMonth == 12 then
-                if netTrees < 0 then
-                    reward = policyInfo.penaltyPointsPerTree * math.abs(netTrees)
-                    local fine = policyInfo.excessCutPenaltyPerTree * math.abs(netTrees)
-                    local skipWarning = true
-                    g_currentMission.RedTape.PolicySystem:WarnAndFine(policyInfo, policy, farmId, fine, skipWarning)
-                elseif netTrees > 0 then
-                    reward = policyInfo.pointsPerNetTree * netTrees
+                if elapsedMonths < 3 then
+                    table.insert(report,
+                        {
+                            cell1 = g_i18n:getText("rt_report_name_note"),
+                            cell2 = g_i18n:getText(
+                                "rt_report_value_not_enough_months_elapsed")
+                        })
+                else
+                    if netTrees < 0 then
+                        reward = policyInfo.penaltyPointsPerTree * math.abs(netTrees)
+                        local fine = policyInfo.excessCutPenaltyPerTree * math.abs(netTrees)
+                        local skipWarning = true
+                        g_currentMission.RedTape.PolicySystem:WarnAndFine(policyInfo, policy, farmId, fine, skipWarning)
+                    elseif netTrees > 0 then
+                        reward = policyInfo.pointsPerNetTree * netTrees
+                    end
                 end
             end
 

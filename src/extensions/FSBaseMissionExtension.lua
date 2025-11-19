@@ -1,5 +1,6 @@
 FSBaseMissionExtension = {}
 
+-- All credit to Loki for this code!
 function FSBaseMissionExtension:removeKnownSplitShape(shape)
     if shape ~= nil and shape ~= 0 and entityExists(shape) then
         if getHasClassId(shape, ClassIds.MESH_SPLIT_SHAPE) then

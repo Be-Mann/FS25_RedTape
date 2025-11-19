@@ -115,9 +115,11 @@
 		<text name="rt_report_name_points" text="Points"/>
 		<text name="rt_report_name_trees_planted" text="Trees Planted"/>
 		<text name="rt_report_name_trees_cut" text="Trees Cut"/>
+		<text name="rt_report_name_note" text="Note:"/>
 				
 		<text name="rt_report_value_true" text="True"/>
 		<text name="rt_report_value_false" text="False"/>
+		<text name="rt_report_value_not_enough_months_elapsed" text="Full evaluation was skipped this month."/>
 
 		<text name="rt_scheme_delayed_mowing" text="Avoid Mowing During Spring"/>
 		<text name="rt_scheme_crop_promotion" text="Crop Promotion"/>

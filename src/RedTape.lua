@@ -12,6 +12,7 @@ function RedTape:loadMap()
     MessageType.TAXES_UPDATED = nextMessageTypeId()
     MessageType.POLICIES_UPDATED = nextMessageTypeId()
 
+    self.monthStarted = 0
     self.leaseDeals = {}
     self.constantChecksUpdateIntervalMs = 2000     -- interval for constant checks
     self.constantChecksUpdateTime = 5000           -- initial interval post load
@@ -117,6 +118,7 @@ function RedTape:loadFromXMLFile()
 
     if fileExists(savegameFolderPath .. RedTape.SaveKey .. ".xml") then
         local xmlFile = loadXMLFile(RedTape.SaveKey, savegameFolderPath .. RedTape.SaveKey .. ".xml");
+        self.monthStarted = getXMLInt(xmlFile, RedTape.SaveKey .. "#monthStarted") or 8
         g_currentMission.RedTape.PolicySystem:loadFromXMLFile(xmlFile)
         g_currentMission.RedTape.SchemeSystem:loadFromXMLFile(xmlFile)
         g_currentMission.RedTape.TaxSystem:loadFromXMLFile(xmlFile)
@@ -138,6 +140,8 @@ function RedTape:saveToXmlFile()
     end
 
     local xmlFile = createXMLFile(RedTape.SaveKey, savegameFolderPath .. RedTape.SaveKey .. ".xml", RedTape.SaveKey);
+
+    setXMLInt(xmlFile, RedTape.SaveKey .. "#monthStarted", g_currentMission.RedTape.monthStarted)
 
     g_currentMission.RedTape.PolicySystem:saveToXmlFile(xmlFile)
     g_currentMission.RedTape.SchemeSystem:saveToXmlFile(xmlFile)
@@ -295,6 +299,10 @@ function RedTape.getCumulativeMonth()
     return (year * 12) + month
 end
 
+function RedTape.getElapsedMonths()
+    return RedTape.getCumulativeMonth() - g_currentMission.RedTape.monthStarted
+end
+
 function RedTape.getActualYear()
     local month = RedTape.periodToMonth(g_currentMission.environment.currentPeriod)
     local year = g_currentMission.environment.currentYear
@@ -327,6 +335,7 @@ function RedTape:onStartMission()
     if g_currentMission:getIsServer() then
         -- Initialize RedTape on new game
         if not rt.didLoadFromXML then
+            rt.monthStarted = RedTape.getCumulativeMonth()
             local husbandries = g_currentMission.husbandrySystem.placeables
             for _, husbandry in pairs(husbandries) do
                 farmGatherer:addProductivityException(husbandry, 24)
