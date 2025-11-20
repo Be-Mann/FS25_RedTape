@@ -210,6 +210,11 @@ function RTTaxSystem:getTaxedAmount(lineItem, taxStatement)
 end
 
 function RTTaxSystem:categoriseLineItem(lineItem, taxStatement)
+
+    if lineItem.statistic == "other" then
+        return
+    end
+
     local expenseStats = {
         "newVehiclesCost",
         "constructionCost",

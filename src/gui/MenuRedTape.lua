@@ -476,14 +476,6 @@ end
 
 function MenuRedTape:updateMenuButtons()
     local state = self.subCategoryPaging:getState()
-
-    -- if state == MenuRedTape.SUB_CATEGORY.POLICIES then
-    --     print("Policies sub-category selected")
-    -- elseif state == MenuRedTape.SUB_CATEGORY.SCHEMES then
-    --     print("Schemes sub-category selected")
-    -- elseif state == MenuRedTape.SUB_CATEGORY.EVENTLOG then
-    --     print("Event Log sub-category selected")
-    -- end
 end
 
 function MenuRedTape:onMoneyChange()

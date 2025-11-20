@@ -437,7 +437,6 @@ function FarmGatherer:checkSprayers()
         local farmData = self:getFarmData(sprayerFarmId)
 
         if not sprayer.spec_sprayer.workAreaParameters.isActive then
-            print("Sprayer " .. uniqueId .. " is not active, skipping.")
             continue
         end
 
@@ -462,10 +461,7 @@ function FarmGatherer:checkSprayers()
             local overlapHit = self:checkCreekByOverlap(sprayer, workingWidth)
 
             if raycastHit or overlapHit then
-                print("Water found for sprayer " .. sprayer:getName())
                 farmData.monthlySprayViolations = farmData.monthlySprayViolations + 1
-                -- else
-                --     print("No water found for sprayer " .. sprayer:getName())
             end
         end
     end

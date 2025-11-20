@@ -200,7 +200,6 @@ function RTPolicy:activate()
     local policyInfo = RTPolicies[self.policyIndex]
 
     if policyInfo == nil then
-        print("Error: Invalid policy index " .. tostring(self.policyIndex))
         return
     end
 

@@ -287,7 +287,6 @@ function RTPolicySystem:removePolicy(policyIndex)
     end
 
     if removed == nil then
-        print("Policy with index " .. policyIndex .. " not found while attempting to remove.")
         return
     end
 

@@ -73,15 +73,11 @@ RTPolicies = {
 
             local reward = 0
             if totalHa == 0 then
-                print("Farm " .. farmId .. ": No area to check.")
                 reward = 0
             elseif nonCompliantHa == 0 then
-                print("Farm " .. farmId .. ": All farmlands compliant with Crop Rotation policy.")
                 reward = policyInfo.periodicReward
             else
                 local nonCompliantProportion = nonCompliantHa / totalHa
-                print("Farm " .. farmId .. ": Non-compliant area: " .. nonCompliantHa .. " ha, Total area: " ..
-                    totalHa .. " ha, Compliance rate: " .. nonCompliantProportion)
                 reward = policyInfo.periodicPenalty * nonCompliantProportion
             end
 

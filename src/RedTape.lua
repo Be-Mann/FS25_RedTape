@@ -270,7 +270,6 @@ function RedTape.tableCount(tab)
     local count = 0
 
     if type(tab) ~= "table" then
-        print("RedTape.tableCount called on non-table value")
         return 0
     end
 
