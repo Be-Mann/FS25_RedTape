@@ -9,6 +9,7 @@ RTSchemeIds = {
     TRACTOR_DEMO = 6,
     WINTER_COVER_CROPS = 7,
     ROAD_SNOW_CLEARING = 8,
+    BRAND_DEMO = 9,
 }
 
 
@@ -476,7 +477,7 @@ RTSchemes = {
         id = RTSchemeIds.TRACTOR_DEMO,
         name = "rt_scheme_tractor_demo",
         report_description = "rt_scheme_report_desc_tractor_demo",
-        duplicationKey = "TRACTOR_DEMO",
+        duplicationKey = "DEMO",
         tiers = {
             [RTPolicySystem.TIER.A] = {
                 categories = { "TRACTORSS", "TRACTORSM", "TRACTORSM", "TRACTORSL", "TRACTORSL" },
@@ -701,6 +702,120 @@ RTSchemes = {
                 g_client:getServerConnection():sendEvent(RTSchemePayoutEvent.new(scheme, scheme.farmId, payout))
             end
             g_client:getServerConnection():sendEvent(RTSchemeEndedEvent.new(scheme.id, scheme.farmId))
+        end
+    },
+
+    [RTSchemeIds.BRAND_DEMO] = {
+        id = RTSchemeIds.BRAND_DEMO,
+        name = "rt_scheme_brand_demo",
+        report_description = "rt_scheme_report_desc_brand_demo",
+        duplicationKey = "DEMO",
+        tiers = {
+            [RTPolicySystem.TIER.A] = {
+                brands = { "ANDERSONGROUP", "BEDNAR", "DALBO", "EINBOECK", "FARESIN", "FARMTECH", "FLIEGL", "GOEWEIL",
+                    "HAWE", "HORSCH", "KAWECO", "KINZE", "KNOCHE", "KRONE", "KUBOTA", "KUHN",
+                    "KVERNELAND", "LEMKEN", "MANITOU", "PFANZELT", "POETTINGER", "SALEK", "SAMASZ", "SAMSONAGRO",
+                    "VAEDERSTAD", "MASSEYFERGUSON", "NEWHOLLAND", "JOHNDEERE", "FENDT" },
+                durationMonths = { 2, 2, 3 },
+                itemCounts = { 2, 3, 3 }
+            },
+            [RTPolicySystem.TIER.B] = {
+                brands = { "ANDERSONGROUP", "BEDNAR", "DALBO", "EINBOECK", "FARESIN", "FARMTECH", "FLIEGL", "GOEWEIL",
+                    "HAWE", "HORSCH", "KAWECO", "KINZE", "KNOCHE", "KRONE", "KUBOTA", "KUHN",
+                    "KVERNELAND", "LEMKEN", "MANITOU", "PFANZELT", "POETTINGER", "SALEK", "SAMASZ", "SAMSONAGRO",
+                    "VAEDERSTAD", "NEWHOLLAND", "JOHNDEERE" },
+                durationMonths = { 1, 2, 2, },
+                itemCounts = { 2, 2, 3 }
+            },
+            [RTPolicySystem.TIER.C] = {
+                brands = { "ANDERSONGROUP", "BEDNAR", "DALBO", "EINBOECK", "FARESIN", "FARMTECH", "FLIEGL", "GOEWEIL",
+                    "HAWE", "HORSCH", "KAWECO", "KINZE", "KNOCHE", "KRONE", "KUBOTA", "KUHN",
+                    "KVERNELAND", "LEMKEN", "MANITOU", "PFANZELT", "POETTINGER", "SALEK", "SAMASZ", "SAMSONAGRO",
+                    "VAEDERSTAD" },
+                durationMonths = { 1, 1, 2 },
+                itemCounts = { 2 }
+            },
+            [RTPolicySystem.TIER.D] = {
+                brands = { "BEDNAR", "DALBO", "EINBOECK", "FARESIN", "FARMTECH", "FLIEGL", "GOEWEIL",
+                    "HAWE", "KAWECO", "KINZE", "KNOCHE", "KRONE", "KUBOTA", "LEMKEN", "MANITOU", "PFANZELT", "POETTINGER",
+                    "SALEK", "SAMSONAGRO", "VAEDERSTAD" },
+                durationMonths = { 1 },
+                itemCounts = { 1, 2 },
+            },
+        },
+        selectionProbability = 1,
+        availabilityProbability = 0.1,
+        descriptionFunction = function(schemeInfo, scheme)
+            local storeItem = g_storeManager:getItemByXMLFilename(scheme.props["vehicleToSpawn1"])
+            StoreItemUtil.loadSpecsFromXML(storeItem)
+
+            local brand = g_brandManager.indexToBrand[storeItem.brandIndex].title
+            local suffix = ""
+
+            if (tonumber(scheme.props['durationMonths']) or 1) > 1 then
+                suffix = "s"
+            end
+
+            return string.format(g_i18n:getText("rt_scheme_desc_brand_demo"),
+                brand,
+                scheme.props['durationMonths'],
+                suffix)
+        end,
+        getNextEvaluationMonth = function(schemeInfo, scheme)
+            return tonumber(scheme.props['endMonth']) % 12
+        end,
+        getExpiryMonth = function(schemeInfo, scheme)
+            return tonumber(scheme.props['expiryMonth'])
+        end,
+        initialise = function(schemeInfo, scheme)
+            local tierInfo = schemeInfo.tiers[scheme.tier]
+            local chosenBrand = tierInfo.brands[math.random(1, #tierInfo.brands)]
+            local chosenBrandIndex = g_brandManager.nameToBrand[chosenBrand].index
+            local chosenDuration = tierInfo.durationMonths[math.random(1, #tierInfo.durationMonths)]
+            local maxItems = tierInfo.itemCounts[math.random(1, #tierInfo.itemCounts)]
+
+            local options = {}
+            for _, item in pairs(g_storeManager:getItems()) do
+                StoreItemUtil.loadSpecsFromXML(item)
+                if item.brandIndex == chosenBrandIndex then
+                    table.insert(options, item)
+                end
+            end
+
+            local pickedItems = {}
+            for i = 1, maxItems do
+                local pickedItem
+                while true do
+                    pickedItem = options[math.random(1, #options)]
+                    if not RedTape.tableHasValue(pickedItems, pickedItem) then
+                        table.insert(pickedItems, pickedItem)
+                        scheme:setProp('vehicleToSpawn' .. i, pickedItem.xmlFilename)
+                        break
+                    end
+
+                    if #pickedItems >= #options then
+                        break
+                    end
+                end
+            end
+
+            scheme:setProp('durationMonths', chosenDuration)
+            scheme:setProp('expiryMonth', RedTape.getCumulativeMonth() + math.random(1, 2))
+        end,
+        selected = function(schemeInfo, scheme, tier)
+            -- Any action when applying the scheme to a farm, e.g. initial payout or equipment
+            local endMonth = RedTape.getCumulativeMonth() + tonumber(scheme.props['durationMonths'])
+            scheme:setProp('endMonth', endMonth)
+            scheme:spawnVehicles()
+        end,
+        evaluate = function(schemeInfo, scheme, tier)
+            local endMonth = tonumber(scheme.props['endMonth'])
+            local cumulativeMonth = RedTape.getCumulativeMonth()
+
+            if cumulativeMonth >= endMonth then
+                g_client:getServerConnection():sendEvent(RTSchemeEndedEvent.new(scheme.id, scheme.farmId))
+            end
+            return {}
         end
     },
 
