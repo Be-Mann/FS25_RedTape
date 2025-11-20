@@ -58,7 +58,7 @@ function FarmGatherer:hourChanged()
             local actualSpacePerAnimal = stats.navigableArea / stats.numAnimals
             self:updateMinAnimalSpacing(husbandry, actualSpacePerAnimal, desiredSpacePerAnimal)
 
-            if actualSpacePerAnimal < desiredSpacePerAnimal then
+            if stats.numAnimals > 1 and actualSpacePerAnimal < desiredSpacePerAnimal then
                 farmData.monthlyAnimalSpaceViolations = farmData.monthlyAnimalSpaceViolations + 1
             end
         end
