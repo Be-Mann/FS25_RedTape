@@ -85,6 +85,8 @@ RTPolicies = {
                 reward = policyInfo.periodicPenalty * nonCompliantProportion
             end
 
+            reward = math.ceil(reward)
+
             local report = {}
             table.insert(report,
                 { cell1 = g_i18n:getText("rt_report_name_total_area"), cell2 = g_i18n:formatArea(totalHa, 2) })
@@ -93,6 +95,7 @@ RTPolicies = {
                     cell1 = g_i18n:getText("rt_report_name_non_compliant_area"),
                     cell2 = g_i18n:formatArea(nonCompliantHa, 2)
                 })
+            table.insert(report, { cell1 = g_i18n:getText("rt_report_name_points"), cell2 = reward })
 
             if reward ~= 0 then
                 g_client:getServerConnection():sendEvent(RTPolicyPointsEvent.new(farmId, reward, policy:getName()))
@@ -133,9 +136,12 @@ RTPolicies = {
                 g_client:getServerConnection():sendEvent(RTPolicyClearWarningsEvent.new(farmId, policy.policyIndex))
             end
 
+            reward = math.ceil(reward)
+
             local report = {}
             table.insert(report,
                 { cell1 = g_i18n:getText("rt_report_name_spray_violations"), cell2 = monthlySprayViolations })
+            table.insert(report, { cell1 = g_i18n:getText("rt_report_name_points"), cell2 = reward })
 
             if reward ~= 0 then
                 g_client:getServerConnection():sendEvent(RTPolicyPointsEvent.new(farmId, reward, policy:getName()))
@@ -177,6 +183,9 @@ RTPolicies = {
                 reward = policyInfo.periodicReward
                 g_client:getServerConnection():sendEvent(RTPolicyClearWarningsEvent.new(farmId, policy.policyIndex))
             end
+
+            reward = math.ceil(reward)
+
             local report = {}
             table.insert(report, { cell1 = g_i18n:getText("rt_report_name_empty_straw"), cell2 = monthlyEmptyStrawCount })
 
@@ -221,6 +230,8 @@ RTPolicies = {
                 reward = policyInfo.periodicReward
                 g_client:getServerConnection():sendEvent(RTPolicyClearWarningsEvent.new(farmId, policy.policyIndex))
             end
+
+            reward = math.ceil(reward)
 
             local report = {}
             table.insert(report, { cell1 = g_i18n:getText("rt_report_name_full_slurry"), cell2 = monthlyFullSlurryCount })
@@ -269,6 +280,8 @@ RTPolicies = {
                 g_client:getServerConnection():sendEvent(RTPolicyClearWarningsEvent.new(farmId, policy.policyIndex))
             end
 
+            reward = math.ceil(reward)
+
             local report = {}
             table.insert(report, { cell1 = g_i18n:getText("rt_report_name_empty_food"), cell2 = monthlyEmptyFoodCount })
 
@@ -316,6 +329,8 @@ RTPolicies = {
                 g_client:getServerConnection():sendEvent(RTPolicyClearWarningsEvent.new(farmId, policy.policyIndex))
             end
 
+            reward = math.ceil(reward)
+
             local report = {}
             table.insert(report,
                 { cell1 = g_i18n:getText("rt_report_name_animal_space_violations"), cell2 = pendingViolations })
@@ -329,12 +344,12 @@ RTPolicies = {
                     })
                 end
             end
+            table.insert(report, { cell1 = g_i18n:getText("rt_report_name_points"), cell2 = reward })
 
             if reward ~= 0 then
                 g_client:getServerConnection():sendEvent(RTPolicyPointsEvent.new(farmId, reward, policy:getName()))
             end
 
-            table.insert(report, { cell1 = g_i18n:getText("rt_report_name_points"), cell2 = reward })
             return report
         end,
     },
@@ -372,15 +387,17 @@ RTPolicies = {
                 g_client:getServerConnection():sendEvent(RTPolicyClearWarningsEvent.new(farmId, policy.policyIndex))
             end
 
+            reward = math.ceil(reward)
+
             local report = {}
             table.insert(report,
                 { cell1 = g_i18n:getText("rt_report_name_low_productivity_hours"), cell2 = pendingViolations })
+            table.insert(report, { cell1 = g_i18n:getText("rt_report_name_points"), cell2 = reward })
 
             if reward ~= 0 then
                 g_client:getServerConnection():sendEvent(RTPolicyPointsEvent.new(farmId, reward, policy:getName()))
             end
 
-            table.insert(report, { cell1 = g_i18n:getText("rt_report_name_points"), cell2 = reward })
             return report
         end,
     },
@@ -446,6 +463,8 @@ RTPolicies = {
                 end
             end
 
+            reward = math.ceil(reward)
+
             table.insert(report,
                 {
                     cell1 = g_i18n:getText("rt_report_name_manure_spread"),
@@ -461,12 +480,12 @@ RTPolicies = {
                     cell1 = g_i18n:getText("rt_report_name_manure_spread_rolling_average"),
                     cell2 = g_i18n:formatVolume(farmData.rollingAverageManureLevel, 0)
                 })
+            table.insert(report, { cell1 = g_i18n:getText("rt_report_name_points"), cell2 = reward })
 
             if reward ~= 0 then
                 g_client:getServerConnection():sendEvent(RTPolicyPointsEvent.new(farmId, reward, policy:getName()))
             end
 
-            table.insert(report, { cell1 = g_i18n:getText("rt_report_name_points"), cell2 = reward })
             return report
         end
     },
@@ -502,15 +521,17 @@ RTPolicies = {
                 g_client:getServerConnection():sendEvent(RTPolicyClearWarningsEvent.new(farmId, policy.policyIndex))
             end
 
+            reward = math.ceil(reward)
+
             local report = {}
             table.insert(report,
                 { cell1 = g_i18n:getText("rt_report_name_restricted_slurry_violations"), cell2 = pendingViolations })
+            table.insert(report, { cell1 = g_i18n:getText("rt_report_name_points"), cell2 = reward })
 
             if reward ~= 0 then
                 g_client:getServerConnection():sendEvent(RTPolicyPointsEvent.new(farmId, reward, policy:getName()))
             end
 
-            table.insert(report, { cell1 = g_i18n:getText("rt_report_name_points"), cell2 = reward })
             return report
         end,
     },
@@ -561,6 +582,8 @@ RTPolicies = {
                     end
                 end
             end
+
+            reward = math.ceil(reward)
 
             table.insert(report,
                 { cell1 = g_i18n:getText("rt_report_name_trees_planted"), cell2 = plantedTrees })
