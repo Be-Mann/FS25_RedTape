@@ -271,6 +271,7 @@ function RTPolicySystem:applyPoints(farmId, points, reason)
     end
 
     self.points[farmId] = math.max(0, self.points[farmId] + points)
+    self.points[farmId] = math.min(RTPolicySystem.THRESHOLDS[RTPolicySystem.TIER.A], self.points[farmId])
     g_messageCenter:publish(MessageType.POLICIES_UPDATED)
     g_currentMission.RedTape.EventLog:addEvent(farmId, RTEventLogItem.EVENT_TYPE.POLICY_POINTS, reason, false)
 end
@@ -405,18 +406,22 @@ function RTPolicySystem:getProgressForFarm(farmId)
         end
     end
 
-    if currentTier == RTPolicySystem.TIER.A then
-        return {
-            points = points,
-            tier = currentTier,
-            nextTierPoints = RTPolicySystem.THRESHOLDS[currentTier] -- maxed out
-        }
-    end
-
     local nextTierPoints = RTPolicySystem.THRESHOLDS[currentTier - 1]
+    local startTierPoints = RTPolicySystem.THRESHOLDS[currentTier]
+    local progressPercentage = 1
+    
+    if currentTier ~= RTPolicySystem.TIER.A then
+        local tierRange = nextTierPoints - startTierPoints
+        local pointsInTier = points - startTierPoints
+        progressPercentage = pointsInTier / tierRange
+    else
+        nextTierPoints = startTierPoints
+    end
+    
     return {
         points = points,
         tier = currentTier,
+        progressPercentage = progressPercentage,
         nextTierPoints = nextTierPoints
     }
 end

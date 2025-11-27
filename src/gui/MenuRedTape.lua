@@ -393,7 +393,7 @@ function MenuRedTape:updateContent()
         self.progressText:setText(string.format("%d/%d", progress.points, progress.nextTierPoints))
         local fullWidth = self.progressBarBg.size[1] - self.progressBar.margin[1] * 2
         local minProgressBarWidthRatio = self.progressBar.startSize[1] * 2 / fullWidth
-        local progressBarRatio = math.max(progress.points / progress.nextTierPoints, minProgressBarWidthRatio)
+        local progressBarRatio = math.max(progress.progressPercentage, minProgressBarWidthRatio)
         self.progressBar:setSize(fullWidth * math.min(progressBarRatio, 1), nil)
 
         self.activePoliciesRenderer:setData(activePolicies)
