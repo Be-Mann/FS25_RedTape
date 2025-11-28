@@ -89,7 +89,7 @@
 		<text name="rt_policy_report_description_full_slurry" text="The report shows how many combined hours slurry tanks were full."/>
 		<text name="rt_policy_report_description_animal_productivity" text="The report shows how many combined hours animals were unproductive."/>
 		<text name="rt_policy_report_description_animal_space" text="The report shows first how many violation hours were recorded. Then for each husbandry it shows the minimum recorded and required space per animal."/>
-		<text name="rt_policy_report_description_manure_spreading" text="The report shows how actual vs expected manure spreading over the last 6 months."/>
+		<text name="rt_policy_report_description_manure_spreading" text="The report shows the amount of manure spread over the last 6 months. It also shows actual vs expected spreading over the last 6 months. Note that Month 1 data shown will not be included in the next report, and any manure produced in the current month will need to be accounted for."/>
 		<text name="rt_policy_report_description_restricted_slurry" text="The report shows how many times slurry was applied during the restricted months."/>
 		<text name="rt_policy_report_description_sustainable_forestry" text="The report shows how many trees were planted and cut down in the current bi-annual period."/>
 
@@ -165,6 +165,7 @@
 		<text name="rt_no_vehicle_room" text="Not enough space for deliver vehicles for the scheme. Make some room and try again."/>
 		<text name="rt_info_scheme_selected" text="You have signed up for the scheme. Collect any vehicles from the shop."/>
 		<text name="rt_misc_year" text="Year"/>
+		<text name="rt_misc_month" text="Month"/>
 		<text name="rt_misc_spreading_too_fast" text="You are driving too fast to spread salt effectively. Limit your speed to %s%s."/>
 		<text name="rt_misc_confirm_scheme_selection" text="Are you sure you want to sign up to this scheme?"/>
 		<text name="rt_notes_additional_tax_benefit" text="Effective tax rate"/>

@@ -424,14 +424,27 @@ RTPolicies = {
             local monthsToSearch = 6
             local cumulativeMonth = RedTape.getCumulativeMonth()
 
-            for month = cumulativeMonth - monthsToSearch + 1, cumulativeMonth do
+            local report = {}
+            local perMonthValues = {}
+            for month = cumulativeMonth - monthsToSearch, cumulativeMonth - 1 do
                 local sprayEntry = farmData.sprayHistory[month]
+
+                table.insert(perMonthValues, sprayEntry ~= nil and sprayEntry[manureName] or 0)
+
                 if sprayEntry ~= nil and sprayEntry[manureName] ~= nil then
                     actualSpread = actualSpread + sprayEntry[manureName]
                 end
             end
 
-            local report = {}
+            for i = 1, #perMonthValues do
+                local monthsBack = i
+                table.insert(report,
+                    {
+                        cell1 = string.format("%s %d", g_i18n:getText("rt_misc_month"), monthsBack),
+                        cell2 = g_i18n:formatVolume(perMonthValues[i], 0)
+                    })
+            end
+
             local expectedSpread = 0
             local reward = 0
             if farmData.rollingAverageManureLevel > 0 then
