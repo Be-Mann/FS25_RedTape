@@ -5,34 +5,47 @@
     <iconFilename>icon_RedTape.dds</iconFilename>
     <title>
         <en>Red Tape</en>
-        <de>Papierkram</de>
+        <de>Bürokratie</de>
         <fr>Paperasserie</fr>
     </title>
     <description>
         <en><![CDATA[Red Tape
 
-A mod that adds government schemes, grants and taxes.
+A mod that adds depth to the game by introducing Policies, Schemes and Tax.
+
+Policies include animal welfare and environmental regulations that, if not followed, can result in fines or other penalties. 
+Schemes offer opportunities for additional income or benefits but may come with their own set of requirements.
+Tax adds a layer of financial management, requiring players to budget for regular tax payments based on their farm's income and activities.
+
+Your performance in complying with Policies can impact the quality of rewards from Schemes and even offer tax benefits.
 
 See the help menu in game for more information.
-
-
 ]]>
         </en>
-        <de><![CDATA[Papierkram
+        <de><![CDATA[Bürokratie
 
-Ein Mod, der staatliche Programme, Zuschüsse und Steuern hinzufügt.
+Diese Mod erweitert das Spiel um Richtlinien, Programme und Steuern.
 
-Siehe das Hilfemenü im Spiel für weitere Informationen.
+Richtlinien umfassen Tierschutz- und Umweltauflagen, deren Nichteinhaltung zu Bußgeldern oder anderen Strafen führen kann. Programme bieten Möglichkeiten für zusätzliches Einkommen oder Vorteile, sind aber mit eigenen Bedingungen verbunden. Steuern führen zu einer komplexeren Finanzplanung, da Spieler regelmäßige Steuerzahlungen basierend auf den Einnahmen und Aktivitäten ihres Betriebs einplanen müssen.
 
+Die Einhaltung der Richtlinien beeinflusst die Qualität der Belohnungen aus Programmen und kann sogar Steuervorteile gewähren.
 
+Weitere Informationen finden Sie im Hilfemenü des Spiels.
 ]]>
         </de>
         <fr><![CDATA[Paperasserie
 
-Un mod qui ajoute des programmes gouvernementaux, des subventions et des taxes.
+Ce mod enrichit le jeu en introduisant des politiques, des programmes et des impôts.
 
-Voir le menu d'aide dans le jeu pour plus d'informations.
+Les politiques concernent le bien-être animal et la réglementation environnementale. Leur non-respect peut entraîner des amendes ou d'autres sanctions.
 
+Les programmes offrent des opportunités de revenus ou d'avantages supplémentaires, mais peuvent être soumis à certaines conditions.
+
+Les impôts ajoutent une dimension de gestion financière, obligeant les joueurs à prévoir un budget pour les paiements d'impôts réguliers en fonction des revenus et des activités de leur ferme.
+
+Votre respect des politiques peut influencer la qualité des récompenses des programmes et même vous octroyer des avantages fiscaux.
+
+Consultez le menu d'aide du jeu pour plus d'informations.
 ]]>
         </fr>
     </description>
