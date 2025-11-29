@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8" standalone="no" ?>
-<modDesc descVersion="100">
+<modDesc descVersion="104">
     <author>Ozz</author>
     <version>1.0.0.0</version>
     <iconFilename>icon_RedTape.dds</iconFilename>
     <title>
         <en>Red Tape</en>
-        <de>Bürokratie</de>
+        <de>Papierkram</de>
         <fr>Paperasserie</fr>
     </title>
     <description>
@@ -22,7 +22,7 @@ Your performance in complying with Policies can impact the quality of rewards fr
 See the help menu in game for more information.
 ]]>
         </en>
-        <de><![CDATA[Bürokratie
+        <de><![CDATA[Papierkram
 
 Diese Mod erweitert das Spiel um Richtlinien, Programme und Steuern.
 

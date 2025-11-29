@@ -156,13 +156,13 @@
 		<text name="rt_misc_spreading_too_fast" text="Vous roulez trop vite pour épandre le sel efficacement. Limitez votre vitesse à %s%s."/>
 		<text name="rt_misc_confirm_scheme_selection" text="Êtes-vous sûr de vouloir vous inscrire à ce programme ?"/>
 		<text name="rt_notes_additional_tax_benefit" text="Taux d'imposition effectif"/>
-		<text name="rt_help_title_red_tape" text="Bureaucratie"/>
+		<text name="rt_help_title_red_tape" text="Paperasserie"/>
 		<text name="rt_help_title_intro" text="Introduction"/>
 		<text name="rt_help_title_policies" text="Politiques"/>
 		<text name="rt_help_title_schemes" text="Programmes"/>
 		<text name="rt_help_title_tax" text="Impôts"/>
-		<text name="rt_help_intro_intro" text="Bureaucratie est un mod qui introduit les Politiques, les Programmes et la Fiscalité dans Farming Simulator. Ces systèmes sont conçus pour ajouter de la profondeur et du défi à votre expérience agricole, encourageant les pratiques durables et la planification stratégique."/>
-		<text name="rt_help_intro_intro_2" text="Toutes les informations relatives à Bureaucratie sont contenues dans le nouveau menu ajouté au menu principal. Cherchez l'icône du bâtiment gouvernemental."/>
+		<text name="rt_help_intro_intro" text="Paperasserie est un mod qui introduit les Politiques, les Programmes et la Fiscalité dans Farming Simulator. Ces systèmes sont conçus pour ajouter de la profondeur et du défi à votre expérience agricole, encourageant les pratiques durables et la planification stratégique."/>
+		<text name="rt_help_intro_intro_2" text="Toutes les informations relatives à Paperasserie sont contenues dans le nouveau menu ajouté au menu principal. Cherchez l'icône du bâtiment gouvernemental."/>
 		<text name="rt_help_policies_intro" text="Les politiques sont essentiellement des lois que vous devez respecter lors de l'exploitation agricole. Elles régissent des aspects tels que le traitement des animaux et l'utilisation appropriée des terres."/>
 		<text name="rt_help_policies_intro_2" text="Dans l'onglet Politiques, vous verrez une liste de politiques. Sélectionnez chacune pour voir la description de la conformité. Plus bas, vous verrez un rapport sur votre performance. Certaines politiques sont vérifiées chaque mois, tandis que d'autres sont vérifiées moins fréquemment. La plupart du temps, une politique produira un rapport chaque mois pour que vous puissiez suivre vos progrès."/>
 		<text name="rt_help_policies_intro_3" text="Si vous respectez une politique, vous gagnerez des points qui contribuent à votre niveau de conformité. Des niveaux de conformité plus élevés mènent à des avantages tels que des récompenses de programme améliorées et éventuellement des réductions d'impôts. Si vous violez une politique, vous pouvez recevoir des avertissements ou des amendes selon la gravité de la violation. Lorsque vous avez reçu un avertissement, une icône apparaîtra à côté du nom de la politique et vous recevrez une notification dans le jeu. Résolvez le problème pour éviter une amende future."/>

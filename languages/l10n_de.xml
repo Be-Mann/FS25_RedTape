@@ -156,13 +156,13 @@
 		<text name="rt_misc_spreading_too_fast" text="Sie fahren zu schnell, um Salz effektiv zu streuen. Begrenzen Sie Ihre Geschwindigkeit auf %s%s."/>
 		<text name="rt_misc_confirm_scheme_selection" text="Sind Sie sicher, dass Sie sich für dieses Förderprogramm anmelden möchten?"/>
 		<text name="rt_notes_additional_tax_benefit" text="Effektiver Steuersatz"/>
-		<text name="rt_help_title_red_tape" text="Bürokratie"/>
+		<text name="rt_help_title_red_tape" text="Papierkram"/>
 		<text name="rt_help_title_intro" text="Einführung"/>
 		<text name="rt_help_title_policies" text="Richtlinien"/>
 		<text name="rt_help_title_schemes" text="Förderprogramme"/>
 		<text name="rt_help_title_tax" text="Steuern"/>
-		<text name="rt_help_intro_intro" text="Bürokratie ist ein Mod, der Richtlinien, Förderprogramme und Besteuerung in den Landwirtschafts-Simulator einführt. Diese Systeme sind darauf ausgelegt, Ihrem Farmerlebnis mehr Tiefe und Herausforderung zu verleihen und nachhaltige Praktiken sowie strategische Planung zu fördern."/>
-		<text name="rt_help_intro_intro_2" text="Alle Informationen zu Bürokratie finden Sie im neuen Menü, das dem Hauptmenü hinzugefügt wurde. Suchen Sie nach dem Regierungsgebäude-Symbol."/>
+		<text name="rt_help_intro_intro" text="Papierkram ist ein Mod, der Richtlinien, Förderprogramme und Besteuerung in den Landwirtschafts-Simulator einführt. Diese Systeme sind darauf ausgelegt, Ihrem Farmerlebnis mehr Tiefe und Herausforderung zu verleihen und nachhaltige Praktiken sowie strategische Planung zu fördern."/>
+		<text name="rt_help_intro_intro_2" text="Alle Informationen zu Papierkram finden Sie im neuen Menü, das dem Hauptmenü hinzugefügt wurde. Suchen Sie nach dem Regierungsgebäude-Symbol."/>
 		<text name="rt_help_policies_intro" text="Richtlinien sind im Wesentlichen Gesetze, die Sie bei der Landwirtschaft einhalten müssen. Sie regeln Dinge wie die Behandlung von Tieren und die angemessene Nutzung von Land."/>
 		<text name="rt_help_policies_intro_2" text="Im Reiter Richtlinien sehen Sie eine Liste von Richtlinien. Wählen Sie jede aus, um die Beschreibung zur Einhaltung zu sehen. Weiter unten sehen Sie einen Bericht über Ihre Leistung. Einige Richtlinien werden jeden Monat überprüft, während andere weniger häufig überprüft werden. Meistens erstellt eine Richtlinie jeden Monat einen Bericht, damit Sie Ihren Fortschritt verfolgen können."/>
 		<text name="rt_help_policies_intro_3" text="Wenn Sie eine Richtlinie einhalten, erhalten Sie Punkte, die zu Ihrer Compliance-Stufe beitragen. Höhere Compliance-Stufen führen zu Vorteilen wie verbesserten Förderprogramm-Belohnungen und möglicherweise Steuererleichterungen. Wenn Sie gegen eine Richtlinie verstoßen, können Sie je nach Schwere des Verstoßes Verwarnungen oder Bußgelder erhalten. Wenn Sie eine Verwarnung erhalten haben, erscheint ein Symbol neben dem Richtliniennamen und Sie erhalten eine Benachrichtigung im Spiel. Beheben Sie das Problem, um ein zukünftiges Bußgeld zu vermeiden."/>
