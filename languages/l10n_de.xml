@@ -1,7 +1,176 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <l10n>
-    <translationContributors/>
-    <texts>
-        <text name="fl_btn_finance" text="Kauf mit Leasing"/>
-    </texts>
+	<translationContributors/>
+	<texts>
+		<text name="rt_notify_active_policy" text="Eine neue Richtlinie wurde aktiviert: %s"/>
+		<text name="rt_notify_active_scheme" text="Ein neues Förderprogramm ist verfügbar: %s (Stufe %s)"/>
+		<text name="rt_notify_ended_scheme" text="Ein Förderprogramm ist beendet: %s"/>
+		<text name="rt_notify_expired_scheme" text="Ein Förderprogramm ist nicht mehr verfügbar: %s (Stufe %s)"/>
+		<text name="rt_policy_reason_evaluation" text="%s Punkte bei der Bewertung der Richtlinie %s vergeben"/>
+		<text name="rt_notify_scheme_payout" text="Das Förderprogramm %s hat Ihnen ausgezahlt: %s"/>
+		<text name="rt_notify_policy_warning" text="Sie haben eine Verwarnung wegen Verstoßes gegen die Richtlinie %s erhalten"/>
+		<text name="rt_notify_policy_fine" text="Sie haben ein Bußgeld von %s wegen Verstoßes gegen die Richtlinie %s erhalten"/>
+		<text name="rt_label_active_policies" text="Aktive Richtlinien"/>
+		<text name="rt_label_tax_statement" text="Steuerbescheid"/>
+		<text name="rt_header_policies" text="Richtlinien"/>
+		<text name="rt_header_schemes" text="Förderprogramme"/>
+		<text name="rt_header_tax" text="Steuern"/>
+		<text name="rt_header_eventlog" text="Ereignisprotokoll"/>
+		<text name="rt_header_current_tier" text="Aktuelle Stufe: %s"/>
+		<text name="rt_header_compliance_tier" text="Compliance-Leistung"/>
+		<text name="rt_header_policy_information" text="Richtlinieninformationen"/>
+		<text name="rt_header_scheme_information" text="Förderprogramm-Informationen"/>
+		<text name="rt_header_latest_report" text="Aktueller Bericht"/>
+		<text name="rt_header_no_selected_policy" text="Wählen Sie eine aktive Richtlinie aus, um relevante Informationen zu sehen"/>
+		<text name="rt_header_no_report_information" text="Es sind keine Berichtsinformationen verfügbar. Entweder gibt es nichts zu berichten oder es hat keine Bewertung stattgefunden."/>
+		<text name="rt_header_scheme_equipment" text="Die folgende Ausrüstung wird für die Dauer des Förderprogramms bereitgestellt:"/>
+		<text name="rt_header_next_evaluation_date" text="Nächstes Bewertungsdatum: %s"/>
+		<text name="rt_header_no_tax_statement" text="Derzeit ist kein Steuerbescheid verfügbar. Steuerbescheide werden jährlich im April erstellt und die Zahlung wird im September eingezogen."/>
+		<text name="rt_header_finalised_statement" text="Bescheid des Vorjahres:"/>
+		<text name="rt_header_tax_estimate" text="Summen des laufenden Jahres:"/>
+		<text name="rt_header_tax_notes" text="Steuerhinweise:"/>
+		<text name="rt_header_tax_notes_info" text="Eine Liste relevanter Anmerkungen, die helfen können, Ihren Steuerbescheid zu erklären."/>
+		<text name="rt_header_no_tax_notes" text="Im Bescheid sind keine Steuerhinweise enthalten."/>
+		<text name="rt_header_total_expenses" text="Ausgaben:"/>
+		<text name="rt_header_total_taxable_income" text="Zu versteuerndes Einkommen:"/>
+		<text name="rt_header_total_taxed_income" text="Versteuertes Einkommen:"/>
+		<text name="rt_header_total_tax_rate" text="Steuersatz:"/>
+		<text name="rt_header_total_tax_due" text="Fällige Steuer:"/>
+		<text name="rt_header_tax_status" text="Steuerstatus:"/>
+		<text name="rt_header_tax_payment_info" text="Steuerbescheide werden im April berechnet und die Zahlung wird im September eingezogen."/>
+		<text name="rt_tax_statement_status_paid" text="Bezahlt"/>
+		<text name="rt_tax_statement_status_unpaid" text="Unbezahlt"/>
+		<text name="rt_event_type_none" text="-"/>
+		<text name="rt_event_type_policypoints" text="Richtlinienpunkte"/>
+		<text name="rt_event_type_policyactivated" text="Richtlinie aktiviert"/>
+		<text name="rt_event_type_policycompleted" text="Richtlinie erfüllt"/>		
+		<text name="rt_event_type_schemeactivated" text="Förderprogramm aktiviert"/>
+		<text name="rt_event_type_schemepayout" text="Förderprogramm-Auszahlung"/>
+		<text name="rt_event_type_schemeexpired" text="Förderprogramm abgelaufen"/>
+		<text name="rt_event_type_policywarning" text="Richtlinienverwarnung"/>
+		<text name="rt_event_type_policyfine" text="Richtlinienbußgeld"/>
+		<text name="rt_tableheader_timestamp" text="Zeitstempel"/>
+		<text name="rt_tableheader_eventtype" text="Ereignistyp"/>
+		<text name="rt_tableheader_detail" text="Detail"/>
+		<text name="rt_tableheader_name" text="Name"/>
+		<text name="rt_tableheader_description" text="Beschreibung"/>
+		<text name="rt_tableheader_next" text="Nächste Prüfung"/>
+		<text name="rt_policy_croprotation" text="Fruchtfolge"/>
+		<text name="rt_policy_sprayviolation" text="Gewässerverunreinigung"/>
+		<text name="rt_policy_empty_food" text="Tierfütterung"/>
+		<text name="rt_policy_empty_straw" text="Tiereinstreu"/>
+		<text name="rt_policy_full_slurry" text="Güllemanagement"/>
+		<text name="rt_policy_animal_productivity" text="Tierbedingungen"/>
+		<text name="rt_policy_animal_space" text="Tierplatzbedarf"/>
+		<text name="rt_policy_manure_spreading" text="Mistmanagement"/>
+		<text name="rt_policy_restricted_slurry" text="Eingeschränkte Gülleausbringung"/>
+		<text name="rt_policy_sustainable_forestry" text="Nachhaltige Forstwirtschaft"/>
+		<text name="rt_policy_description_croprotation" text="Erfordert den Wechsel von Kulturen zwischen Feldern und Jahreszeiten, um die Bodenfruchtbarkeit zu erhalten, Schädlings- und Krankheitszyklen zu unterbrechen, das Nährstoffgleichgewicht zu verbessern und langfristige Erträge zu schützen."/>
+		<text name="rt_policy_description_sprayviolation" text="Verbietet das Ausbringen von Chemikalien (Festdünger, Gülle, Kalk, Mist, Herbizid) in Pufferzonen von Gewässern, um Abfluss und Verunreinigungen zu verhindern, die Wasserlebewesen schaden, die Wasserqualität verschlechtern und die menschliche Gesundheit gefährden können. Verstöße werden bestraft."/>
+		<text name="rt_policy_description_empty_food" text="Erfordert, dass Tiere immer ausreichend Futter zur Verfügung haben; halten Sie Futtertröge stets gefüllt und zugänglich, um Hunger zu verhindern und Tierschutzstandards zu erfüllen."/>
+		<text name="rt_policy_description_empty_straw" text="Erfordert die Bereitstellung von ausreichend Stroheinstreu für Tiere, um Komfort, Isolierung und Hygiene zu gewährleisten. Stroh reduziert Verletzungen und Stress, hilft bei der Aufrechterhaltung der Körpertemperatur und absorbiert Feuchtigkeit zum Schutz des Tierwohls."/>
+		<text name="rt_policy_description_full_slurry" text="Erfordert, dass Gülletanks unter ihrer Kapazität gehalten werden, um Überläufe und Verschüttungen zu verhindern. Überläufe können Gülle auf Felder und in Gewässer freisetzen, Boden und Wasser verunreinigen und Umweltschäden verursachen."/>
+		<text name="rt_policy_description_animal_productivity" text="Fördert die Aufrechterhaltung der Tierproduktivität, die ein allgemeiner Indikator für gutes Tierwohl ist."/>
+		<text name="rt_policy_description_animal_space" text="Erfordert, dass Tiere genügend Platz haben, um sich zu bewegen, zu ruhen und Zugang zu Futter/Wasser zu haben; die Vermeidung von Überbelegung reduziert Stress, Verletzungen und Krankheitsausbreitung und unterstützt bessere Gesundheit und Produktivität. Gilt nicht, wenn eine Tierhaltung nur ein Tier hat."/>
+		<text name="rt_policy_description_manure_spreading" text="Sie sollten Mist nicht unbegrenzt liegen lassen. Stellen Sie sicher, dass Sie mindestens 50% des von Ihnen produzierten Mistes fortlaufend ausbringen. Wenn Sie keinen Mist produzieren, sind Sie von dieser Richtlinie nicht betroffen. Der Bericht wird monatlich aktualisiert, jedoch erfolgt die vollständige Bewertung und Auszahlung oder Bußgelder im Mai und November."/>
+		<text name="rt_policy_description_restricted_slurry" text="Sie dürfen in den Monaten September bis Dezember keine Gülle ausbringen. Sie werden für jeden Verstoß bestraft."/>
+		<text name="rt_policy_description_sustainable_forestry" text="Fördert nachhaltige Forstwirtschaftspraktiken, belohnt netto positive Baumpflanzungen und bestraft Gesamtabholzung. Die Richtlinie gilt für Ihr eigenes Land. Auftragsarbeiten wirken sich nicht auf Ihre Bewertung aus. Der Bericht wird monatlich mit halbjährlichen Summen aktualisiert, jedoch erfolgt die vollständige Bewertung und Auszahlung oder Bußgelder im Juni und Dezember."/>
+		<text name="rt_policy_report_description_croprotation" text="Der Bericht zeigt Summen für konforme und nicht konforme Flächen."/>
+		<text name="rt_policy_report_description_sprayviolation" text="Der Bericht zeigt, wie viele Sprühverstöße im letzten Monat aufgetreten sind."/>
+		<text name="rt_policy_report_description_empty_food" text="Der Bericht zeigt, wie viele kombinierte Stunden Futter in Tiergehegen leer war."/>
+		<text name="rt_policy_report_description_empty_straw" text="Der Bericht zeigt, wie viele kombinierte Stunden Stroh in Tiergehegen leer war."/>
+		<text name="rt_policy_report_description_full_slurry" text="Der Bericht zeigt, wie viele kombinierte Stunden Gülletanks voll waren."/>
+		<text name="rt_policy_report_description_animal_productivity" text="Der Bericht zeigt, wie viele kombinierte Stunden Tiere unproduktiv waren."/>
+		<text name="rt_policy_report_description_animal_space" text="Der Bericht zeigt zunächst, wie viele Verstoßstunden aufgezeichnet wurden. Dann wird für jede Tierhaltung der minimal aufgezeichnete und erforderliche Platz pro Tier angezeigt."/>
+		<text name="rt_policy_report_description_manure_spreading" text="Der Bericht zeigt die Menge des ausgebrachten Mistes in den letzten 6 Monaten. Er zeigt auch die tatsächliche im Vergleich zur erwarteten Ausbringung in den letzten 6 Monaten. Beachten Sie, dass die angezeigten Daten von Monat 1 nicht im nächsten Bericht enthalten sein werden, und jeder im aktuellen Monat produzierte Mist berücksichtigt werden muss."/>
+		<text name="rt_policy_report_description_restricted_slurry" text="Der Bericht zeigt, wie oft Gülle während der eingeschränkten Monate ausgebracht wurde."/>
+		<text name="rt_policy_report_description_sustainable_forestry" text="Der Bericht zeigt, wie viele Bäume im aktuellen Halbjahr gepflanzt und gefällt wurden."/>
+		<text name="rt_report_name_farmland" text="Ackerland %s"/>
+		<text name="rt_report_name_total_area" text="Gesamtfläche"/>
+		<text name="rt_report_name_non_compliant_area" text="Nicht konforme Fläche"/>
+		<text name="rt_report_name_spray_violations" text="Sprühverstöße"/>
+		<text name="rt_report_name_empty_food" text="Stunden ohne Futter"/>
+		<text name="rt_report_name_empty_straw" text="Stunden ohne Stroh"/>
+		<text name="rt_report_name_full_slurry" text="Stunden mit voller Gülle"/>
+		<text name="rt_report_name_low_productivity_hours" text="Stunden mit niedriger Produktivität"/>
+		<text name="rt_report_name_animal_space_violations" text="Tierplatzverstöße"/>
+		<text name="rt_report_name_manure_spread_expected" text="Erwartete Mistausbringung"/>
+		<text name="rt_report_name_manure_spread" text="Tatsächliche Mistausbringung"/>
+		<text name="rt_report_name_manure_spread_rolling_average" text="Gleitender Durchschnitt des Miststands"/>
+		<text name="rt_report_name_restricted_slurry_violations" text="Verstöße bei eingeschränkter Gülle"/>
+		<text name="rt_report_name_bale_penalty" text="Ballenstrafe"/>		
+		<text name="rt_report_name_total_payout" text="Gesamtbetrag ausgezahlt"/>
+		<text name="rt_report_name_animal_count" text="Anzahl berechtigter Tiere"/>
+		<text name="rt_report_name_harvest_reward" text="Ernteprämie"/>
+		<text name="rt_report_name_natural_usage" text="Naturdüngerverbrauch"/>
+		<text name="rt_report_name_other_usage" text="Anderer Düngerverbrauch"/>
+		<text name="rt_report_name_points" text="Punkte"/>
+		<text name="rt_report_name_trees_planted" text="Gepflanzte Bäume"/>
+		<text name="rt_report_name_trees_cut" text="Gefällte Bäume"/>
+		<text name="rt_report_name_note" text="Hinweis:"/>
+		<text name="rt_report_name_additional_tax_benefit" text="Für Steuervorteil qualifiziert"/>
+		<text name="rt_report_value_true" text="Ja"/>
+		<text name="rt_report_value_false" text="Nein"/>
+		<text name="rt_report_value_not_enough_months_elapsed" text="Die vollständige Bewertung wurde diesen Monat übersprungen."/>
+		<text name="rt_scheme_delayed_mowing" text="Mähen im Frühling vermeiden"/>
+		<text name="rt_scheme_crop_promotion" text="Kulturförderung"/>
+		<text name="rt_scheme_reduce_bale_wrapping" text="Reduzierte Ballenwicklung"/>
+		<text name="rt_scheme_tractor_demo" text="Traktor-Vorführung"/>
+		<text name="rt_scheme_natural_grazing" text="Natürliche Weidehaltung"/>
+		<text name="rt_scheme_natural_fertiliser" text="Naturdünger"/>
+		<text name="rt_scheme_winter_cover_crops" text="Winter-Zwischenfrüchte"/>
+		<text name="rt_scheme_road_snow_clearing" text="Straßenräumdienst"/>
+		<text name="rt_scheme_brand_demo" text="Marken-Vorführung"/>
+		<text name="rt_scheme_set_aside" text="Flächenstilllegung"/>
+		<text name="rt_scheme_desc_delayed_mowing" text="Schneiden Sie Ihr Gras nicht während der Frühlingsmonate (März bis Juni), um die Tierwelt zu schützen. Im Juli werden Sie für nicht gemähtes Gras entschädigt."/>
+		<text name="rt_scheme_desc_crop_promotion" text="Eine Regierungsinitiative zur Förderung des Anbaus von %s durch finanzielle Anreize. Sie erhalten möglicherweise Ausrüstung für die Dauer der Initiative und einen finanziellen Bonus für jedes Feld, auf dem Sie die Kultur anbauen."/>
+		<text name="rt_scheme_desc_reduce_bale_wrapping" text="Das Wickeln von Ballen verbraucht Plastik und verhindert die Verbreitung von Samen während des Transports. Dieses Förderprogramm bestraft Sie nicht für das Wickeln von Ballen - es belohnt Sie nur, wenn Sie eine Alternative wählen, wie z.B. Heuballen herstellen oder einen Ladewagen verwenden."/>
+		<text name="rt_scheme_desc_tractor_demo" text="%s bietet Ihrem Hof die Möglichkeit, einen %s für %s Monat%s zu testen. Die genaue Spezifikation des Vorführfahrzeugs wird zum Zeitpunkt Ihrer Anmeldung zum Förderprogramm festgelegt."/>
+		<text name="rt_scheme_desc_natural_grazing" text="Ein Förderprogramm zur Förderung der Weidehaltung von Tieren ohne zusätzliches Futter. Die Zahlung soll etwaige Einkommensverluste ausgleichen. Sie erhalten einen Bonus für die Zeit, die Ihre Tiere auf einer Weide verbringen. Der Bonusbetrag variiert je nach Tierart."/>
+		<text name="rt_scheme_desc_natural_fertiliser" text="Ein Förderprogramm zur Förderung der Verwendung von Naturdüngern wie Mist, Gülle und Gärrest. Sie erhalten einen Bonus für die Menge an Naturdünger, die Sie im Vergleich zu synthetischen Alternativen verwenden. Dies gilt für allen Dünger, den Sie ausbringen, ob auf Ihrem Hof oder für einen Auftrag."/>
+		<text name="rt_scheme_desc_winter_cover_crops" text="Fördert das Pflanzen von Zwischenfrüchten während der Wintermonate, um Bodenerosion und Nährstoffauswaschung zu reduzieren. Sie erhalten einen Bonus für jedes Feld, auf dem Sie während der Wintersaison eine zugelassene Zwischenfrucht pflanzen."/>
+		<text name="rt_scheme_desc_road_snow_clearing" text="Aufgrund der jüngsten Schneefälle bittet die Gemeinde Landwirte, Salz zu streuen, um die Straßen frei und sicher zu halten. Stellen Sie sicher, dass Ihre Geschwindigkeit beim Streuen nicht höher als %s%s ist, um eine ausreichende Abdeckung zu gewährleisten."/>
+		<text name="rt_scheme_desc_brand_demo" text="%s bietet Ihrem Hof die Möglichkeit, einige Geräte für %s Monat%s zu testen. Die genaue Spezifikation des Vorführfahrzeugs wird zum Zeitpunkt Ihrer Anmeldung zum Förderprogramm festgelegt."/>
+		<text name="rt_scheme_desc_set_aside" text="Fördert die Stilllegung eines Teils Ihrer landwirtschaftlichen Flächen und bietet eine Ruhepause von der ständigen Arbeit. Sie erhalten einen Bonus für Land, das mindestens %d Monate vor Dezember ohne Kulturen bleibt. Wenn mehr als %s qualifiziert sind, werden alle im folgenden Steuerjahr verkauften Kulturen mit einem Steuersatz von 5%% besteuert."/>
+		<text name="rt_scheme_report_desc_delayed_mowing" text="Der Bericht zeigt eine Liste der Ackerflächen und den bei der letzten Bewertung ausgezahlten Betrag."/>
+		<text name="rt_scheme_report_desc_crop_promotion" text="Der Bericht zeigt eine Liste der Ackerflächen und den bei der letzten Bewertung ausgezahlten Betrag."/>
+		<text name="rt_scheme_report_desc_reduce_bale_wrapping" text="Der Bericht zeigt eine Liste der Ackerflächen und den bei der letzten Bewertung ausgezahlten Betrag."/>
+		<text name="rt_scheme_report_desc_natural_grazing" text="Der Bericht zeigt den bei der letzten Bewertung ausgezahlten Gesamtbetrag."/>
+		<text name="rt_scheme_report_desc_natural_fertiliser" text="Der Bericht zeigt den Verbrauch von Natur- und anderen Düngern im letzten Monat."/>
+		<text name="rt_scheme_report_desc_winter_cover_crops" text="Der Bericht zeigt eine Liste der Ackerflächen und den bei der letzten Bewertung ausgezahlten Betrag."/>
+		<text name="rt_scheme_report_desc_road_snow_clearing" text="Es gibt keinen Bericht für dieses Förderprogramm. Sobald der Schnee endet, erhalten Sie eine Auszahlung entsprechend der Menge an Salz, die Sie gestreut haben."/>
+		<text name="rt_scheme_report_desc_set_aside" text="Der Bericht zeigt die Auszahlung für jedes Ihrer Felder. Er zeigt auch, ob Sie sich für den speziellen Steuersatz von 5% qualifiziert haben."/>
+		<text name="rt_btn_select_scheme" text="Förderprogramm auswählen"/>
+		<text name="rt_btn_watch_scheme_policy" text="Beobachtung umschalten"/>
+		<text name="rt_unit_meter_square" text="m²"/>
+		<text name="rt_ui_schemePayout" text="Förderprogramm-Auszahlung"/>
+		<text name="finance_schemePayout" text="Förderprogramm-Auszahlung"/>
+		<text name="rt_ui_policyFine" text="Richtlinienbußgeld"/>
+		<text name="finance_policyFine" text="Richtlinienbußgeld"/>
+		<text name="rt_ui_taxCost" text="Steuern"/>
+		<text name="finance_taxCost" text="Steuern"/>
+		<text name="rt_no_vehicle_room" text="Nicht genug Platz für die Lieferung der Fahrzeuge für das Förderprogramm. Schaffen Sie Platz und versuchen Sie es erneut."/>
+		<text name="rt_info_scheme_selected" text="Sie haben sich für das Förderprogramm angemeldet. Holen Sie alle Fahrzeuge im Shop ab."/>
+		<text name="rt_misc_year" text="Jahr"/>
+		<text name="rt_misc_month" text="Monat"/>
+		<text name="rt_misc_spreading_too_fast" text="Sie fahren zu schnell, um Salz effektiv zu streuen. Begrenzen Sie Ihre Geschwindigkeit auf %s%s."/>
+		<text name="rt_misc_confirm_scheme_selection" text="Sind Sie sicher, dass Sie sich für dieses Förderprogramm anmelden möchten?"/>
+		<text name="rt_notes_additional_tax_benefit" text="Effektiver Steuersatz"/>
+		<text name="rt_help_title_red_tape" text="Bürokratie"/>
+		<text name="rt_help_title_intro" text="Einführung"/>
+		<text name="rt_help_title_policies" text="Richtlinien"/>
+		<text name="rt_help_title_schemes" text="Förderprogramme"/>
+		<text name="rt_help_title_tax" text="Steuern"/>
+		<text name="rt_help_intro_intro" text="Bürokratie ist ein Mod, der Richtlinien, Förderprogramme und Besteuerung in den Landwirtschafts-Simulator einführt. Diese Systeme sind darauf ausgelegt, Ihrem Farmerlebnis mehr Tiefe und Herausforderung zu verleihen und nachhaltige Praktiken sowie strategische Planung zu fördern."/>
+		<text name="rt_help_intro_intro_2" text="Alle Informationen zu Bürokratie finden Sie im neuen Menü, das dem Hauptmenü hinzugefügt wurde. Suchen Sie nach dem Regierungsgebäude-Symbol."/>
+		<text name="rt_help_policies_intro" text="Richtlinien sind im Wesentlichen Gesetze, die Sie bei der Landwirtschaft einhalten müssen. Sie regeln Dinge wie die Behandlung von Tieren und die angemessene Nutzung von Land."/>
+		<text name="rt_help_policies_intro_2" text="Im Reiter Richtlinien sehen Sie eine Liste von Richtlinien. Wählen Sie jede aus, um die Beschreibung zur Einhaltung zu sehen. Weiter unten sehen Sie einen Bericht über Ihre Leistung. Einige Richtlinien werden jeden Monat überprüft, während andere weniger häufig überprüft werden. Meistens erstellt eine Richtlinie jeden Monat einen Bericht, damit Sie Ihren Fortschritt verfolgen können."/>
+		<text name="rt_help_policies_intro_3" text="Wenn Sie eine Richtlinie einhalten, erhalten Sie Punkte, die zu Ihrer Compliance-Stufe beitragen. Höhere Compliance-Stufen führen zu Vorteilen wie verbesserten Förderprogramm-Belohnungen und möglicherweise Steuererleichterungen. Wenn Sie gegen eine Richtlinie verstoßen, können Sie je nach Schwere des Verstoßes Verwarnungen oder Bußgelder erhalten. Wenn Sie eine Verwarnung erhalten haben, erscheint ein Symbol neben dem Richtliniennamen und Sie erhalten eine Benachrichtigung im Spiel. Beheben Sie das Problem, um ein zukünftiges Bußgeld zu vermeiden."/>
+		<text name="rt_help_schemes_intro" text="Förderprogramme sind optional und werden im Laufe des Jahres verfügbar. Sie können sich für alle anmelden, die Sie möchten. Typischerweise erfordern Förderprogramme, dass Sie bestimmte Dinge tun, um sich zu qualifizieren und entsprechende Vorteile zu erhalten. Wie bei Richtlinien werden Berichte erstellt, um Ihre Leistung zu erklären. Alle Belohnungen skalieren entsprechend Ihrer wirtschaftlichen Schwierigkeitseinstellung."/>
+		<text name="rt_help_schemes_intro_2" text="Förderprogramme können auch situationsabhängig sein, wie z.B. eine Marke, die eine Vorführung anbietet, bei der Sie Ausrüstung für eine Zeit kostenlos nutzen können. In allen Fällen wirkt sich Ihre Compliance-Stufe für Richtlinien direkt auf die verfügbaren Förderprogramm-Belohnungen aus. Stufe-D-Programme geben die niedrigsten Belohnungen, während Stufe-A-Programme die größten Belohnungen bieten."/>
+		<text name="rt_help_schemes_intro_3" text="Förderprogramme laufen typischerweise für einen festgelegten Zeitraum, oft ein Jahr oder eine bestimmte Anzahl von Bewertungen. Förderprogramme werden mit der Zeit wieder verfügbar, aber Sie müssen sich erneut anmelden, wenn Sie möchten. Einige Förderprogramme haben ein begrenztes Zeitfenster, in dem sie verfügbar sind. Zum Beispiel ist das Kulturförderungsprogramm nur in den ersten Monaten des Jahres verfügbar."/>
+		<text name="rt_help_tax_intro" text="Steuern sind ein System, das einen Teil Ihrer Gewinne an die Regierung abgibt. Ein Steuerbescheid wird jedes Jahr im April abgeschlossen, und Sie zahlen die fällige Steuer automatisch im September. Wenn Sie nicht genug Geld haben, um die Steuerrechnung zu bezahlen, wird Ihr Kontostand negativ."/>
+		<text name="rt_help_tax_intro_2" text="Im Reiter Steuern können Sie auf der linken Seite der Ansicht einen abgeschlossenen Bescheid sehen. Auf der rechten Seite können Sie laufende Summen für Ihr aktuelles Steuerjahr sehen. Sie können dies nutzen, um vorauszuplanen und Ihre Steuerrechnung zu reduzieren. Wenn Sie zum Beispiel sehen, dass Ihre Gewinne für das Jahr hoch sind, könnten Sie sich entscheiden, neue Ausrüstung zu kaufen, um den Gewinn und damit Ihre Steuern zu reduzieren."/>
+		<text name="rt_help_tax_intro_3" text="Manchmal werden Sie Steuerhinweise sehen. Diese sagen Ihnen, wenn Ihr Steuerbescheid durch eine nicht standardmäßige Bedingung geändert wird. Zum Beispiel könnte ein Förderprogramm Ihnen eine zukünftige Steuererleichterung bieten. Dies wird in den Steuerhinweisen angezeigt, um Ihnen zu helfen, Ihre Rechnung zu verstehen."/>
+	</texts>
 </l10n>

@@ -1,7 +1,176 @@
 <?xml version="1.0" encoding="utf-8" standalone="no"?>
 <l10n>
-    <translationContributors/>
-    <texts>
-        <text name="fl_btn_finance" text="Achat avec garantie"/>
-    </texts>
+	<translationContributors/>
+	<texts>
+		<text name="rt_notify_active_policy" text="Une nouvelle politique a été activée : %s"/>
+		<text name="rt_notify_active_scheme" text="Un nouveau programme est disponible : %s (Niveau %s)"/>
+		<text name="rt_notify_ended_scheme" text="Un programme a pris fin : %s"/>
+		<text name="rt_notify_expired_scheme" text="Un programme n'est plus disponible : %s (Niveau %s)"/>
+		<text name="rt_policy_reason_evaluation" text="%s points attribués lors de l'évaluation de la politique %s"/>
+		<text name="rt_notify_scheme_payout" text="Le programme %s vous a versé : %s"/>
+		<text name="rt_notify_policy_warning" text="Vous avez reçu un avertissement pour violation de la politique %s"/>
+		<text name="rt_notify_policy_fine" text="Vous avez reçu une amende de %s pour violation de la politique %s"/>
+		<text name="rt_label_active_policies" text="Politiques actives"/>
+		<text name="rt_label_tax_statement" text="Déclaration fiscale"/>
+		<text name="rt_header_policies" text="Politiques"/>
+		<text name="rt_header_schemes" text="Programmes"/>
+		<text name="rt_header_tax" text="Impôts"/>
+		<text name="rt_header_eventlog" text="Journal des événements"/>
+		<text name="rt_header_current_tier" text="Niveau actuel : %s"/>
+		<text name="rt_header_compliance_tier" text="Performance de conformité"/>
+		<text name="rt_header_policy_information" text="Informations sur la politique"/>
+		<text name="rt_header_scheme_information" text="Informations sur le programme"/>
+		<text name="rt_header_latest_report" text="Dernier rapport"/>
+		<text name="rt_header_no_selected_policy" text="Sélectionnez une politique active pour voir les informations pertinentes"/>
+		<text name="rt_header_no_report_information" text="Aucune information de rapport disponible. Soit il n'y a rien à signaler, soit aucune évaluation n'a eu lieu."/>
+		<text name="rt_header_scheme_equipment" text="L'équipement suivant sera fourni pour la durée du programme :"/>
+		<text name="rt_header_next_evaluation_date" text="Prochaine date d'évaluation : %s"/>
+		<text name="rt_header_no_tax_statement" text="Aucune déclaration fiscale n'est actuellement disponible. Les déclarations fiscales sont générées annuellement en avril et le paiement est prélevé en septembre."/>
+		<text name="rt_header_finalised_statement" text="Déclaration de l'année précédente :"/>
+		<text name="rt_header_tax_estimate" text="Totaux de l'année en cours :"/>
+		<text name="rt_header_tax_notes" text="Notes fiscales :"/>
+		<text name="rt_header_tax_notes_info" text="Une liste d'annotations pertinentes qui peuvent aider à expliquer votre déclaration fiscale."/>
+		<text name="rt_header_no_tax_notes" text="Aucune note fiscale n'est contenue dans la déclaration."/>
+		<text name="rt_header_total_expenses" text="Dépenses :"/>
+		<text name="rt_header_total_taxable_income" text="Revenu imposable :"/>
+		<text name="rt_header_total_taxed_income" text="Revenu imposé :"/>
+		<text name="rt_header_total_tax_rate" text="Taux d'imposition :"/>
+		<text name="rt_header_total_tax_due" text="Impôt dû :"/>
+		<text name="rt_header_tax_status" text="Statut fiscal :"/>
+		<text name="rt_header_tax_payment_info" text="Déclarations fiscales calculées en avril et paiement prélevé en septembre."/>
+		<text name="rt_tax_statement_status_paid" text="Payé"/>
+		<text name="rt_tax_statement_status_unpaid" text="Non payé"/>
+		<text name="rt_event_type_none" text="-"/>
+		<text name="rt_event_type_policypoints" text="Points de politique"/>
+		<text name="rt_event_type_policyactivated" text="Politique activée"/>
+		<text name="rt_event_type_policycompleted" text="Politique accomplie"/>		
+		<text name="rt_event_type_schemeactivated" text="Programme activé"/>
+		<text name="rt_event_type_schemepayout" text="Versement du programme"/>
+		<text name="rt_event_type_schemeexpired" text="Programme expiré"/>
+		<text name="rt_event_type_policywarning" text="Avertissement de politique"/>
+		<text name="rt_event_type_policyfine" text="Amende de politique"/>
+		<text name="rt_tableheader_timestamp" text="Horodatage"/>
+		<text name="rt_tableheader_eventtype" text="Type d'événement"/>
+		<text name="rt_tableheader_detail" text="Détail"/>
+		<text name="rt_tableheader_name" text="Nom"/>
+		<text name="rt_tableheader_description" text="Description"/>
+		<text name="rt_tableheader_next" text="Prochaine vérification"/>
+		<text name="rt_policy_croprotation" text="Rotation des cultures"/>
+		<text name="rt_policy_sprayviolation" text="Contamination de l'eau"/>
+		<text name="rt_policy_empty_food" text="Alimentation animale"/>
+		<text name="rt_policy_empty_straw" text="Litière animale"/>
+		<text name="rt_policy_full_slurry" text="Gestion du lisier"/>
+		<text name="rt_policy_animal_productivity" text="Conditions animales"/>
+		<text name="rt_policy_animal_space" text="Espace pour les animaux"/>
+		<text name="rt_policy_manure_spreading" text="Gestion du fumier"/>
+		<text name="rt_policy_restricted_slurry" text="Application restreinte du lisier"/>
+		<text name="rt_policy_sustainable_forestry" text="Foresterie durable"/>
+		<text name="rt_policy_description_croprotation" text="Exige la rotation des cultures entre les champs et les saisons pour maintenir la fertilité du sol, briser les cycles de parasites et de maladies, améliorer l'équilibre nutritif et protéger les rendements à long terme."/>
+		<text name="rt_policy_description_sprayviolation" text="Interdit la pulvérisation de produits chimiques (engrais solide, lisier, chite, chaux, fumier, herbicide) dans les zones tampons des cours d'eau pour prévenir le ruissellement et la contamination pouvant nuire à la vie aquatique, dégrader la qualité de l'eau et mettre en danger la santé humaine. Les violations sont sanctionnées."/>
+		<text name="rt_policy_description_empty_food" text="Exige que les animaux aient toujours suffisamment de nourriture disponible ; gardez les mangeoires remplies et accessibles en permanence pour prévenir la faim et respecter les normes de bien-être."/>
+		<text name="rt_policy_description_empty_straw" text="Exige de fournir aux animaux une litière de paille adéquate pour assurer leur confort, leur isolation et leur hygiène. La paille réduit les blessures et le stress, aide à maintenir la température corporelle et absorbe l'humidité pour protéger le bien-être animal."/>
+		<text name="rt_policy_description_full_slurry" text="Exige de maintenir les fosses à lisier en dessous de leur capacité pour éviter les débordements et les déversements. Les débordements peuvent libérer du lisier dans les champs et les cours d'eau, contaminant le sol et l'eau et causant des dommages environnementaux."/>
+		<text name="rt_policy_description_animal_productivity" text="Encourage le maintien de la productivité animale, qui est un indicateur général de bon bien-être animal."/>
+		<text name="rt_policy_description_animal_space" text="Exige que les animaux aient suffisamment d'espace pour se déplacer, se reposer et accéder à la nourriture/l'eau ; prévenir la surpopulation réduit le stress, les blessures et la propagation des maladies, et favorise une meilleure santé et productivité. Ne s'applique pas si un élevage n'a qu'un seul animal."/>
+		<text name="rt_policy_description_manure_spreading" text="Vous ne devez pas laisser le fumier stagner indéfiniment. Assurez-vous d'épandre au moins 50% du fumier que vous produisez de manière continue. Si vous ne produisez pas de fumier, cette politique ne vous affectera pas. Le rapport sera mis à jour mensuellement, cependant l'évaluation complète et le versement ou les amendes auront lieu en mai et novembre."/>
+		<text name="rt_policy_description_restricted_slurry" text="Vous n'êtes pas autorisé à épandre du lisier pendant les mois de septembre à décembre. Vous serez pénalisé pour chaque violation."/>
+		<text name="rt_policy_description_sustainable_forestry" text="Encourage les pratiques forestières durables, récompensant la plantation nette positive d'arbres et sanctionnant la déforestation globale. La politique s'applique à vos propres terres. Effectuer des travaux sous contrat n'affectera pas votre évaluation. Le rapport sera mis à jour mensuellement avec des totaux semestriels, cependant l'évaluation complète et le versement ou les amendes auront lieu en juin et décembre."/>
+		<text name="rt_policy_report_description_croprotation" text="Le rapport montre les totaux pour les terres conformes et non conformes."/>
+		<text name="rt_policy_report_description_sprayviolation" text="Le rapport montre combien de violations de pulvérisation ont eu lieu le mois dernier."/>
+		<text name="rt_policy_report_description_empty_food" text="Le rapport montre combien d'heures cumulées la nourriture était vide dans les enclos d'animaux."/>
+		<text name="rt_policy_report_description_empty_straw" text="Le rapport montre combien d'heures cumulées la paille était vide dans les enclos d'animaux."/>
+		<text name="rt_policy_report_description_full_slurry" text="Le rapport montre combien d'heures cumulées les fosses à lisier étaient pleines."/>
+		<text name="rt_policy_report_description_animal_productivity" text="Le rapport montre combien d'heures cumulées les animaux étaient improductifs."/>
+		<text name="rt_policy_report_description_animal_space" text="Le rapport montre d'abord combien d'heures de violation ont été enregistrées. Ensuite, pour chaque élevage, il montre l'espace minimum enregistré et requis par animal."/>
+		<text name="rt_policy_report_description_manure_spreading" text="Le rapport montre la quantité de fumier épandu au cours des 6 derniers mois. Il montre également l'épandage réel par rapport à l'épandage attendu au cours des 6 derniers mois. Notez que les données du mois 1 affichées ne seront pas incluses dans le prochain rapport, et tout fumier produit dans le mois en cours devra être pris en compte."/>
+		<text name="rt_policy_report_description_restricted_slurry" text="Le rapport montre combien de fois le lisier a été appliqué pendant les mois restreints."/>
+		<text name="rt_policy_report_description_sustainable_forestry" text="Le rapport montre combien d'arbres ont été plantés et coupés pendant la période semestrielle en cours."/>
+		<text name="rt_report_name_farmland" text="Terrain agricole %s"/>
+		<text name="rt_report_name_total_area" text="Superficie totale"/>
+		<text name="rt_report_name_non_compliant_area" text="Superficie non conforme"/>
+		<text name="rt_report_name_spray_violations" text="Violations de pulvérisation"/>
+		<text name="rt_report_name_empty_food" text="Heures sans nourriture"/>
+		<text name="rt_report_name_empty_straw" text="Heures sans paille"/>
+		<text name="rt_report_name_full_slurry" text="Heures avec lisier plein"/>
+		<text name="rt_report_name_low_productivity_hours" text="Heures de faible productivité"/>
+		<text name="rt_report_name_animal_space_violations" text="Violations d'espace animal"/>
+		<text name="rt_report_name_manure_spread_expected" text="Épandage de fumier attendu"/>
+		<text name="rt_report_name_manure_spread" text="Épandage de fumier réel"/>
+		<text name="rt_report_name_manure_spread_rolling_average" text="Niveau moyen glissant de fumier"/>
+		<text name="rt_report_name_restricted_slurry_violations" text="Violations de lisier restreint"/>
+		<text name="rt_report_name_bale_penalty" text="Pénalité de balles"/>		
+		<text name="rt_report_name_total_payout" text="Montant total versé"/>
+		<text name="rt_report_name_animal_count" text="Nombre d'animaux éligibles"/>
+		<text name="rt_report_name_harvest_reward" text="Prime de récolte"/>
+		<text name="rt_report_name_natural_usage" text="Utilisation d'engrais naturel"/>
+		<text name="rt_report_name_other_usage" text="Utilisation d'autres engrais"/>
+		<text name="rt_report_name_points" text="Points"/>
+		<text name="rt_report_name_trees_planted" text="Arbres plantés"/>
+		<text name="rt_report_name_trees_cut" text="Arbres coupés"/>
+		<text name="rt_report_name_note" text="Note :"/>
+		<text name="rt_report_name_additional_tax_benefit" text="Éligible à l'avantage fiscal"/>
+		<text name="rt_report_value_true" text="Vrai"/>
+		<text name="rt_report_value_false" text="Faux"/>
+		<text name="rt_report_value_not_enough_months_elapsed" text="L'évaluation complète a été ignorée ce mois-ci."/>
+		<text name="rt_scheme_delayed_mowing" text="Éviter la fauche au printemps"/>
+		<text name="rt_scheme_crop_promotion" text="Promotion des cultures"/>
+		<text name="rt_scheme_reduce_bale_wrapping" text="Réduction de l'enrubannage des balles"/>
+		<text name="rt_scheme_tractor_demo" text="Démonstration de tracteur"/>
+		<text name="rt_scheme_natural_grazing" text="Pâturage naturel"/>
+		<text name="rt_scheme_natural_fertiliser" text="Engrais naturel"/>
+		<text name="rt_scheme_winter_cover_crops" text="Cultures de couverture hivernales"/>
+		<text name="rt_scheme_road_snow_clearing" text="Déneigement des routes"/>
+		<text name="rt_scheme_brand_demo" text="Démonstration de marque"/>
+		<text name="rt_scheme_set_aside" text="Mise en jachère"/>
+		<text name="rt_scheme_desc_delayed_mowing" text="Ne coupez pas votre herbe pendant les mois de printemps (mars à juin) pour protéger la faune. En juillet, vous serez indemnisé pour toute herbe non coupée."/>
+		<text name="rt_scheme_desc_crop_promotion" text="Une initiative gouvernementale pour promouvoir la culture de %s par des incitations financières. Vous pourrez recevoir de l'équipement pour la durée de l'initiative et obtenir un bonus financier pour chaque champ où vous plantez la culture."/>
+		<text name="rt_scheme_desc_reduce_bale_wrapping" text="L'enrubannage des balles consomme du plastique et empêche la dispersion des graines pendant le transport. Ce programme ne vous pénalise pas pour l'enrubannage des balles - il vous récompense uniquement lorsque vous choisissez une alternative comme faire des balles de foin ou utiliser une autochargeuse."/>
+		<text name="rt_scheme_desc_tractor_demo" text="%s offre à votre ferme l'opportunité d'essayer un %s pendant %s mois. La spécification exacte du véhicule de démonstration est déterminée au moment de votre inscription au programme."/>
+		<text name="rt_scheme_desc_natural_grazing" text="Un programme pour encourager le pâturage des animaux dans un pré sans alimentation supplémentaire. Le paiement est destiné à compenser toute perte de revenus. Vous recevrez un bonus pour le temps que vos animaux passent à paître dans un pré. Le montant du bonus varie selon le type d'animal."/>
+		<text name="rt_scheme_desc_natural_fertiliser" text="Un programme pour encourager l'utilisation d'engrais naturels tels que le fumier, le lisier et le digestat. Vous recevrez un bonus pour la quantité d'engrais naturel que vous utilisez par rapport aux alternatives synthétiques. Cela s'applique à tout l'engrais que vous épandez, que ce soit sur votre ferme ou pour un contrat."/>
+		<text name="rt_scheme_desc_winter_cover_crops" text="Encourage la plantation de cultures de couverture pendant les mois d'hiver pour réduire l'érosion du sol et le lessivage des nutriments. Vous recevrez un bonus pour chaque champ où vous plantez une culture de couverture approuvée pendant la saison hivernale."/>
+		<text name="rt_scheme_desc_road_snow_clearing" text="Suite aux récentes chutes de neige, la municipalité demande aux agriculteurs d'épandre du sel pour aider à maintenir les routes dégagées et sûres. Assurez-vous que lors de l'épandage, votre vitesse ne dépasse pas %s%s pour garantir une couverture adéquate."/>
+		<text name="rt_scheme_desc_brand_demo" text="%s offre à votre ferme l'opportunité d'essayer du matériel pendant %s mois. La spécification exacte du véhicule de démonstration est déterminée au moment de votre inscription au programme."/>
+		<text name="rt_scheme_desc_set_aside" text="Encourage la mise en jachère d'une partie de vos terres agricoles, offrant un repos du travail constant. Vous recevrez un bonus pour les terres laissées sans cultures pendant au moins %d mois avant décembre. Si plus de %s sont éligibles, toutes les cultures vendues l'année fiscale suivante bénéficieront d'un taux d'imposition de 5%%."/>
+		<text name="rt_scheme_report_desc_delayed_mowing" text="Le rapport montre une liste des terrains agricoles et le montant versé lors de la dernière évaluation."/>
+		<text name="rt_scheme_report_desc_crop_promotion" text="Le rapport montre une liste des terrains agricoles et le montant versé lors de la dernière évaluation."/>
+		<text name="rt_scheme_report_desc_reduce_bale_wrapping" text="Le rapport montre une liste des terrains agricoles et le montant versé lors de la dernière évaluation."/>
+		<text name="rt_scheme_report_desc_natural_grazing" text="Le rapport montre le montant total versé lors de la dernière évaluation."/>
+		<text name="rt_scheme_report_desc_natural_fertiliser" text="Le rapport montre l'utilisation d'engrais naturels et autres pendant le dernier mois."/>
+		<text name="rt_scheme_report_desc_winter_cover_crops" text="Le rapport montre une liste des terrains agricoles et le montant versé lors de la dernière évaluation."/>
+		<text name="rt_scheme_report_desc_road_snow_clearing" text="Il n'y a pas de rapport pour ce programme. Une fois la neige terminée, vous recevrez un versement proportionnel à la quantité de sel que vous avez épandu."/>
+		<text name="rt_scheme_report_desc_set_aside" text="Le rapport montre le versement pour chacun de vos champs. Il indique également si vous avez bénéficié du taux d'imposition spécial de 5%."/>
+		<text name="rt_btn_select_scheme" text="Sélectionner le programme"/>
+		<text name="rt_btn_watch_scheme_policy" text="Activer/Désactiver le suivi"/>
+		<text name="rt_unit_meter_square" text="m²"/>
+		<text name="rt_ui_schemePayout" text="Versement du programme"/>
+		<text name="finance_schemePayout" text="Versement du programme"/>
+		<text name="rt_ui_policyFine" text="Amende de politique"/>
+		<text name="finance_policyFine" text="Amende de politique"/>
+		<text name="rt_ui_taxCost" text="Impôts"/>
+		<text name="finance_taxCost" text="Impôts"/>
+		<text name="rt_no_vehicle_room" text="Pas assez d'espace pour livrer les véhicules du programme. Libérez de l'espace et réessayez."/>
+		<text name="rt_info_scheme_selected" text="Vous vous êtes inscrit au programme. Récupérez les véhicules au magasin."/>
+		<text name="rt_misc_year" text="Année"/>
+		<text name="rt_misc_month" text="Mois"/>
+		<text name="rt_misc_spreading_too_fast" text="Vous roulez trop vite pour épandre le sel efficacement. Limitez votre vitesse à %s%s."/>
+		<text name="rt_misc_confirm_scheme_selection" text="Êtes-vous sûr de vouloir vous inscrire à ce programme ?"/>
+		<text name="rt_notes_additional_tax_benefit" text="Taux d'imposition effectif"/>
+		<text name="rt_help_title_red_tape" text="Bureaucratie"/>
+		<text name="rt_help_title_intro" text="Introduction"/>
+		<text name="rt_help_title_policies" text="Politiques"/>
+		<text name="rt_help_title_schemes" text="Programmes"/>
+		<text name="rt_help_title_tax" text="Impôts"/>
+		<text name="rt_help_intro_intro" text="Bureaucratie est un mod qui introduit les Politiques, les Programmes et la Fiscalité dans Farming Simulator. Ces systèmes sont conçus pour ajouter de la profondeur et du défi à votre expérience agricole, encourageant les pratiques durables et la planification stratégique."/>
+		<text name="rt_help_intro_intro_2" text="Toutes les informations relatives à Bureaucratie sont contenues dans le nouveau menu ajouté au menu principal. Cherchez l'icône du bâtiment gouvernemental."/>
+		<text name="rt_help_policies_intro" text="Les politiques sont essentiellement des lois que vous devez respecter lors de l'exploitation agricole. Elles régissent des aspects tels que le traitement des animaux et l'utilisation appropriée des terres."/>
+		<text name="rt_help_policies_intro_2" text="Dans l'onglet Politiques, vous verrez une liste de politiques. Sélectionnez chacune pour voir la description de la conformité. Plus bas, vous verrez un rapport sur votre performance. Certaines politiques sont vérifiées chaque mois, tandis que d'autres sont vérifiées moins fréquemment. La plupart du temps, une politique produira un rapport chaque mois pour que vous puissiez suivre vos progrès."/>
+		<text name="rt_help_policies_intro_3" text="Si vous respectez une politique, vous gagnerez des points qui contribuent à votre niveau de conformité. Des niveaux de conformité plus élevés mènent à des avantages tels que des récompenses de programme améliorées et éventuellement des réductions d'impôts. Si vous violez une politique, vous pouvez recevoir des avertissements ou des amendes selon la gravité de la violation. Lorsque vous avez reçu un avertissement, une icône apparaîtra à côté du nom de la politique et vous recevrez une notification dans le jeu. Résolvez le problème pour éviter une amende future."/>
+		<text name="rt_help_schemes_intro" text="Les programmes sont optionnels et deviennent disponibles tout au long de l'année. Vous pouvez vous inscrire à ceux que vous souhaitez. Généralement, les programmes exigent que vous fassiez certaines choses pour être éligible et recevoir des avantages proportionnels. Comme les politiques, des rapports sont générés pour expliquer votre performance. Toutes les récompenses sont proportionnelles à votre paramètre de difficulté économique."/>
+		<text name="rt_help_schemes_intro_2" text="Les programmes peuvent également être situationnels, comme une marque organisant une démonstration où vous pouvez utiliser du matériel gratuitement pendant un certain temps. Dans tous les cas, votre niveau de conformité aux politiques affecte directement les récompenses de programme disponibles. Les programmes de niveau D donnent les récompenses les plus basses, tandis que les programmes de niveau A donnent les plus grandes récompenses."/>
+		<text name="rt_help_schemes_intro_3" text="Les programmes durent généralement une période définie, souvent un an ou un certain nombre d'évaluations. Les programmes redeviennent disponibles avec le temps, mais vous devez vous réinscrire si vous le souhaitez. Certains programmes ont une fenêtre limitée pendant laquelle ils sont disponibles. Par exemple, le programme de promotion des cultures n'est disponible que dans les premiers mois de l'année."/>
+		<text name="rt_help_tax_intro" text="L'impôt est un système qui donne une partie de vos bénéfices au gouvernement. Une déclaration fiscale est finalisée en avril chaque année, et vous paierez automatiquement l'impôt dû en septembre. Si vous n'avez pas assez d'argent pour payer la facture fiscale, votre solde deviendra négatif."/>
+		<text name="rt_help_tax_intro_2" text="Dans l'onglet Impôts, vous pouvez voir une déclaration finalisée sur le côté gauche de la vue. Sur le côté droit, vous pouvez voir les totaux en cours pour votre année fiscale actuelle. Vous pouvez l'utiliser pour planifier et réduire votre facture fiscale. Par exemple, si vous voyez que vos bénéfices sont élevés pour l'année, vous pourriez choisir d'acheter du nouveau matériel pour réduire les bénéfices, et donc vos impôts."/>
+		<text name="rt_help_tax_intro_3" text="Parfois, vous verrez des notes fiscales. Celles-ci vous indiquent quand votre déclaration fiscale est modifiée par une condition non standard. Par exemple, un programme pourrait vous offrir une réduction d'impôt future. Cela sera indiqué dans les notes fiscales pour vous aider à comprendre votre facture."/>
+	</texts>
 </l10n>

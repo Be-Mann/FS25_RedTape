@@ -2,7 +2,6 @@
 <l10n>
 	<translationContributors/>
 	<texts>
-		
 		<text name="rt_notify_active_policy" text="A new policy has been activated: %s"/>
 		<text name="rt_notify_active_scheme" text="A new scheme has become available: %s (Tier %s)"/>
 		<text name="rt_notify_ended_scheme" text="A scheme has ended: %s"/>
@@ -11,7 +10,6 @@
 		<text name="rt_notify_scheme_payout" text="The %s scheme paid you: %s"/>
 		<text name="rt_notify_policy_warning" text="You received a warning for violating the %s policy"/>
 		<text name="rt_notify_policy_fine" text="You received a %s fine for violating the %s policy"/>
-
 		<text name="rt_label_active_policies" text="Active Policies"/>
 		<text name="rt_label_tax_statement" text="Tax Statement"/>
 		<text name="rt_header_policies" text="Policies"/>
@@ -42,7 +40,6 @@
 		<text name="rt_header_tax_payment_info" text="Tax statements calculated in April and payment taken in September."/>
 		<text name="rt_tax_statement_status_paid" text="Paid"/>
 		<text name="rt_tax_statement_status_unpaid" text="Unpaid"/>
-
 		<text name="rt_event_type_none" text="-"/>
 		<text name="rt_event_type_policypoints" text="Policy Points"/>
 		<text name="rt_event_type_policyactivated" text="Policy Activated"/>
@@ -52,14 +49,12 @@
 		<text name="rt_event_type_schemeexpired" text="Scheme Expired"/>
 		<text name="rt_event_type_policywarning" text="Policy Warning"/>
 		<text name="rt_event_type_policyfine" text="Policy Fine"/>
-
 		<text name="rt_tableheader_timestamp" text="Timestamp"/>
 		<text name="rt_tableheader_eventtype" text="Event Type"/>
 		<text name="rt_tableheader_detail" text="Detail"/>
 		<text name="rt_tableheader_name" text="Name"/>
 		<text name="rt_tableheader_description" text="Description"/>
 		<text name="rt_tableheader_next" text="Next Check"/>
-
 		<text name="rt_policy_croprotation" text="Crop Rotation"/>
 		<text name="rt_policy_sprayviolation" text="Water Contamination"/>
 		<text name="rt_policy_empty_food" text="Animal Feed"/>
@@ -70,7 +65,6 @@
 		<text name="rt_policy_manure_spreading" text="Manure Management"/>
 		<text name="rt_policy_restricted_slurry" text="Restricted Slurry Application"/>
 		<text name="rt_policy_sustainable_forestry" text="Sustainable Forestry"/>
-
 		<text name="rt_policy_description_croprotation" text="Requires rotating crops between fields and seasons to maintain soil fertility, break pest and disease cycles, improve nutrient balance, and protect long term yields."/>
 		<text name="rt_policy_description_sprayviolation" text="Prohibits spraying chemicals (Solid Fertilizer, Slurry, Lime, Manure, Herbicide) within buffer zones of water bodies to prevent runoff and contamination that can harm aquatic life, degrade water quality, and endanger human health. Violations are penalized."/>
 		<text name="rt_policy_description_empty_food" text="Requires animals to always have sufficient feed available; keep feed troughs topped up and accessible at all times to prevent hunger and meet welfare standards."/>
@@ -81,7 +75,6 @@
 		<text name="rt_policy_description_manure_spreading" text="You should not let manure sit idle indefinitely. Ensure you spread at least 50% of the manure you produce on a rolling basis. If you do not produce manure you will not be affected by this policy. The report will update monthly, however full evaluation and payout or fines will occur in May and November."/>
 		<text name="rt_policy_description_restricted_slurry" text="You are not allowed to apply slurry during the months of September to December. You will be penalized for each violation."/>
 		<text name="rt_policy_description_sustainable_forestry" text="Encourages sustainable forestry practices, rewarding net positive tree planting and fining for overall deforestation. The policy applies to your own land. Doing contract work will not affect your evaluation. The report will update monthly with bi-annual totals, however full evaluation and payout or fines will occur in June and December."/>
-
 		<text name="rt_policy_report_description_croprotation" text="The report shows totals for compliant and non-compliant land."/>
 		<text name="rt_policy_report_description_sprayviolation" text="The report shows how many spraying violations occurred in the last month."/>
 		<text name="rt_policy_report_description_empty_food" text="The report shows how many combined hours food was empty in animal pens."/>
@@ -92,7 +85,6 @@
 		<text name="rt_policy_report_description_manure_spreading" text="The report shows the amount of manure spread over the last 6 months. It also shows actual vs expected spreading over the last 6 months. Note that Month 1 data shown will not be included in the next report, and any manure produced in the current month will need to be accounted for."/>
 		<text name="rt_policy_report_description_restricted_slurry" text="The report shows how many times slurry was applied during the restricted months."/>
 		<text name="rt_policy_report_description_sustainable_forestry" text="The report shows how many trees were planted and cut down in the current bi-annual period."/>
-
 		<text name="rt_report_name_farmland" text="Farmland %s"/>
 		<text name="rt_report_name_total_area" text="Total Area"/>
 		<text name="rt_report_name_non_compliant_area" text="Non-Compliant Area"/>
@@ -117,11 +109,9 @@
 		<text name="rt_report_name_trees_cut" text="Trees Cut"/>
 		<text name="rt_report_name_note" text="Note:"/>
 		<text name="rt_report_name_additional_tax_benefit" text="Qualified for tax benefit"/>
-				
 		<text name="rt_report_value_true" text="True"/>
 		<text name="rt_report_value_false" text="False"/>
 		<text name="rt_report_value_not_enough_months_elapsed" text="Full evaluation was skipped this month."/>
-
 		<text name="rt_scheme_delayed_mowing" text="Avoid Mowing During Spring"/>
 		<text name="rt_scheme_crop_promotion" text="Crop Promotion"/>
 		<text name="rt_scheme_reduce_bale_wrapping" text="Reduced Bale Wrapping"/>
@@ -132,7 +122,6 @@
 		<text name="rt_scheme_road_snow_clearing" text="Road Snow Clearing"/>
 		<text name="rt_scheme_brand_demo" text="Brand Demo"/>
 		<text name="rt_scheme_set_aside" text="Set-aside"/>
-
 		<text name="rt_scheme_desc_delayed_mowing" text="Do not cut your grass during the spring months (March to June) to protect wildlife. In July, you will be compensated for any uncut grass."/>
 		<text name="rt_scheme_desc_crop_promotion" text="A government initiative to promote the growth of %s through financial incentives. You may be provided equipment for the duration of the initiative and receive a financial bonus for each field where you plant the crop."/>
 		<text name="rt_scheme_desc_reduce_bale_wrapping" text="Wrapping bales consumes plastic and prevents the spread of seeds during transportation. This scheme does not punish you for wrapping bales - it only rewards you when you choose an alternative such as making hay bales or using a forage wagon."/>
@@ -143,7 +132,6 @@
 		<text name="rt_scheme_desc_road_snow_clearing" text="In light of recent snowfall, the local council are asking farmers to spread salt to help keep the roads clear and safe. Ensure that when spreading your speed remains no higher than %s%s to ensure adequate coverage."/>
 		<text name="rt_scheme_desc_brand_demo" text="%s are offering your farm the opportunity to demo some equipment for %s month%s. The exact specification of the demo vehicle is determined at the point that you sign up to the scheme."/>
 		<text name="rt_scheme_desc_set_aside" text="Encourages setting aside a portion of your farmland, providing a rest from constant work. You will receive a bonus for land left clear of crops for at least %d months leading up to December. If over %s qualify, all crops sold in the following tax year will qualify for a 5%% tax rate."/>
-
 		<text name="rt_scheme_report_desc_delayed_mowing" text="The report shows a list of farmlands and the amount paid out during the last evaluation."/>
 		<text name="rt_scheme_report_desc_crop_promotion" text="The report shows a list of farmlands and the amount paid out during the last evaluation."/>
 		<text name="rt_scheme_report_desc_reduce_bale_wrapping" text="The report shows a list of farmlands and the amount paid out during the last evaluation."/>
@@ -152,7 +140,6 @@
 		<text name="rt_scheme_report_desc_winter_cover_crops" text="The report shows a list of farmlands and the amount paid out during the last evaluation."/>
 		<text name="rt_scheme_report_desc_road_snow_clearing" text="There is no report for this scheme. Once the snow ends, you will receive a payout relative to how much salt you have spread."/>
 		<text name="rt_scheme_report_desc_set_aside" text="The report shows the payout for each of your fields. It also shows if you have qualified for the special 5% tax rate."/>
-
 		<text name="rt_btn_select_scheme" text="Select Scheme"/>
 		<text name="rt_btn_watch_scheme_policy" text="Toggle Watch"/>
 		<text name="rt_unit_meter_square" text="m²"/>
@@ -169,24 +156,19 @@
 		<text name="rt_misc_spreading_too_fast" text="You are driving too fast to spread salt effectively. Limit your speed to %s%s."/>
 		<text name="rt_misc_confirm_scheme_selection" text="Are you sure you want to sign up to this scheme?"/>
 		<text name="rt_notes_additional_tax_benefit" text="Effective tax rate"/>
-		
 		<text name="rt_help_title_red_tape" text="Red Tape"/>
 		<text name="rt_help_title_intro" text="Introduction"/>
 		<text name="rt_help_title_policies" text="Policies"/>
 		<text name="rt_help_title_schemes" text="Schemes"/>
 		<text name="rt_help_title_tax" text="Tax"/>
-
 		<text name="rt_help_intro_intro" text="Red Tape is a mod that introduces Policies, Schemes, and Taxation to Farming Simulator. These systems are designed to add depth and challenge to your farming experience, encouraging sustainable practices and strategic planning."/>
 		<text name="rt_help_intro_intro_2" text="All information relating to Red Tape is contained in the new menu added to the main menu. Look for the government building icon."/>
-
 		<text name="rt_help_policies_intro" text="Policies are essentially laws that you must comply with when farming. They govern things such as how you treat animals and appropriate use of land."/>
 		<text name="rt_help_policies_intro_2" text="In the Policies tab you will see a list of policies. Select each to see the description of how to comply. Further down you will see a report on how you have performed. Some policies check every month, while others check less frequently. Most of the time, a policy will produce a report every month so you can track your progress."/>
 		<text name="rt_help_policies_intro_3" text="If you comply with a policy, you will earn points which contribute to your compliance tier. Higher compliance tiers lead to benefits such as improved Scheme rewards and possibly tax breaks. If you violate a policy, you may receive warnings or fines depending on the severity of the violation. Where you have received a warning, an icon will appear next to the policy name and you will receive a notification in game. Address the problem to avoid a future fine."/>
-		
 		<text name="rt_help_schemes_intro" text="Schemes are optional and become available throughout the year. You can sign up to any that you wish to. Typically Schemes require you to do certain things to qualify and receive proportionate benefits. Like Policies, reports are generated to explain your performance. All rewards scale according to your Economic Difficulty Setting."/>
 		<text name="rt_help_schemes_intro_2" text="Schemes might also be situational, such as a brand running a demo where you can use equipment for a time at no cost. In all cases, your compliance tier for Policies directly affects the Scheme rewards available to you. Tier D schemes give the lowest rewards, while Tier A schemes give the greatest rewards."/>
 		<text name="rt_help_schemes_intro_3" text="Schemes typically run for a set period of time, often a year or a number of evaluations. Schemes will become available again in time, but you must sign up again if you wish to. Some Schemes have a limited window in which they are available. For example, the Crop Promotion scheme is only available in the first few months of the year."/>
-		
 		<text name="rt_help_tax_intro" text="Tax is a system that gives a portion of your profits to the government. A tax statement is finalised in April each year, and you will automatically pay the tax due in September. If you don't have enough money to pay the tax bill, your balance will go negative."/>
 		<text name="rt_help_tax_intro_2" text="In the Tax tab, you can see a finalised statement in the left side of the view. On the right hand side you can see running totals for your current financial year. You can use this to plan ahead and reduce your tax bill. For example if you see your profits are high for the year, you might choose to purchase new equipment to reduce profit, and therefore your tax."/>
 		<text name="rt_help_tax_intro_3" text="Sometimes you will see Tax Notes. These tell you when your tax statement is modified by some non-standard condition. For example, a Scheme might offer you a future tax break. This will be indicated in Tax Notes to help you understand your bill."/>
