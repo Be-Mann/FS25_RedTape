@@ -538,29 +538,29 @@ end
 
 function FarmGatherer:getDesirableSpace(animalType)
     if animalType == AnimalType.CHICKEN then
-        return 1
+        return 0.75
     elseif animalType == AnimalType.COW then
-        return 12
+        return 9
     elseif animalType == AnimalType.HORSE then
         return 17
     elseif animalType == AnimalType.PIG then
-        return 7
+        return 5
     elseif animalType == AnimalType.SHEEP then
-        return 9
+        return 4
     end
 end
 
 function FarmGatherer:getAnimalGrazingScaleFactor(animalType)
     if animalType == AnimalType.CHICKEN then
-        return 0.2
+        return 0.1
     elseif animalType == AnimalType.COW then
         return 1.0
     elseif animalType == AnimalType.HORSE then
         return 0.3
     elseif animalType == AnimalType.PIG then
-        return 0.5
+        return 0.45
     elseif animalType == AnimalType.SHEEP then
-        return 0.6
+        return 0.4
     end
     return 1.0
 end
