@@ -34,6 +34,8 @@ function FarmGatherer:hourChanged()
         end
 
         if stats.numAnimals and stats.numAnimals > 0 then
+            farmData.monthlyAnimalHours = farmData.monthlyAnimalHours + stats.numAnimals
+
             if stats.straw and stats.straw == 0 and not isFencelessPasture then
                 farmData.monthlyEmptyStrawCount = farmData.monthlyEmptyStrawCount + 1
             end
@@ -101,6 +103,7 @@ function FarmGatherer:resetMonthlyData()
         farmData.monthlyRestrictedSlurryViolations = 0
         farmData.monthlyAnimalGrazingHours = 0
         farmData.monthlyScaledAnimalGrazingHours = 0
+        farmData.monthlyAnimalHours = 0
         farmData.monthlyDetail = {}
     end
 end
@@ -126,6 +129,7 @@ function FarmGatherer:getFarmData(farmId)
             rollingAverageManureLevel = 0,
             monthlyAnimalGrazingHours = 0,
             monthlyScaledAnimalGrazingHours = 0,
+            monthlyAnimalHours = 0,
             biAnnualCutTrees = 0,
             biAnnualPlantedTrees = 0,
             sprayHistory = {},
@@ -173,6 +177,7 @@ function FarmGatherer:saveToXmlFile(xmlFile, key)
         setXMLInt(xmlFile, farmKey .. "#monthlyRestrictedSlurryViolations", farmData.monthlyRestrictedSlurryViolations)
         setXMLInt(xmlFile, farmKey .. "#monthlyAnimalGrazingHours", farmData.monthlyAnimalGrazingHours)
         setXMLInt(xmlFile, farmKey .. "#monthlyScaledAnimalGrazingHours", farmData.monthlyScaledAnimalGrazingHours)
+        setXMLInt(xmlFile, farmKey .. "#monthlyAnimalHours", farmData.monthlyAnimalHours)
         setXMLInt(xmlFile, farmKey .. "#biAnnualCutTrees", farmData.biAnnualCutTrees)
         setXMLInt(xmlFile, farmKey .. "#biAnnualPlantedTrees", farmData.biAnnualPlantedTrees)
         setXMLInt(xmlFile, farmKey .. "#saltCount", farmData.saltCount)
@@ -265,6 +270,7 @@ function FarmGatherer:loadFromXMLFile(xmlFile, key)
             monthlyRestrictedSlurryViolations = getXMLInt(xmlFile, farmKey .. "#monthlyRestrictedSlurryViolations") or 0,
             monthlyAnimalGrazingHours = getXMLInt(xmlFile, farmKey .. "#monthlyAnimalGrazingHours") or 0,
             monthlyScaledAnimalGrazingHours = getXMLInt(xmlFile, farmKey .. "#monthlyScaledAnimalGrazingHours") or 0,
+            monthlyAnimalHours = getXMLInt(xmlFile, farmKey .. "#monthlyAnimalHours") or 0,
             biAnnualCutTrees = getXMLInt(xmlFile, farmKey .. "#biAnnualCutTrees") or 0,
             biAnnualPlantedTrees = getXMLInt(xmlFile, farmKey .. "#biAnnualPlantedTrees") or 0,
             saltCount = getXMLInt(xmlFile, farmKey .. "#saltCount") or 0,
@@ -332,7 +338,7 @@ end
 function FarmGatherer:checkSprayers()
     local checkFillTypes = { FillType.FERTILIZER, FillType.LIQUIDMANURE, FillType.LIME, FillType.MANURE, FillType
         .HERBICIDE }
-    local restrictedSlurryMonths = { 9, 10, 11, 12 } -- September to December
+    local restrictedSlurryMonths = RTPolicies[RTPolicyIds.RESTRICTED_SLURRY].restrictedMonths
 
     for uniqueId, sprayer in pairs(self.turnedOnSprayers) do
         local sprayerFarmId = sprayer:getOwnerFarmId()

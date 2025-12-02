@@ -24,7 +24,7 @@ RTPolicies = {
         evaluationInterval = 12,
         activate = function(policyInfo, policy, farmId)
         end,
-        evaluate = function(policyInfo, policy, farmId)
+        evaluate = function(policyInfo, policy, farmId, currentTier)
             local ig = g_currentMission.RedTape.InfoGatherer
             local gatherer = ig.gatherers[INFO_KEYS.FARMLANDS]
             local fruitsToSkip = { FruitType.GRASS, FruitType.MEADOW, FruitType.OILSEEDRADISH }
@@ -114,7 +114,7 @@ RTPolicies = {
         maxWarnings = 1,
         activate = function(policyInfo, policy, farmId)
         end,
-        evaluate = function(policyInfo, policy, farmId)
+        evaluate = function(policyInfo, policy, farmId, currentTier)
             local ig = g_currentMission.RedTape.InfoGatherer
             local gatherer = ig.gatherers[INFO_KEYS.FARMS]
             local farmData = gatherer:getFarmData(farmId)
@@ -161,7 +161,7 @@ RTPolicies = {
         evaluationInterval = 1,
         activate = function(policyInfo, policy, farmId)
         end,
-        evaluate = function(policyInfo, policy, farmId)
+        evaluate = function(policyInfo, policy, farmId, currentTier)
             local ig = g_currentMission.RedTape.InfoGatherer
             local gatherer = ig.gatherers[INFO_KEYS.FARMS]
             local farmData = gatherer:getFarmData(farmId)
@@ -176,7 +176,9 @@ RTPolicies = {
                 local skipWarning = normalisedCount > policyInfo.warningThreshold
                 g_currentMission.RedTape.PolicySystem:WarnAndFine(policyInfo, policy, farmId, fineAmount, skipWarning)
             else
-                reward = policyInfo.periodicReward
+                if farmData.monthlyAnimalHours > 0 or currentTier == RTPolicySystem.TIER.D then
+                    reward = policyInfo.periodicReward
+                end
                 g_client:getServerConnection():sendEvent(RTPolicyClearWarningsEvent.new(farmId, policy.policyIndex))
             end
 
@@ -208,7 +210,7 @@ RTPolicies = {
         maxWarnings = 1,
         activate = function(policyInfo, policy, farmId)
         end,
-        evaluate = function(policyInfo, policy, farmId)
+        evaluate = function(policyInfo, policy, farmId, currentTier)
             local ig = g_currentMission.RedTape.InfoGatherer
             local gatherer = ig.gatherers[INFO_KEYS.FARMS]
             local farmData = gatherer:getFarmData(farmId)
@@ -223,7 +225,9 @@ RTPolicies = {
                 local skipWarning = normalisedViolations > policyInfo.warningThreshold
                 g_currentMission.RedTape.PolicySystem:WarnAndFine(policyInfo, policy, farmId, fineAmount, skipWarning)
             else
-                reward = policyInfo.periodicReward
+                if farmData.monthlyAnimalHours > 0 or currentTier == RTPolicySystem.TIER.D then
+                    reward = policyInfo.periodicReward
+                end
                 g_client:getServerConnection():sendEvent(RTPolicyClearWarningsEvent.new(farmId, policy.policyIndex))
             end
 
@@ -257,7 +261,7 @@ RTPolicies = {
         maxWarnings = 1,
         activate = function(policyInfo, policy, farmId)
         end,
-        evaluate = function(policyInfo, policy, farmId)
+        evaluate = function(policyInfo, policy, farmId, currentTier)
             local ig = g_currentMission.RedTape.InfoGatherer
             local gatherer = ig.gatherers[INFO_KEYS.FARMS]
             local farmData = gatherer:getFarmData(farmId)
@@ -272,7 +276,9 @@ RTPolicies = {
                 local skipWarning = normalisedViolations > policyInfo.warningThreshold
                 g_currentMission.RedTape.PolicySystem:WarnAndFine(policyInfo, policy, farmId, fineAmount, skipWarning)
             else
-                reward = policyInfo.periodicReward
+                if farmData.monthlyAnimalHours > 0 or currentTier == RTPolicySystem.TIER.D then
+                    reward = policyInfo.periodicReward
+                end
                 g_client:getServerConnection():sendEvent(RTPolicyClearWarningsEvent.new(farmId, policy.policyIndex))
             end
 
@@ -304,7 +310,7 @@ RTPolicies = {
         maxWarnings = 1,
         activate = function(policyInfo, policy, farmId)
         end,
-        evaluate = function(policyInfo, policy, farmId)
+        evaluate = function(policyInfo, policy, farmId, currentTier)
             local ig = g_currentMission.RedTape.InfoGatherer
             local gatherer = ig.gatherers[INFO_KEYS.FARMS]
             local farmData = gatherer:getFarmData(farmId)
@@ -321,7 +327,9 @@ RTPolicies = {
                 local skipWarning = normalisedViolations > policyInfo.warningThreshold
                 g_currentMission.RedTape.PolicySystem:WarnAndFine(policyInfo, policy, farmId, fineAmount, skipWarning)
             else
-                reward = policyInfo.periodicReward
+                if farmData.monthlyAnimalHours > 0 or currentTier == RTPolicySystem.TIER.D then
+                    reward = policyInfo.periodicReward
+                end
                 g_client:getServerConnection():sendEvent(RTPolicyClearWarningsEvent.new(farmId, policy.policyIndex))
             end
 
@@ -364,7 +372,7 @@ RTPolicies = {
         maxWarnings = 1,
         activate = function(policyInfo, policy, farmId)
         end,
-        evaluate = function(policyInfo, policy, farmId)
+        evaluate = function(policyInfo, policy, farmId, currentTier)
             local ig = g_currentMission.RedTape.InfoGatherer
             local gatherer = ig.gatherers[INFO_KEYS.FARMS]
             local farmData = gatherer:getFarmData(farmId)
@@ -379,7 +387,9 @@ RTPolicies = {
                 local skipWarning = normalisedViolations > policyInfo.warningThreshold
                 g_currentMission.RedTape.PolicySystem:WarnAndFine(policyInfo, policy, farmId, fineAmount, skipWarning)
             else
-                reward = policyInfo.periodicReward
+                if farmData.monthlyAnimalHours > 0 or currentTier == RTPolicySystem.TIER.D then
+                    reward = policyInfo.periodicReward
+                end
                 g_client:getServerConnection():sendEvent(RTPolicyClearWarningsEvent.new(farmId, policy.policyIndex))
             end
 
@@ -412,7 +422,7 @@ RTPolicies = {
         maxWarnings = 0,
         activate = function(policyInfo, policy, farmId)
         end,
-        evaluate = function(policyInfo, policy, farmId)
+        evaluate = function(policyInfo, policy, farmId, currentTier)
             local ig = g_currentMission.RedTape.InfoGatherer
             local gatherer = ig.gatherers[INFO_KEYS.FARMS]
             local farmData = gatherer:getFarmData(farmId)
@@ -511,13 +521,17 @@ RTPolicies = {
         finePerViolation = 20,
         warningThreshold = 50,
         maxWarnings = 1,
+        restrictedMonths = { 9, 10, 11, 12 },
+        rewardMonths = { 10, 11, 12, 1 },
         activate = function(policyInfo, policy, farmId)
         end,
-        evaluate = function(policyInfo, policy, farmId)
+        evaluate = function(policyInfo, policy, farmId, currentTier)
             local ig = g_currentMission.RedTape.InfoGatherer
             local gatherer = ig.gatherers[INFO_KEYS.FARMS]
             local farmData = gatherer:getFarmData(farmId)
             local pendingViolations = farmData.monthlyRestrictedSlurryViolations or 0
+            local currentMonth = RedTape.periodToMonth(g_currentMission.environment.currentPeriod)
+
             local reward = 0
             if pendingViolations > 0 then
                 reward = policyInfo.periodicPenaltyPerViolation * pendingViolations
@@ -526,7 +540,11 @@ RTPolicies = {
                 local skipWarning = pendingViolations > policyInfo.warningThreshold
                 g_currentMission.RedTape.PolicySystem:WarnAndFine(policyInfo, policy, farmId, fineAmount, skipWarning)
             else
-                reward = policyInfo.periodicReward
+                if RedTape.tableHasValue(policyInfo.rewardMonths, currentMonth) then
+                    if farmData.monthlyAnimalHours > 0 or currentTier == RTPolicySystem.TIER.D then
+                        reward = policyInfo.periodicReward
+                    end
+                end
                 g_client:getServerConnection():sendEvent(RTPolicyClearWarningsEvent.new(farmId, policy.policyIndex))
             end
 
@@ -558,7 +576,7 @@ RTPolicies = {
         maxWarnings = 0,
         activate = function(policyInfo, policy, farmId)
         end,
-        evaluate = function(policyInfo, policy, farmId)
+        evaluate = function(policyInfo, policy, farmId, currentTier)
             local ig = g_currentMission.RedTape.InfoGatherer
             local gatherer = ig.gatherers[INFO_KEYS.FARMS]
             local farmData = gatherer:getFarmData(farmId)
