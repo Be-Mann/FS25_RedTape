@@ -11,3 +11,11 @@ Tax... is tax. I haven't started this yet but it's likely to be a simple tax on 
 
 I am aiming to get the mod into a small testing group by November and release something by Christmas.
 
+## Roadmap
+
+Some rough plans are:
+
+- More schemes (send me your ideas)
+- More policies (as above)
+- A system to apply for Grants, e.g. to help towards a new cow shed
+- Long term: random events, e.g. your tractor was stolen.
