@@ -82,7 +82,7 @@
 		<text name="rt_policy_report_description_full_slurry" text="O relatório mostra quantas horas combinadas os tanques de chorume ficaram cheios."/>
 		<text name="rt_policy_report_description_animal_productivity" text="O relatório mostra quantas horas combinadas os animais ficaram improdutivos."/>
 		<text name="rt_policy_report_description_animal_space" text="O relatório mostra primeiro quantas horas de violação foram registradas. Em seguida, para cada criadouro, mostra o mínimo registrado e o espaço exigido por animal."/>
-		<text name="rt_policy_report_description_manure_spreading" text="O relatório mostra a quantidade de estrume espalhada nos últimos 6 meses. Também mostra o espalhamento real vs esperado nos últimos 6 meses. Observe que os dados do Mês 1 exibidos não serão incluídos no próximo relatório, e qualquer estrume produzido no mês atual deverá ser contabilizado."/>
+		<text name="rt_policy_report_description_manure_spreading" text="O relatório mostra a quantidade de estrume aplicada nos últimos 6 meses. Também mostra a aplicação real vs esperada nos últimos 6 meses. Observe que os dados do Mês 1 exibidos não serão incluídos no próximo relatório, e qualquer estrume produzido no mês atual deverá ser contabilizado."/>
 		<text name="rt_policy_report_description_restricted_slurry" text="O relatório mostra quantas vezes chorume foi aplicado durante os meses restritos."/>
 		<text name="rt_policy_report_description_sustainable_forestry" text="O relatório mostra quantas árvores foram plantadas e cortadas no período semestral atual."/>
 		<text name="rt_report_name_farmland" text="Terreno %s"/>
@@ -94,8 +94,8 @@
 		<text name="rt_report_name_full_slurry" text="Horas com chorume cheio"/>
 		<text name="rt_report_name_low_productivity_hours" text="Horas com baixa produtividade"/>
 		<text name="rt_report_name_animal_space_violations" text="Violações de espaço por animal"/>
-		<text name="rt_report_name_manure_spread_expected" text="Espalhamento de estrume esperado"/>
-		<text name="rt_report_name_manure_spread" text="Espalhamento de estrume real"/>
+		<text name="rt_report_name_manure_spread_expected" text="Aplicação de estrume esperada"/>
+		<text name="rt_report_name_manure_spread" text="Aplicação de estrume real"/>
 		<text name="rt_report_name_manure_spread_rolling_average" text="Média móvel do nível de estrume"/>
 		<text name="rt_report_name_restricted_slurry_violations" text="Violações de chorume restrito"/>
 		<text name="rt_report_name_bale_penalty" text="Penalidade por fardo"/>
