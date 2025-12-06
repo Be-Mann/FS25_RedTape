@@ -519,7 +519,7 @@ function FarmGatherer:getHusbandryStats()
 
         local conditionInfos = husbandry:getConditionInfos()
         for i, conditionInfo in pairs(conditionInfos) do
-            if i == 1 then
+            if animalType ~= AnimalType.HORSE and animalType ~= AnimalType.PIG and i == 1 then
                 stats.productivity = conditionInfo.value
             end
             local conditionFillType = fillTypeCache[conditionInfo.title]
