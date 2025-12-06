@@ -314,6 +314,15 @@ function RTSchemeSystem:isSchemeActiveForFarm(farmId, schemeIndex)
     return false
 end
 
+function RTSchemeSystem:isSchemeAvailableForTier(tier, schemeIndex)
+    for _, scheme in pairs(self.availableSchemes[tier]) do
+        if scheme.schemeIndex == schemeIndex then
+            return true
+        end
+    end
+    return false
+end
+
 function RTSchemeSystem:getActiveSchemesForFarm(farmId)
     if farmId == nil or farmId == 0 then
         return {}
@@ -384,11 +393,13 @@ end
 
 function RTSchemeSystem:onSnowApplied()
     for tier, _ in pairs(self.availableSchemes) do
-        local scheme = RTScheme.new()
-        scheme.tier = tier
-        scheme.schemeIndex = RTSchemeIds.ROAD_SNOW_CLEARING
-        scheme:initialise()
-        g_client:getServerConnection():sendEvent(RTSchemeActivatedEvent.new(scheme))
+        if not self:isSchemeAvailableForTier(tier, RTSchemeIds.ROAD_SNOW_CLEARING) then
+            local scheme = RTScheme.new()
+            scheme.tier = tier
+            scheme.schemeIndex = RTSchemeIds.ROAD_SNOW_CLEARING
+            scheme:initialise()
+            g_client:getServerConnection():sendEvent(RTSchemeActivatedEvent.new(scheme))
+        end
     end
 end
 
