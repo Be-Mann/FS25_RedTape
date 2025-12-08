@@ -430,19 +430,20 @@ RTPolicies = {
             local currentMonth = RedTape.periodToMonth(g_currentMission.environment.currentPeriod)
             local elapsedMonths = RedTape.getElapsedMonths()
 
-            local actualSpread = 0
+            -- local actualSpread = 0
+            local totalProduced = 0
             local monthsToSearch = 6
             local cumulativeMonth = RedTape.getCumulativeMonth()
 
             local report = {}
             local perMonthValues = {}
             for month = cumulativeMonth - monthsToSearch, cumulativeMonth - 1 do
-                local sprayEntry = farmData.sprayHistory[month]
+                local producedHistory = farmData.produceHistory[month]
 
-                table.insert(perMonthValues, sprayEntry ~= nil and sprayEntry[manureName] or 0)
+                table.insert(perMonthValues, producedHistory ~= nil and producedHistory[manureName] or 0)
 
-                if sprayEntry ~= nil and sprayEntry[manureName] ~= nil then
-                    actualSpread = actualSpread + sprayEntry[manureName]
+                if producedHistory ~= nil and producedHistory[manureName] ~= nil then
+                    totalProduced = totalProduced + producedHistory[manureName]
                 end
             end
 
@@ -455,29 +456,27 @@ RTPolicies = {
                     })
             end
 
-            local expectedSpread = 0
             local reward = 0
-            if farmData.rollingAverageManureLevel > 0 then
-                expectedSpread = farmData.rollingAverageManureLevel * 0.5
+            local maxStoredAmount = totalProduced * 0.5
+            -- expectedSpread = farmData.rollingAverageManureLevel * 0.5
 
-                if currentMonth == 5 or currentMonth == 11 then
-                    if elapsedMonths < 3 then
-                        table.insert(report,
-                            {
-                                cell1 = g_i18n:getText("rt_report_name_note"),
-                                cell2 = g_i18n:getText("rt_report_value_not_enough_months_elapsed")
-                            })
+            if currentMonth == 5 or currentMonth == 11 then
+                if elapsedMonths < 3 then
+                    table.insert(report,
+                        {
+                            cell1 = g_i18n:getText("rt_report_name_note"),
+                            cell2 = g_i18n:getText("rt_report_value_not_enough_months_elapsed")
+                        })
+                else
+                    if farmData.currentManureLevel > maxStoredAmount then
+                        reward = policyInfo.periodicPenalty
+
+                        local fineAmount = policyInfo.finePerViolation
+                        local skipWarning = true
+                        g_currentMission.RedTape.PolicySystem:WarnAndFine(policyInfo, policy, farmId, fineAmount,
+                            skipWarning)
                     else
-                        if actualSpread < expectedSpread then
-                            reward = policyInfo.periodicPenalty
-
-                            local fineAmount = policyInfo.finePerViolation
-                            local skipWarning = true
-                            g_currentMission.RedTape.PolicySystem:WarnAndFine(policyInfo, policy, farmId, fineAmount,
-                                skipWarning)
-                        else
-                            reward = policyInfo.periodicReward
-                        end
+                        reward = policyInfo.periodicReward
                     end
                 end
             end
@@ -486,18 +485,18 @@ RTPolicies = {
 
             table.insert(report,
                 {
-                    cell1 = g_i18n:getText("rt_report_name_manure_spread"),
-                    cell2 = g_i18n:formatVolume(actualSpread, 0)
+                    cell1 = g_i18n:getText("rt_report_name_manure_total_produced"),
+                    cell2 = g_i18n:formatVolume(totalProduced, 0)
                 })
             table.insert(report,
                 {
-                    cell1 = g_i18n:getText("rt_report_name_manure_spread_expected"),
-                    cell2 = g_i18n:formatVolume(expectedSpread, 0)
+                    cell1 = g_i18n:getText("rt_report_name_manure_max_stored_amount"),
+                    cell2 = g_i18n:formatVolume(maxStoredAmount, 0)
                 })
             table.insert(report,
                 {
-                    cell1 = g_i18n:getText("rt_report_name_manure_spread_rolling_average"),
-                    cell2 = g_i18n:formatVolume(farmData.rollingAverageManureLevel, 0)
+                    cell1 = g_i18n:getText("rt_report_name_manure_stored_amount"),
+                    cell2 = g_i18n:formatVolume(farmData.currentManureLevel, 0)
                 })
             table.insert(report, { cell1 = g_i18n:getText("rt_report_name_points"), cell2 = reward })
 
