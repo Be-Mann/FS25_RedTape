@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="no" ?>
 <modDesc descVersion="105">
     <author>Ozz</author>
-    <version>1.0.0.3</version>
+    <version>1.0.0.4</version>
     <iconFilename>icon_RedTape.dds</iconFilename>
     <title>
         <en>Red Tape</en>
@@ -120,6 +120,7 @@ Journal des modifications:
         <sourceFile filename="src/extensions/I18NExtension.lua"/>
         <sourceFile filename="src/extensions/MissionManagerExtension.lua"/>
         <sourceFile filename="src/extensions/PlaceableHusbandryAnimalsExtension.lua"/>
+        <sourceFile filename="src/extensions/PlaceableHusbandryExtension.lua"/>
         <sourceFile filename="src/extensions/SaltSpreaderExtension.lua"/>
         <sourceFile filename="src/extensions/SnowSystemExtension.lua"/>
         <sourceFile filename="src/extensions/SprayerExtension.lua"/>

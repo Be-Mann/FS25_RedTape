@@ -82,7 +82,7 @@ function FarmGatherer:periodChanged()
     local cumulativeMonth = RedTape.getCumulativeMonth()
     local oldestHistoryMonth = cumulativeMonth - 24
 
-    -- remove spray history entries older than 24 months
+    -- remove history entries older than 24 months
     for _, farmData in pairs(self.data) do
         for month, _ in pairs(farmData.sprayHistory) do
             if month < oldestHistoryMonth then
@@ -90,6 +90,16 @@ function FarmGatherer:periodChanged()
             end
         end
     end
+    
+    for _, farmData in pairs(self.data) do
+        for month, _ in pairs(farmData.produceHistory) do
+            if month < oldestHistoryMonth then
+                farmData.produceHistory[month] = nil
+            end
+        end
+    end
+
+
 end
 
 function FarmGatherer:resetMonthlyData()
@@ -126,13 +136,13 @@ function FarmGatherer:getFarmData(farmId)
             monthlyAnimalSpaceViolations = 0,
             monthlyRestrictedSlurryViolations = 0,
             currentManureLevel = 0,
-            rollingAverageManureLevel = 0,
             monthlyAnimalGrazingHours = 0,
             monthlyScaledAnimalGrazingHours = 0,
             monthlyAnimalHours = 0,
             biAnnualCutTrees = 0,
             biAnnualPlantedTrees = 0,
             sprayHistory = {},
+            produceHistory = {},
             monthlyDetail = {},
             saltCount = 0
         }
@@ -173,7 +183,6 @@ function FarmGatherer:saveToXmlFile(xmlFile, key)
         setXMLInt(xmlFile, farmKey .. "#monthlyLowProductivityHusbandry", farmData.monthlyLowProductivityHusbandry)
         setXMLInt(xmlFile, farmKey .. "#monthlyAnimalSpaceViolations", farmData.monthlyAnimalSpaceViolations)
         setXMLInt(xmlFile, farmKey .. "#currentManureLevel", farmData.currentManureLevel)
-        setXMLInt(xmlFile, farmKey .. "#rollingAverageManureLevel", farmData.rollingAverageManureLevel)
         setXMLInt(xmlFile, farmKey .. "#monthlyRestrictedSlurryViolations", farmData.monthlyRestrictedSlurryViolations)
         setXMLInt(xmlFile, farmKey .. "#monthlyAnimalGrazingHours", farmData.monthlyAnimalGrazingHours)
         setXMLInt(xmlFile, farmKey .. "#monthlyScaledAnimalGrazingHours", farmData.monthlyScaledAnimalGrazingHours)
@@ -194,21 +203,32 @@ function FarmGatherer:saveToXmlFile(xmlFile, key)
         end
 
         local k = 0
+        for month, nameTable in pairs(farmData.produceHistory) do
+            for name, amount in pairs(nameTable) do
+                local produceKey = string.format("%s.produceHistory.produce(%d)", farmKey, k)
+                setXMLInt(xmlFile, produceKey .. "#month", month)
+                setXMLString(xmlFile, produceKey .. "#name", name)
+                setXMLInt(xmlFile, produceKey .. "#amount", amount)
+                k = k + 1
+            end
+        end
+
+        local l = 0
         for detailKey, detailTable in pairs(farmData.monthlyDetail) do
-            local detailXmlKey = string.format("%s.monthlyDetail.detail(%d)", farmKey, k)
+            local detailXmlKey = string.format("%s.monthlyDetail.detail(%d)", farmKey, l)
             setXMLString(xmlFile, detailXmlKey .. "#key", detailKey)
 
-            local l = 0
+            local m = 0
             for _, detailLine in pairs(detailTable) do
-                local lineKey = string.format("%s.line(%d)", detailXmlKey, l)
+                local lineKey = string.format("%s.line(%d)", detailXmlKey, m)
                 setXMLString(xmlFile, lineKey .. "#k", detailLine.key)
                 setXMLString(xmlFile, lineKey .. "#v1", detailLine.value1 or "")
                 setXMLString(xmlFile, lineKey .. "#v2", detailLine.value2 or "")
                 setXMLInt(xmlFile, lineKey .. "#updated", detailLine.updated or -1)
-                l = l + 1
+                m = m + 1
             end
 
-            k = k + 1
+            l = l + 1
         end
 
         i = i + 1
@@ -266,7 +286,6 @@ function FarmGatherer:loadFromXMLFile(xmlFile, key)
             monthlyLowProductivityHusbandry = getXMLInt(xmlFile, farmKey .. "#monthlyLowProductivityHusbandry") or 0,
             monthlyAnimalSpaceViolations = getXMLInt(xmlFile, farmKey .. "#monthlyAnimalSpaceViolations") or 0,
             currentManureLevel = getXMLInt(xmlFile, farmKey .. "#currentManureLevel") or 0,
-            rollingAverageManureLevel = getXMLInt(xmlFile, farmKey .. "#rollingAverageManureLevel") or 0,
             monthlyRestrictedSlurryViolations = getXMLInt(xmlFile, farmKey .. "#monthlyRestrictedSlurryViolations") or 0,
             monthlyAnimalGrazingHours = getXMLInt(xmlFile, farmKey .. "#monthlyAnimalGrazingHours") or 0,
             monthlyScaledAnimalGrazingHours = getXMLInt(xmlFile, farmKey .. "#monthlyScaledAnimalGrazingHours") or 0,
@@ -297,9 +316,29 @@ function FarmGatherer:loadFromXMLFile(xmlFile, key)
         end
 
         local k = 0
+        self.data[farmId].produceHistory = {}
+        while true do
+            local produceKey = string.format("%s.produceHistory.produce(%d)", farmKey, k)
+            if not hasXMLProperty(xmlFile, produceKey) then
+                break
+            end
+
+            local month = getXMLInt(xmlFile, produceKey .. "#month")
+            local name = getXMLString(xmlFile, produceKey .. "#name")
+            local amount = getXMLInt(xmlFile, produceKey .. "#amount")
+
+            if self.data[farmId].produceHistory[month] == nil then
+                self.data[farmId].produceHistory[month] = {}
+            end
+            self.data[farmId].produceHistory[month][name] = amount
+
+            k = k + 1
+        end
+
+        local l = 0
         self.data[farmId].monthlyDetail = {}
         while true do
-            local detailXmlKey = string.format("%s.monthlyDetail.detail(%d)", farmKey, k)
+            local detailXmlKey = string.format("%s.monthlyDetail.detail(%d)", farmKey, l)
             if not hasXMLProperty(xmlFile, detailXmlKey) then
                 break
             end
@@ -307,9 +346,9 @@ function FarmGatherer:loadFromXMLFile(xmlFile, key)
             local detailKey = getXMLString(xmlFile, detailXmlKey .. "#key")
             self.data[farmId].monthlyDetail[detailKey] = {}
 
-            local l = 0
+            local m = 0
             while true do
-                local lineKey = string.format("%s.line(%d)", detailXmlKey, l)
+                local lineKey = string.format("%s.line(%d)", detailXmlKey, m)
                 if not hasXMLProperty(xmlFile, lineKey) then
                     break
                 end
@@ -321,10 +360,10 @@ function FarmGatherer:loadFromXMLFile(xmlFile, key)
                     updated = getXMLInt(xmlFile, lineKey .. "#updated") or -1
                 })
 
-                l = l + 1
+                m = m + 1
             end
 
-            k = k + 1
+            l = l + 1
         end
 
         i = i + 1
@@ -602,13 +641,6 @@ function FarmGatherer:updateManureLevels()
                 end
             end
         end
-    end
-
-    local averagingWindow = 6
-    for _, farmData in pairs(self.data) do
-        local oldAverage = farmData.rollingAverageManureLevel
-        farmData.rollingAverageManureLevel = (oldAverage * (averagingWindow - 1) + farmData.currentManureLevel) /
-            averagingWindow
     end
 end
 
