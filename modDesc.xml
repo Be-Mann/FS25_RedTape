@@ -26,8 +26,9 @@ https://github.com/sprkem/FS25_RedTape
 
 Changelog:
 
-1.0.0.6: 
+1.0.0.6 [WIP]: 
 - Add threshold to manure storage policy to only be in violation above 5k litres of stored manure.
+- Fix an issue on multiplayer which prevents animals aging correctly.
 
 1.0.0.5:
 - Adds a workaround to address an issue in the Realistic Weather which causes an issue in this mod when spraying.
