@@ -65,6 +65,10 @@ https://github.com/sprkem/FS25_RedTape
 
 Änderungsliste:
 
+1.0.0.6:
+- Schwellwert zur Güllelagerpolitik hinzugefügt, um nur bei mehr als 5.000 Litern gelagerter Gülle einen Verstoß zu melden.
+- Problem im Mehrspielermodus behoben, das verhindert, dass Tiere korrekt altern.
+
 1.0.0.5:
 - Fügt eine Umgehungslösung hinzu, um ein Problem im Realistic Weather zu beheben, das beim Sprühen in dieser Mod zu einem Problem führt.
 
@@ -103,6 +107,10 @@ Consultez le menu d'aide du jeu pour plus d'informations.
 https://github.com/sprkem/FS25_RedTape
 
 Journal des modifications:
+
+1.0.0.6:
+- Ajoutez un seuil à la politique de stockage de fumier pour ne signaler une violation que si plus de 5 000 litres de fumier sont stockés.
+- Corrigez un problème en mode multijoueur qui empêche les animaux de vieillir correctement.
 
 1.0.0.5:
 - Ajoute une solution de contournement pour résoudre un problème dans le module Realistic Weather qui provoque un dysfonctionnement dans ce mod lors de la pulvérisation.
