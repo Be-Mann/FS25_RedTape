@@ -92,6 +92,7 @@ end
 
 function RTPolicySystem:saveToXmlFile(xmlFile)
     if (not g_currentMission:getIsServer()) then return end
+    if (not self:isEnabled()) then return end
 
     local key = RedTape.SaveKey .. ".policySystem"
 
@@ -118,6 +119,10 @@ function RTPolicySystem:saveToXmlFile(xmlFile)
         setXMLInt(xmlFile, warningsKey .. "#warningCount", warning.warningCount)
         k = k + 1
     end
+end
+
+function RTPolicySystem:isEnabled()
+    return g_currentMission.RedTape.settings.taxEnabled
 end
 
 function RTPolicySystem:writeInitialClientState(streamId, connection)
@@ -183,6 +188,7 @@ function RTPolicySystem:hourChanged()
 end
 
 function RTPolicySystem:periodChanged()
+    if (not self:isEnabled()) then return end
     local policySystem = g_currentMission.RedTape.PolicySystem
 
     for _, policy in ipairs(policySystem.policies) do
@@ -193,6 +199,7 @@ function RTPolicySystem:periodChanged()
 end
 
 function RTPolicySystem:generatePolicies()
+    if (not self:isEnabled()) then return end
     local rt = g_currentMission.RedTape
     local existingCount = rt.tableCount(self.policies)
     if existingCount < RTPolicySystem.DESIRED_POLICY_COUNT then
@@ -424,4 +431,7 @@ function RTPolicySystem:getProgressForFarm(farmId)
         progressPercentage = progressPercentage,
         nextTierPoints = nextTierPoints
     }
+end
+
+function RTPolicySystem:onDisabled()
 end

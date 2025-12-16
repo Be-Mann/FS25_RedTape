@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="no" ?>
 <modDesc descVersion="105">
     <author>Ozz</author>
-    <version>1.0.0.6</version>
+    <version>1.0.0.7</version>
     <iconFilename>icon_RedTape.dds</iconFilename>
     <title>
         <en>Red Tape</en>
@@ -25,6 +25,10 @@ See the help menu in game for more information.
 https://github.com/sprkem/FS25_RedTape
 
 Changelog:
+
+1.0.0.7:
+- Further fix to address multiplayer progression issues
+- Added settings to disable systems and set tax rate
 
 1.0.0.6:
 - Add threshold to manure storage policy to only be in violation above 5k litres of stored manure.
@@ -64,6 +68,10 @@ Weitere Informationen finden Sie im Hilfemenü des Spiels.
 https://github.com/sprkem/FS25_RedTape
 
 Änderungsliste:
+
+1.0.0.7:
+- Weitere Behebung von Mehrspielermodus-Fortschrittsproblemen
+- Einstellungen hinzugefügt, um Systeme zu deaktivieren und den Steuersatz festzulegen
 
 1.0.0.6:
 - Schwellwert zur Güllelagerpolitik hinzugefügt, um nur bei mehr als 5.000 Litern gelagerter Gülle einen Verstoß zu melden.
@@ -108,6 +116,10 @@ https://github.com/sprkem/FS25_RedTape
 
 Journal des modifications:
 
+1.0.0.7:
+- Correction supplémentaire pour résoudre les problèmes de progression en multijoueur
+- Ajout de paramètres pour désactiver les systèmes et définir le taux d'imposition
+
 1.0.0.6:
 - Ajoutez un seuil à la politique de stockage de fumier pour ne signaler une violation que si plus de 5 000 litres de fumier sont stockés.
 - Corrigez un problème en mode multijoueur qui empêche les animaux de vieillir correctement.
@@ -144,6 +156,7 @@ Journal des modifications:
         <sourceFile filename="src/events/PolicyReportEvent.lua"/>
         <sourceFile filename="src/events/PolicyWarningEvent.lua"/>
         <sourceFile filename="src/events/PolicyWatchToggleEvent.lua"/>
+        <sourceFile filename="src/events/RedTapeSettingsEvent.lua"/>
         <sourceFile filename="src/events/SchemeActivatedEvent.lua"/>
         <sourceFile filename="src/events/SchemeEndedEvent.lua"/>
         <sourceFile filename="src/events/SchemeNoLongerAvailableEvent.lua"/>
@@ -184,6 +197,7 @@ Journal des modifications:
         <sourceFile filename="src/system/SchemeSystem.lua"/>
         <sourceFile filename="src/system/TaxSystem.lua"/>
         <sourceFile filename="src/RedTape.lua"/>
+        <sourceFile filename="src/RedTapeSettings.lua"/>
     </extraSourceFiles>
     <multiplayer supported="true"/>
     <l10n filenamePrefix="languages/l10n" />

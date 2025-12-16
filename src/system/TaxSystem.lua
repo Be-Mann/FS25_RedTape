@@ -101,6 +101,7 @@ end
 
 function RTTaxSystem:saveToXmlFile(xmlFile)
     if (not g_currentMission:getIsServer()) then return end
+    if (not self:isEnabled()) then return end
 
     local key = RedTape.SaveKey .. ".taxSystem"
 
@@ -136,6 +137,10 @@ function RTTaxSystem:saveToXmlFile(xmlFile)
             k = k + 1
         end
     end
+end
+
+function RTTaxSystem:isEnabled()
+    return g_currentMission.RedTape.settings.taxEnabled
 end
 
 function RTTaxSystem:writeInitialClientState(streamId, connection)
@@ -222,6 +227,7 @@ function RTTaxSystem:hourChanged()
 end
 
 function RTTaxSystem:periodChanged()
+    if (not self:isEnabled()) then return end
     local month = RedTape.periodToMonth(g_currentMission.environment.currentPeriod)
     if month == RTTaxSystem.TAX_CALCULATION_MONTH then
         self:createAnnualTaxStatements()
@@ -246,6 +252,7 @@ end
 
 -- Called via NewTaxLineItemEvent to store on server and client
 function RTTaxSystem:recordLineItem(farmId, lineItem)
+    if (not self:isEnabled()) then return end
     local cumulativeMonth = RedTape.getCumulativeMonth()
     self.lineItems[farmId] = self.lineItems[farmId] or {}
 
@@ -270,7 +277,8 @@ end
 
 function RTTaxSystem:getTaxRate(farmId)
     -- Example usage is to look up the farm and find tax rate modifiers
-    return 0.2
+    -- return 0.2
+    return g_currentMission.RedTape.settings.baseTaxRate
 end
 
 function RTTaxSystem:getTaxedAmount(lineItem, taxStatement)
@@ -395,6 +403,7 @@ function RTTaxSystem:generateTaxStatement(farmId, startMonth, endMonth)
 end
 
 function RTTaxSystem:createAnnualTaxStatements()
+    if (not self:isEnabled()) then return end
     local minMonth = RedTape.getCumulativeMonth() - 12
     local maxMonth = RedTape.getCumulativeMonth() - 1
     for _, farmId in ipairs(self.farms) do
@@ -449,6 +458,7 @@ function RTTaxSystem:markTaxStatementAsPaid(farmId)
 end
 
 function RTTaxSystem:getCurrentYearTaxToDate(farmId)
+    if (not self:isEnabled()) then return end
     local cumulativeMonth = RedTape.getCumulativeMonth()
     local currentMonth = RedTape.periodToMonth(g_currentMission.environment.currentPeriod)
 

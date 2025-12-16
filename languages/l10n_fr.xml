@@ -172,5 +172,12 @@
 		<text name="rt_help_tax_intro" text="L'impôt est un système qui donne une partie de vos bénéfices au gouvernement. Une déclaration fiscale est finalisée en avril chaque année, et vous paierez automatiquement l'impôt dû en septembre. Si vous n'avez pas assez d'argent pour payer la facture fiscale, votre solde deviendra négatif."/>
 		<text name="rt_help_tax_intro_2" text="Dans l'onglet Impôts, vous pouvez voir une déclaration finalisée sur le côté gauche de la vue. Sur le côté droit, vous pouvez voir les totaux en cours pour votre année fiscale actuelle. Vous pouvez l'utiliser pour planifier et réduire votre facture fiscale. Par exemple, si vous voyez que vos bénéfices sont élevés pour l'année, vous pourriez choisir d'acheter du nouveau matériel pour réduire les bénéfices, et donc vos impôts."/>
 		<text name="rt_help_tax_intro_3" text="Parfois, vous verrez des notes fiscales. Celles-ci vous indiquent quand votre déclaration fiscale est modifiée par une condition non standard. Par exemple, un programme pourrait vous offrir une réduction d'impôt future. Cela sera indiqué dans les notes fiscales pour vous aider à comprendre votre facture."/>
+		<text name="rt_setting_taxEnabled" text="Impôts activés"/>
+		<text name="rt_toolTip_taxEnabled" text="Activer ou désactiver le système fiscal"/>
+		<text name="rt_setting_policiesAndSchemesEnabled" text="Politiques/Programmes activés"/>
+		<text name="rt_toolTip_policiesAndSchemesEnabled" text="Activer ou désactiver le système de politiques et programmes. Désactiver ceci terminera immédiatement tous les programmes actifs."/>
+		<text name="rt_setting_baseTaxRate" text="Taux d'imposition de base"/>
+		<text name="rt_toolTip_baseTaxRate" text="Définir le taux d'imposition de base"/>
+		<text name="rt_system_disabled" text="Ce système est actuellement désactivé. Vérifiez les paramètres du jeu pour le réactiver." />
 	</texts>
 </l10n>
