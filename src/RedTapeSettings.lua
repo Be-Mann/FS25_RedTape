@@ -50,16 +50,10 @@ RedTape.SETTINGS.baseTaxRate = {
     }
 }
 
-function RedTape.setValue(id, value)
-    RedTape[id] = value
-end
 
-function RedTape.getValue(id)
-    return RedTape[id]
-end
 
 function RedTape.getStateIndex(id, value)
-    local value = value or RedTape.getValue(id)
+    local value = value or g_currentMission.RedTape.settings[id]
     local values = RedTape.SETTINGS[id].values
     if type(value) == 'number' then
         local index = RedTape.SETTINGS[id].default
@@ -91,7 +85,7 @@ function RedTapeControls.onMenuOptionChanged(self, state, menuOption)
     local value = setting[id].values[state]
 
     if value ~= nil then
-        RedTape.setValue(id, value)
+        g_currentMission.RedTape.settings[id] = value
     end
 
     g_client:getServerConnection():sendEvent(RTSettingsEvent.new())

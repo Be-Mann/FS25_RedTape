@@ -1,35 +1,32 @@
 RTSettingsEvent = {}
 RTSettingsEvent_mt = Class(RTSettingsEvent, Event)
 
-InitEventClass(RTSettingsEvent, "RedTapeSettingsEvent")
+InitEventClass(RTSettingsEvent, "RTSettingsEvent")
 
 function RTSettingsEvent.emptyNew()
     local self = Event.new(RTSettingsEvent_mt)
     return self
 end
 
-function RTSettingsEvent.new(taxEnabled, policiesAndSchemesEnabled, baseTaxRate)
+function RTSettingsEvent.new()
     local self = RTSettingsEvent.emptyNew()
-    self.taxEnabled = taxEnabled
-    self.policiesAndSchemesEnabled = policiesAndSchemesEnabled
-    self.baseTaxRate = baseTaxRate
+    self.taxEnabled = g_currentMission.RedTape.settings.taxEnabled
+    self.policiesAndSchemesEnabled = g_currentMission.RedTape.settings.policiesAndSchemesEnabled
+    self.baseTaxRate = g_currentMission.RedTape.settings.baseTaxRate
     return self
 end
 
 function RTSettingsEvent:writeStream(streamId, connection)
-    local taxEnabled = RedTape.taxEnabled or false
-    local policiesAndSchemesEnabled = RedTape.policiesAndSchemesEnabled or false
-    local baseTaxRate = RedTape.baseTaxRate or 20
-
-    streamWriteBool(streamId, taxEnabled)
-    streamWriteBool(streamId, policiesAndSchemesEnabled)
-    streamWriteFloat32(streamId, baseTaxRate)
+    streamWriteBool(streamId, self.taxEnabled)
+    streamWriteBool(streamId, self.policiesAndSchemesEnabled)
+    streamWriteFloat32(streamId, self.baseTaxRate)
 end
 
 function RTSettingsEvent:readStream(streamId, connection)
     self.taxEnabled = streamReadBool(streamId)
     self.policiesAndSchemesEnabled = streamReadBool(streamId)
     self.baseTaxRate = streamReadFloat32(streamId)
+    self:run(connection)
 end
 
 function RTSettingsEvent:run(connection)
@@ -37,9 +34,9 @@ function RTSettingsEvent:run(connection)
         g_server:broadcastEvent(RTSettingsEvent.new())
     end
 
-    RedTape.taxEnabled = self.taxEnabled
-    RedTape.policiesAndSchemesEnabled = self.policiesAndSchemesEnabled
-    RedTape.baseTaxRate = self.baseTaxRate
+    g_currentMission.RedTape.settings.taxEnabled = self.taxEnabled
+    g_currentMission.RedTape.settings.policiesAndSchemesEnabled = self.policiesAndSchemesEnabled
+    g_currentMission.RedTape.settings.baseTaxRate = self.baseTaxRate
 
     if not connection:getIsServer() then
         if (not RedTape.policiesAndSchemesEnabled) then

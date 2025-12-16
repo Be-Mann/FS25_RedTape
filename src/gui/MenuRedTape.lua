@@ -374,6 +374,15 @@ function MenuRedTape:updateContent()
     end
 
     if state == MenuRedTape.SUB_CATEGORY.POLICIES then
+        if (not g_currentMission.RedTape.settings.policiesAndSchemesEnabled) then
+            self.policySystemDisabledMessage:setVisible(true)
+            self.policySystemEnabledInfo:setVisible(false)
+            return
+        end
+
+        self.policySystemDisabledMessage:setVisible(false)
+        self.policySystemEnabledInfo:setVisible(true)
+
         local policySystem = g_currentMission.RedTape.PolicySystem
         local activePolicies = policySystem.policies
         local progress = policySystem:getProgressForCurrentFarm()
@@ -405,6 +414,15 @@ function MenuRedTape:updateContent()
         self.activePoliciesContainer:setVisible(self.activePoliciesTable:getItemCount() > 0)
         self.noActivePoliciesContainer:setVisible(self.activePoliciesTable:getItemCount() == 0)
     elseif state == MenuRedTape.SUB_CATEGORY.SCHEMES then
+        if (not g_currentMission.RedTape.settings.policiesAndSchemesEnabled) then
+            self.schemeSystemDisabledMessage:setVisible(true)
+            self.schemeSystemEnabledInfo:setVisible(false)
+            return
+        end
+
+        self.schemeSystemDisabledMessage:setVisible(false)
+        self.schemeSystemEnabledInfo:setVisible(true)
+
         local schemeSystem = g_currentMission.RedTape.SchemeSystem
         local availableSchemes = schemeSystem:getAvailableSchemesForCurrentFarm()
         local activeSchemes = schemeSystem:getActiveSchemesForFarm(g_currentMission:getFarmId())
@@ -438,6 +456,15 @@ function MenuRedTape:updateContent()
         self.eventLogRenderer:setData(farmEvents)
         self.farmEventsTable:reloadData()
     elseif state == MenuRedTape.SUB_CATEGORY.TAX then
+        if (not g_currentMission.RedTape.settings.taxEnabled) then
+            self.taxSystemDisabledMessage:setVisible(true)
+            self.taxSystemEnabledInfo:setVisible(false)
+            return
+        end
+
+        self.taxSystemDisabledMessage:setVisible(false)
+        self.taxSystemEnabledInfo:setVisible(true)
+
         local taxSystem = g_currentMission.RedTape.TaxSystem
         local farmId = g_currentMission:getFarmId()
         local statement = taxSystem.taxStatements[farmId]

@@ -179,5 +179,6 @@
 		<text name="rt_toolTip_policiesAndSchemesEnabled" text="Enable or disable the Policies and Schemes system. Turning this off will immediately end all active Schemes."/>
 		<text name="rt_setting_baseTaxRate" text="Base Tax Rate"/>
 		<text name="rt_toolTip_baseTaxRate" text="Set the base tax rate"/>
+		<text name="rt_system_disabled" text="This system is currently disabled. Check Game Settings to turn it back on." />
 	</texts>
 </l10n>

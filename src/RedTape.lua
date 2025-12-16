@@ -39,6 +39,7 @@ function RedTape:loadMap()
     self.RedTapeMenu = guiRedTape
     self.didLoadFromXML = false
     self.missionStarted = false
+    self.settings = {}
 
     g_messageCenter:subscribe(MessageType.HOUR_CHANGED, RedTape.hourChanged)
     g_messageCenter:subscribe(MessageType.PERIOD_CHANGED, RedTape.periodChanged)
@@ -151,7 +152,7 @@ function RedTape:loadFromXMLFile()
 
 
                 end
-                RedTape.setValue(id, value)
+                g_currentMission.RedTape.settings[id] = value
                 print("  " .. id .. ": " .. value_string)
             end
         end
@@ -185,7 +186,7 @@ function RedTape:saveToXmlFile()
     for _, id in pairs(RedTape.menuItems) do
         if RedTape.SETTINGS[id] then
             local xmlValueKey = RedTape.SaveKey .. ".settings." .. id .. "#value"
-            local value = RedTape.getValue(id)
+            local value = g_currentMission.RedTape.settings[id]
             if type(value) == 'number' then
                 setXMLFloat(xmlFile, xmlValueKey, value)
             elseif type(value) == 'boolean' then
@@ -389,7 +390,7 @@ function RedTape:onStartMission()
             for _, id in pairs(RedTape.menuItems) do
                 if RedTape.SETTINGS[id] then
                     local defaultValue = RedTape.SETTINGS[id].values[RedTape.SETTINGS[id].default]
-                    RedTape.setValue(id, defaultValue)
+                    g_currentMission.RedTape.settings[id] = defaultValue
                 end
             end
 
