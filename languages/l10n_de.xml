@@ -172,5 +172,12 @@
 		<text name="rt_help_tax_intro" text="Steuern sind ein System, das einen Teil Ihrer Gewinne an die Regierung abgibt. Ein Steuerbescheid wird jedes Jahr im April abgeschlossen, und Sie zahlen die fällige Steuer automatisch im September. Wenn Sie nicht genug Geld haben, um die Steuerrechnung zu bezahlen, wird Ihr Kontostand negativ."/>
 		<text name="rt_help_tax_intro_2" text="Im Reiter Steuern können Sie auf der linken Seite der Ansicht einen abgeschlossenen Bescheid sehen. Auf der rechten Seite können Sie laufende Summen für Ihr aktuelles Steuerjahr sehen. Sie können dies nutzen, um vorauszuplanen und Ihre Steuerrechnung zu reduzieren. Wenn Sie zum Beispiel sehen, dass Ihre Gewinne für das Jahr hoch sind, könnten Sie sich entscheiden, neue Ausrüstung zu kaufen, um den Gewinn und damit Ihre Steuern zu reduzieren."/>
 		<text name="rt_help_tax_intro_3" text="Manchmal werden Sie Steuerhinweise sehen. Diese sagen Ihnen, wenn Ihr Steuerbescheid durch eine nicht standardmäßige Bedingung geändert wird. Zum Beispiel könnte ein Förderprogramm Ihnen eine zukünftige Steuererleichterung bieten. Dies wird in den Steuerhinweisen angezeigt, um Ihnen zu helfen, Ihre Rechnung zu verstehen."/>
+		<text name="rt_setting_taxEnabled" text="Steuern aktiviert"/>
+		<text name="rt_toolTip_taxEnabled" text="Steuersystem aktivieren oder deaktivieren"/>
+		<text name="rt_setting_policiesAndSchemesEnabled" text="Richtlinien/Förderprogramme aktiviert"/>
+		<text name="rt_toolTip_policiesAndSchemesEnabled" text="Richtlinien- und Förderprogrammsystem aktivieren oder deaktivieren. Das Ausschalten beendet sofort alle aktiven Förderprogramme."/>
+		<text name="rt_setting_baseTaxRate" text="Grundsteuersatz"/>
+		<text name="rt_toolTip_baseTaxRate" text="Grundsteuersatz festlegen"/>
+		<text name="rt_system_disabled" text="Dieses System ist derzeit deaktiviert. Überprüfen Sie die Spieleinstellungen, um es wieder einzuschalten." />
 	</texts>
 </l10n>
