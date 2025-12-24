@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="no" ?>
 <modDesc descVersion="105">
     <author>Ozz</author>
-    <version>1.0.0.10</version>
+    <version>1.0.0.11</version>
     <iconFilename>icon_RedTape.dds</iconFilename>
     <title>
         <en>Red Tape</en>
@@ -25,6 +25,10 @@ See the help menu in game for more information.
 https://github.com/sprkem/FS25_RedTape
 
 Changelog:
+
+1.0.0.11:
+- Add outdoor enclosures (meadow) support for animal spacing calculation.
+- Meadow area is now included in total navigable area for animals.
 
 1.0.0.10:
 - Add CZ translation.
